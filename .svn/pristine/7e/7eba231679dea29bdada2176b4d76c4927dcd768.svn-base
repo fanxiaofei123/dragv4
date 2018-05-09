@@ -1,0 +1,78 @@
+package org.com.drag.service.impl;
+
+import org.com.drag.dao.DataMiningMapper;
+import org.com.drag.model.DataMining;
+import org.com.drag.service.DataMiningService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class DataMiningServiceImpl extends BaseServiceImpl<DataMining> implements DataMiningService{
+
+    @Autowired
+    private DataMiningMapper dataMiningMapper;
+
+    @Override
+    public List<DataMining> selectAll(DataMining dataMining){
+        List<DataMining> dataMiningList = dataMiningMapper.selectAll(dataMining);
+        return dataMiningList;
+    }
+
+    @Override
+    public List<DataMining> getManyOrOneDataMining(String categoryName,Integer id){
+        List<DataMining> dataMiningList = dataMiningMapper.getManyOrOneDataMining(categoryName,id);
+        return dataMiningList;
+    }
+
+    @Override
+    public DataMining selectOneDataMiningById(Integer dataMiningId){
+        return dataMiningMapper.selectOneDataMiningById(dataMiningId);
+    }
+
+    @Override
+    public int updateOneDataMining(DataMining dataMining){
+        int updateDataMiningCount = dataMiningMapper.updateDataMining(dataMining);
+        return updateDataMiningCount;
+    }
+
+    @Override
+    public int deleteOneDataMining(Integer dataMiningId){
+        int deleteCount = dataMiningMapper.deleteOneDataMiningById(dataMiningId);
+        return deleteCount;
+    }
+
+    @Override
+    public int deleteManyDataMining(String[] dataMiningIds){
+        /*Map<String, Object> idsMap = new HashMap<>();
+        idsMap.put("ids",dataMiningIds);
+        idsMap.put("idsMap",idsMap);*/
+        return dataMiningMapper.deleteManyDataMinings(dataMiningIds);
+    }
+
+    @Override
+    public List<DataMining> selectDataMining(DataMining dataMining){
+        return dataMiningMapper.selectDataMining(dataMining);
+    }
+
+    @Override
+    public List<DataMining> getManyDataMining(Integer id){
+        return dataMiningMapper.getManyDataMining(id);
+    }
+
+    @Override
+    public int upateDataMiningName(Integer id,String name){
+        return dataMiningMapper.updateDataMiningName(id,name);
+    }
+
+    @Override
+    public DataMining selectDataMiningReName(Integer id){
+        return dataMiningMapper.selectDataMiningReName(id);
+    }
+
+    @Override
+    public int selectSum(Integer cid,String name){
+        return dataMiningMapper.selectSum(cid,name);
+    }
+}

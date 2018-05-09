@@ -1,0 +1,116 @@
+table.dataTable td.sorting_1, table.dataTable td.sorting_2, table.dataTable td.sorting_3, table.dataTable th.sorting_1, table.dataTable th.sorting_2, table.dataTable th.sorting_3 {
+  background: transparent !important;
+}
+.dataList{
+  min-width: 1000px;
+  .portlet{
+    .caption{
+      span{
+        a{
+          color: #666666;
+          font-size: 14px;
+        }
+        a:hover{
+          color: #32c5d2 !important;
+        }
+        a.active{
+          color: #32c5d2 !important;
+          font-size: 16px;
+        }
+      }
+    }
+    >.actions{
+      float: right;
+      display: inline-block;
+    }
+  }
+  .portlet-body{
+    table{
+      tbody{
+        tr{
+          td{
+            height: 50px;
+            vertical-align: middle;
+            .fileType{
+              float: left;
+              font-size: 32px;
+              padding-right: 5px;
+            }
+            .fileContent{
+              float: left;
+              .fileTitle{
+                a{
+                  color: #333;
+                  font-size: 16px;
+                  font-weight: bold;
+                }
+                a:hover{
+                  color: #32c5d2;
+                }
+              }
+            }
+            .actions{
+              a{
+                color: #666;
+                font-size: 16px;
+              }
+              a:hover{
+                color: #32c5d2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.modal{
+  .modal-dialog{
+    .modal-content{
+      .modal-body{
+        padding-bottom: 0;
+        .portlet{
+          margin-bottom: 0;
+          .portlet-body{
+            form{
+              .form-body{
+                .form-group{
+                  label{
+                    text-align: center;
+                    padding-left: 0;
+                    padding-right: 0;
+                  }
+                  .col-md-10{
+                    .workFlowInfo{
+                      width: 100%;
+                    }
+                  }
+                }
+              }
+              .form-actions{
+                padding: 20px 0;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.bootbox{
+  .modal-dialog{
+    .modal-content{
+      .modal-body{
+        text-align: center;
+        padding: 30px;
+        font-size: 16px;
+        .iconQuestion{
+          font-size: 36px;
+        }
+      }
+    }
+  }
+}

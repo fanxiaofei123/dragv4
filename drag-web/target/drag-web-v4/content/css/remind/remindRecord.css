@@ -1,0 +1,73 @@
+@charset "UTF-8";
+.page-content h4.title{
+    color: #1bbc9b;
+    font-size: 16px;
+    /*d0e0e4*/
+}
+.dataList table tr th,.dataList table tr td{
+    color: #64848e;
+    font-size: 14px;
+    font-weight: normal;
+}
+.page-content-wrapper .page-content .page-bar{
+    border: 1px solid #d0e0e4;
+}
+/*状态筛选*/
+.typeBox{
+    height: 60px;
+}
+.typeBox .typeAll{
+    margin-top: 20px;
+}
+.typeBox .line{
+    margin-top: 18px;
+}
+
+/*邮件提醒弹框*/
+#EmailRemind .portlet-form .form-body{
+    padding-top: 0;
+}
+.mes-box{
+    margin-bottom: 20px;
+    border: 1px solid #d5dcdf;
+    border-radius: 5px!important;
+}
+.mes-box .mes-case .title{
+    padding: 0 18px;
+    margin-bottom: 0;
+    height: 44px;
+    line-height: 44px;
+    color: #64848e;
+    background: #f2f6f7;
+    border-bottom: 1px solid #d5dcdf;
+    border-top: 1px solid #d5dcdf;
+}
+/*.mes-box .mes-case .title:first-child{*/
+    /*border-top: none;*/
+/*}*/
+.mes-box .mes-case .mes-des{
+    padding: 0 18px;
+    color: #85989e;
+}
+.mes-box .mes-case .mes-des .mesGroup{
+    height: 50px;
+    line-height: 50px;
+}
+.mes-box .mes-case .mes-des .mesGroup span:first-child{
+    display: inline-block;
+    width: 140px;
+    font-weight: bold;
+}
+.mes-box .mes-case .mes-des .mesGroup span:first-child i{
+    padding: 0 10px 0 0;
+}
+.chooseDate{
+    width: 194px;
+    height:56px;
+    border: none;
+    outline: none;
+    color: #7f8fa4;
+    font-size: 14px;
+    background: url("../../../content/images/remind/choosedate.png") no-repeat right;
+    cursor: pointer;
+}

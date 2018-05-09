@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="drag-common-v4" />
+        <module name="drag-config-v4" />
+        <module name="drag-dao-v4" />
+        <module name="drag-entity-v4" />
+        <module name="drag-oozie-v4" />
+        <module name="drag-service-v4" />
+        <module name="drag-web-v4" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="drag-common-v4" target="1.8" />
+      <module name="drag-config-v4" target="1.8" />
+      <module name="drag-dao-v4" target="1.8" />
+      <module name="drag-entity-v4" target="1.8" />
+      <module name="drag-oozie-v4" target="1.8" />
+      <module name="drag-service-v4" target="1.8" />
+      <module name="drag-v4" target="1.8" />
+      <module name="drag-web-v4" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.DatabaseConnectMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.DatabaseConnect" >
+    <id column="db_con_id" property="dbCconId" jdbcType="INTEGER" />
+    <result column="db_con_type_id" property="dbConTypeId" jdbcType="SMALLINT" />
+    <result column="db_con_user_id" property="dbConUserId" jdbcType="INTEGER" />
+    <result column="db_con_name" property="dbConName" jdbcType="VARCHAR" />
+    <result column="db_con_dbname" property="dbConDbname" jdbcType="VARCHAR" />
+    <result column="db_con_ip" property="dbConIp" jdbcType="VARCHAR" />
+    <result column="db_con_port" property="dbConPort" jdbcType="INTEGER" />
+    <result column="db_con_user" property="dbConUser" jdbcType="VARCHAR" />
+    <result column="db_con_password" property="dbConPassword" jdbcType="VARCHAR" />
+    <result column="db_con_enable" property="dbConEnable" jdbcType="BIT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    db_con_id, db_con_type_id, db_con_user_id, db_con_name, db_con_dbname, db_con_ip, 
+    db_con_port, db_con_user, db_con_password, db_con_enable
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from database_connect
+    where db_con_id = #{dbCconId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from database_connect
+    where db_con_id = #{dbCconId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByUserIdAndConnName" parameterType="java.lang.Integer" >
+    delete from database_connect
+    where db_con_user_id = #{dbConUserId,jdbcType=INTEGER}
+    and db_con_name = #{dbConName,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.com.drag.model.DatabaseConnect" >
+    insert into database_connect (db_con_id, db_con_type_id, db_con_user_id, 
+      db_con_name, db_con_dbname, db_con_ip, 
+      db_con_port, db_con_user, db_con_password, 
+      db_con_enable)
+    values (#{dbCconId,jdbcType=INTEGER}, #{dbConTypeId,jdbcType=SMALLINT}, #{dbConUserId,jdbcType=INTEGER},
+      #{dbConName,jdbcType=VARCHAR}, #{dbConDbname,jdbcType=VARCHAR}, #{dbConIp,jdbcType=VARCHAR}, 
+      #{dbConPort,jdbcType=INTEGER}, #{dbConUser,jdbcType=VARCHAR}, #{dbConPassword,jdbcType=VARCHAR}, 
+      #{dbConEnable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.DatabaseConnect" >
+    insert into database_connect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="db_con_id != null" >
+        db_con_id,
+      </if>
+      <if test="db_con_type_id != null" >
+        db_con_type_id,
+      </if>
+      <if test="db_con_user_id != null" >
+        db_con_user_id,
+      </if>
+      <if test="db_con_name != null" >
+        db_con_name,
+      </if>
+      <if test="db_con_dbname != null" >
+        db_con_dbname,
+      </if>
+      <if test="db_con_ip != null" >
+        db_con_ip,
+      </if>
+      <if test="db_con_port != null" >
+        db_con_port,
+      </if>
+      <if test="db_con_user != null" >
+        db_con_user,
+      </if>
+      <if test="db_con_password != null" >
+        db_con_password,
+      </if>
+      <if test="db_con_enable != null" >
+        db_con_enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dbCconId != null" >
+        #{dbCconId,jdbcType=INTEGER},
+      </if>
+      <if test="dbConTypeId != null" >
+        #{dbConTypeId,jdbcType=SMALLINT},
+      </if>
+      <if test="dbConUserId != null" >
+        #{dbConUserId,jdbcType=INTEGER},
+      </if>
+      <if test="dbConName != null" >
+        #{dbConName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConDbname != null" >
+        #{dbConDbname,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConIp != null" >
+        #{dbConIp,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConPort != null" >
+        #{dbConPort,jdbcType=INTEGER},
+      </if>
+      <if test="dbConUser != null" >
+        #{dbConUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConPassword != null" >
+        #{dbConPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConEnable != null" >
+        #{dbConEnable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.DatabaseConnect" >
+    update database_connect
+    <set >
+      <if test="dbConTypeId != null" >
+        db_con_type_id = #{dbConTypeId,jdbcType=SMALLINT},
+      </if>
+      <if test="dbConUserId != null" >
+        db_con_user_id = #{dbConUserId,jdbcType=INTEGER},
+      </if>
+      <if test="dbConName != null" >
+        db_con_name = #{dbConName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConDbname != null" >
+        db_con_dbname = #{dbConDbname,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConIp != null" >
+        db_con_ip = #{dbConIp,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConPort != null" >
+        db_con_port = #{dbConPort,jdbcType=INTEGER},
+      </if>
+      <if test="dbConUser != null" >
+        db_con_user = #{dbConUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConPassword != null" >
+        db_con_password = #{dbConPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="dbConEnable != null" >
+        db_con_enable = #{dbConEnable,jdbcType=BIT},
+      </if>
+    </set>
+    where db_con_id = #{dbCconId,jdbcType=INTEGER}
+  </update>
+
+  <!--<update id="deleteByUserIdAndConnName" parameterType="org.com.drag.model.DatabaseConnect" >-->
+  <!--update database_connect-->
+  <!--<set >-->
+    <!--<if test="db_con_enable != null" >-->
+      <!--db_con_enable = #{dbConEnable,jdbcType=BIT},-->
+    <!--</if>-->
+  <!--</set>-->
+  <!--where db_con_user_id = #{dbConUserId,jdbcType=INTEGER}-->
+  <!--and db_con_id = #{dbCconId,jdbcType=VARCHAR}-->
+<!--</update>-->
+
+  <update id="updateConnEnadbleByUserIdAndConnName" parameterType="org.com.drag.model.DatabaseConnect" >
+    update database_connect
+    <set >
+      <if test="dbConEnable != null" >
+        db_con_enable = #{dbConEnable,jdbcType=BIT},
+      </if>
+    </set>
+    where db_con_user_id = #{dbConUserId,jdbcType=INTEGER}
+    and db_con_name = #{dbConName,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateConnNameByUserIdAndConnName" parameterType="org.com.drag.model.DatabaseConnect" >
+    update database_connect
+    <set >
+      <if test="dbConName != null" >
+        db_con_name = #{dbConName,jdbcType=BIT},
+      </if>
+    </set>
+    where db_con_user_id = #{dbConUserId,jdbcType=INTEGER}
+    and db_con_name = #{dbConName,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.DatabaseConnect" >
+    update database_connect
+    set db_con_type_id = #{dbConTypeId,jdbcType=SMALLINT},
+      db_con_user_id = #{dbConUserId,jdbcType=INTEGER},
+      db_con_name = #{dbConName,jdbcType=VARCHAR},
+      db_con_dbname = #{dbConDbname,jdbcType=VARCHAR},
+      db_con_ip = #{dbConIp,jdbcType=VARCHAR},
+      db_con_port = #{dbConPort,jdbcType=INTEGER},
+      db_con_user = #{dbConUser,jdbcType=VARCHAR},
+      db_con_password = #{dbConPassword,jdbcType=VARCHAR},
+      db_con_enable = #{dbConEnable,jdbcType=BIT}
+    where db_con_id = #{dbCconId,jdbcType=INTEGER}
+  </update>
+
+  <!--根据db_con_user_id查询该用户所有的连接信息-->
+  <select id="selectByUserID" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT
+    <include refid="Base_Column_List" />
+    from database_connect
+    where db_con_user_id = #{dbConUserId,jdbcType=INTEGER}
+  </select>
+
+  <!--根据db_con_user_id，db_con_name查找该连接名是否存在-->
+  <select id="selectByUserIdAndConnName" resultType="java.lang.Integer" parameterType="org.com.drag.model.DatabaseConnect">
+    SELECT
+      count(*)
+    from database_connect
+    where
+      <if test="d.dbConName != null and d.dbConName != '' ">
+        db_con_name = #{d.dbConName,jdbcType=VARCHAR}
+      </if>
+        and db_con_user_id = #{d.dbConUserId,jdbcType=INTEGER}
+  </select>
+
+  <!--根据db_con_user_id和url查找该连接是否存在-->
+  <select id="selectByUserIdAndUrl" resultType="java.lang.Integer" parameterType="org.com.drag.model.DatabaseConnect">
+    SELECT
+      count(*)
+    from database_connect
+    where
+      <if test="d.dbConIp != null and d.dbConIp != '' ">
+        db_con_ip = #{d.dbConIp,jdbcType=VARCHAR}
+      </if>
+      <if test="d.dbConPort != null and d.dbConPort != '' ">
+        and db_con_port = #{d.dbConPort,jdbcType=VARCHAR}
+      </if>
+      <if test="d.dbConDbname!= null and d.dbConDbname!= '' ">
+        and db_con_dbname = #{d.dbConDbname,jdbcType=VARCHAR}
+      </if>
+        and db_con_user_id = #{d.dbConUserId,jdbcType=INTEGER}
+  </select>
+
+  <!--根据userid和connName来获得主键-->
+  <select id="findByUserIdAndConnName" resultMap="BaseResultMap" parameterType="org.com.drag.model.DatabaseConnect">
+    SELECT
+      <include refid="Base_Column_List" />
+    from database_connect
+    where
+    <if test="d.dbConName != null and d.dbConName != '' ">
+      db_con_name = #{d.dbConName,jdbcType=VARCHAR}
+    </if>
+    and db_con_user_id = #{d.dbConUserId,jdbcType=INTEGER}
+  </select>
+
+</mapper>

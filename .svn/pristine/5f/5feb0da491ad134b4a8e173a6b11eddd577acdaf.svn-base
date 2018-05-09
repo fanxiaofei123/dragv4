@@ -1,0 +1,543 @@
+package org.com.drag.service.oozie.scheduler.hdfs;
+
+import java.io.*;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.fs.permission.FsPermission;
+import org.com.drag.common.util.MailAuthorSetting;
+import org.com.drag.service.oozie.api.IHdfsApi;
+import org.com.drag.service.oozie.bean.FileInfo;
+import org.com.drag.service.oozie.scheduler.exception.FileAlreadyExistException;
+import org.com.drag.service.oozie.scheduler.exception.PermissionDeniedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+/**
+ * 说明：web后台需要做权限管理，hdfs已经做了权限限制。
+ * Created by zhouhaihong on 2016/10/20.
+ */
+@Service("iHdfsApi")
+public class HdfsFileUtil implements IHdfsApi{
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * hdfs NameNode地址及端口号
+     * */
+    //private static String hdfsUrl = DynamicVariable.HADOOP_HDFS_URL;
+    /**
+     * hdfs超级用户名
+     * */
+   // private static String hdfsSuperUser =DynamicVariable.HADOOP_HDFS_SUPER_USER;
+    /**
+     * hdfs用户群所在的目录(一般默认是/user/)
+     * */
+   // private static String userRootDir = DynamicVariable.HADOOP_HDFS_USER_DIR;
+
+
+    /**
+     * 创建文件夹:创建用户目录
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserDir(String username) {
+        Path path = new Path(MailAuthorSetting.HADOOP_HDFS_USER_DIR+username);
+        FileSystem fileSystem = getFileSystem(MailAuthorSetting.HADOOP_HDFS_SUPER_USER);
+        try {
+            if(fileSystem.exists(path)){
+                logger.error("Directory is already exists.");
+                throw new FileAlreadyExistException("Directory is already exists.");
+            }
+            boolean mkdirs = fileSystem.mkdirs(path);
+            fileSystem.setOwner(path,username,username);
+            fileSystem.setPermission(path,new FsPermission(FsAction.ALL,FsAction.READ_EXECUTE,FsAction.NONE));
+            return mkdirs;
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+        return false;
+    }
+
+    /**
+     * 创建文件夹:创建用户工作空间
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    @Deprecated
+    public boolean createUserWorkspace(String path,String username) {
+      return this.createUserWorkspace(path,username,true);
+    }
+
+    /**
+     * 创建文件夹:创建用户工作空间
+     *
+     *
+     *
+     *
+     *
+     *
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @param isPublic 该工作空间是否公有
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserWorkspace(String path,String username,boolean isPublic) {
+        if(MailAuthorSetting.HADOOP_HDFS_SUPER_USER.equals(username)){
+            logger.warn("Can't use super user create directory, Please used current login user name.");
+            throw new PermissionDeniedException("Can't use super user["+MailAuthorSetting.HADOOP_HDFS_SUPER_USER+"] create directory, Please use current login user name.");
+        }
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsPath = new Path(path);
+        boolean mkdirs = false;
+        try {
+            if(fileSystem.exists(hdfsPath)){
+                logger.error("Directory is already exists.");
+                throw new FileAlreadyExistException("Directory is already exists.");
+            }
+            mkdirs = fileSystem.mkdirs(hdfsPath);
+            if(isPublic){
+                fileSystem.setPermission(hdfsPath,new FsPermission(FsAction.ALL,FsAction.READ_EXECUTE,FsAction.READ_EXECUTE));
+            }else {
+                fileSystem.setPermission(hdfsPath,new FsPermission(FsAction.ALL,FsAction.NONE,FsAction.NONE));
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+        return mkdirs;
+    }
+
+    /**
+     * 创建文件夹:创建用户数据目录
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserDataDir(String path,String username) {
+       return this.createUserWorkspace(path, username, false);
+    }
+
+    /**
+     * 遍历指定目录下的文件
+     * @param path 需要遍历的目录
+     * @return 返回List<FileStatus>,FileStatus中包含了文件的相关信息
+     */
+    public List<FileInfo> list(String path, String username) {
+        FileSystem fileSystem = getFileSystem(username);
+        List<FileInfo> fileInfoList = new ArrayList<FileInfo>();
+        try {
+            FileStatus[] fileStatuses = fileSystem.listStatus(new Path(path));
+            for (FileStatus file : fileStatuses) {
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setPath(file.getPath());
+                fileInfo.setAccessTime(file.getAccessTime());
+                fileInfo.setModificationTime(file.getModificationTime());
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String modifiTime=simpleDateFormat.format(new Date(file.getModificationTime()));
+                fileInfo.setModifiedTime(modifiTime);
+                fileInfo.setLength(file.getLen());
+                fileInfo.setIsDir(file.isDirectory());
+                fileInfo.setOwner(file.getOwner());
+                fileInfo.setGroup(file.getGroup());
+                fileInfo.setCurDir(String.valueOf(file.getPath()));
+              //  fileInfo.setPermission(file.getPermission());
+                fileInfoList.add(fileInfo);
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+        return fileInfoList;
+    }
+
+    /**
+     * 过滤查询文件或目录
+     * @param path 查询目录
+     * @param filter 过滤添加
+     * @param username 操作用户
+     * @return List<FileInfo>
+     */
+    public List<FileInfo> listFileAndDir(String path,String filter ,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        List<FileInfo> fileInfoList = new ArrayList<FileInfo>();
+        try {
+            FileStatus[] fileStatuses = fileSystem.listStatus(new Path(path), new PathFilterImpl(filter));
+            for (FileStatus file : fileStatuses) {
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setPath(file.getPath());
+                fileInfo.setAccessTime(file.getAccessTime());
+                fileInfo.setModificationTime(file.getModificationTime());
+                fileInfo.setLength(file.getLen());
+                fileInfo.setIsDir(file.isDirectory());
+                fileInfo.setOwner(file.getOwner());
+                fileInfo.setGroup(file.getGroup());
+              //  fileInfo.setPermission(file.getPermission());
+                fileInfoList.add(fileInfo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage()+" "+e.getCause());
+        }
+        return fileInfoList;
+    }
+
+    /**
+     * 上传文件到hdfs
+     * @param sourcePath 本地文件路径
+     * @param targetPath hdfs上路径
+     * @param username 用户名
+     * @return
+     */
+    public boolean uploadFile(String sourcePath, String targetPath,String username) {
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsPath = new Path(targetPath);
+        BufferedInputStream in = null;
+        FSDataOutputStream out = null;
+        try {
+            //判断文件是否存在
+            if (fileSystem.exists(hdfsPath)) {
+                logger.error("File is already exists.");
+                throw new FileAlreadyExistException("File["+targetPath+"] is already exists.");
+            }
+            out = fileSystem.create(hdfsPath);
+            in = new BufferedInputStream(new FileInputStream(sourcePath));
+//            IOUtils.copyBytes();
+            byte[] bytes = new byte[1024];
+            int numBytes = 0;
+            while ((numBytes = in.read(bytes)) > 0) {
+                out.write(bytes, 0, numBytes);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage()+"\t\n"+e.getCause());
+        } finally {
+            close(in,null,null, out,fileSystem);
+        }
+        return true;
+    }
+
+    /**
+     * 上传workflow.xml文件到hdfs,会对以前的workflow.xml文件进行覆盖
+     * @param sourcePath 本地文件路径
+     * @param targetPath hdfs上路径
+     * @param username 用户名
+     * @return
+     */
+    public boolean uploadWorkFlowFile(String sourcePath, String targetPath,String username) {
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsPath = new Path(targetPath);
+        BufferedInputStream in = null;
+        FSDataOutputStream out = null;
+        try {
+            out = fileSystem.create(hdfsPath);
+            in = new BufferedInputStream(new FileInputStream(sourcePath));
+            byte[] bytes = new byte[1024];
+            int numBytes = 0;
+            while ((numBytes = in.read(bytes)) > 0) {
+                out.write(bytes, 0, numBytes);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage()+"\t\n"+e.getCause());
+        } finally {
+            close(in,null,null, out,fileSystem);
+        }
+        return true;
+    }
+
+    /**
+     * 将本地文件复制到hdfs上
+     * @param localPath 本地文件路径
+     * @param hdfsPath hdfs文件
+     * @param username 用户名
+     * @return
+     */
+    public boolean copyFromLocalFile(String localPath,String hdfsPath,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        boolean res = false;
+        try {
+            File localFile = new File(localPath);
+            String newHdfsPath = "";
+            if(hdfsPath.endsWith("/")){
+                newHdfsPath = hdfsPath+localFile.getName();
+            }else{
+                newHdfsPath = hdfsPath+"/"+localFile.getName();
+            }
+            if(localFile.exists() && !fileSystem.exists(new Path(newHdfsPath))){
+                fileSystem.copyFromLocalFile(new Path(localPath),new Path(hdfsPath));
+                res = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage()+"\t"+e.getCause());
+        }finally {
+            close(null,null,null, null,fileSystem);
+        }
+        return res;
+    }
+
+    /**
+     * 删除指定用户的文件或目录
+     * @param path 路径
+     * @param username 用户名
+     * @param isDirectory 该路径是否是一个目录
+     * @return 成功返回true
+     */
+    public boolean deleteFileOrDir(String path,String username,boolean isDirectory) {
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsPath = new Path(path);
+        boolean deleted = false;
+        try {
+            if(fileSystem.exists(hdfsPath)) {
+               deleted = fileSystem.delete(hdfsPath, isDirectory);
+            }else{
+                logger.error("File does not exists.");
+                throw new FileNotFoundException("File["+path+"] does not exists.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+        return deleted;
+    }
+
+    /**
+     * 读取hdfs指定长度的文件内容
+     * @param path 文件路径
+     * @param username 用户名
+     * @return Return a byte Array
+     */
+    public byte[] readFileFromHdfs(String path,int readLength,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        byte[] bytes = null;
+        FSDataInputStream is = null;
+        try {
+            if(!fileSystem.exists(new Path(path))){
+                logger.error("File does not exists.");
+                throw new FileNotFoundException("File["+path+"] does not exists.");
+            }
+            is = fileSystem.open(new Path(path));
+            bytes = new byte[readLength];
+            int readLen = is.read(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,is,null,fileSystem);
+        }
+        return bytes;
+    }
+
+    /**
+     * 下载hdfs上的文件
+     * @param path 文件路径
+     * @param username 用户名
+     * @return Return a byte Array
+     */
+    public FSDataInputStream downloadFileFromHdfs(String path, String username){
+        FileSystem fileSystem = getFileSystem(username);
+        byte[] bytes = null;
+        FSDataInputStream is = null;
+        try {
+            if(!fileSystem.exists(new Path(path))){
+                logger.error("File does not exists.");
+                throw new FileNotFoundException("File["+path+"] does not exists.");
+            }
+            is = fileSystem.open(new Path(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+
+        return is;
+    }
+
+    /**
+     * 将hdfs上的文件下载到本地
+     * @param path hdfs文件
+     * @param localDir 本地文件路径
+     * @param username 用户名
+     * @return 下载成功返回true
+     */
+    public boolean downloadHdfsFile(String path,String localDir,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        boolean res = false;
+        FSDataInputStream is = null;
+        BufferedOutputStream out = null;
+        try {
+            if(!fileSystem.exists(new Path(path))){
+                logger.error("File does not exists.");
+                throw new FileNotFoundException("File["+path+"] does not exists.");
+            }
+            is = fileSystem.open(new Path(path));
+            out = new BufferedOutputStream(new FileOutputStream(localDir));
+            byte[] bytes = new byte[1024*1024];
+            int readLen = -1;
+            while ((readLen = is.read(bytes))!=-1){
+                out.write(bytes,0,readLen);
+            }
+            out.flush();
+            res = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,out,is,null,fileSystem);
+        }
+        return res;
+    }
+
+    /**
+     * 重命名文件夹或文件名
+     * @param srcPath 旧文件夹或文件路径
+     * @param newName 新的文件夹或文件名称
+     * @param username 用户名
+     * @return 是否重命名成功
+     */
+    public boolean renameDirectoryOrFile(String srcPath,String newName,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsSrcPath = new Path(srcPath);
+
+        Path hdfsDstPath = new Path(hdfsSrcPath.getParent()+"/"+newName);
+        boolean rename = false;
+        try {
+            if(!fileSystem.exists(hdfsSrcPath)){
+                logger.error("Directory or file ["+srcPath+"] does not exists.");
+                throw new FileNotFoundException("Directory or file ["+srcPath+"] does not exists.");
+            }
+            if(fileSystem.exists(hdfsDstPath)){
+                logger.error("Directory or file ["+newName+"] has already exists.");
+                throw new FileAlreadyExistException("Directory or file ["+newName+"] has already exists.");
+            }
+          rename = fileSystem.rename(hdfsSrcPath, hdfsDstPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+        return rename;
+    }
+
+
+    /**
+     * 判断文件是否存在
+     * @param srcPath 文件或者文件夹
+     * @param username 用户名
+     * @return
+     */
+    public boolean judgmentFile(String srcPath,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        Path hdfsSrcPath = new Path(srcPath);
+        try {
+            if(!fileSystem.exists(hdfsSrcPath)){
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,null,null,fileSystem);
+        }
+		return false;
+    }
+
+
+    
+    
+    public FileSystem getFileSystem(String user) {
+        Configuration conf = new Configuration();
+        FileSystem fileSystem = null;
+        try {
+            URI uri = new URI(MailAuthorSetting.HADOOP_HDFS_URL);
+            fileSystem = FileSystem.get(uri, conf,user);
+        } catch (Exception e) {
+           logger.error("获取FileSystem失败."+e.getMessage());
+        }
+        return fileSystem;
+    }
+
+    private void close(BufferedInputStream bin,BufferedOutputStream bout,FSDataInputStream fin, FSDataOutputStream fout,FileSystem fileSystem) {
+        try {
+            if (bin != null) {
+                bin.close();
+            }
+            if (bout != null) {
+                bout.close();
+            }
+            if(fin != null){
+                fin.close();
+            }
+            if (fout != null) {
+                fout.close();
+            }
+            if(fileSystem != null){
+                fileSystem.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 读取hdfs文件的所有内容
+     * @param path 文件路径
+     * @param username 用户名
+     * @return Return a byte Array
+     */
+    @Override
+    public byte[] readFileFromHdfs(String path,String username){
+        FileSystem fileSystem = getFileSystem(username);
+        byte[] bytes = null;
+        FSDataInputStream is = null;
+        try {
+            if(!fileSystem.exists(new Path(path))){
+                logger.error("File does not exists.");
+                throw new FileNotFoundException("File["+path+"] does not exists.");
+            }
+            is = fileSystem.open(new Path(path));
+            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+            int len;
+            byte[] b = new byte[1024];
+            while ((len = is.read(b)) != -1)
+            {
+                bytestream.write(b, 0, len);
+            }
+            bytes = bytestream.toByteArray();
+            bytestream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }finally {
+            close(null,null,is,null,fileSystem);
+        }
+        return bytes;
+    }
+
+
+}

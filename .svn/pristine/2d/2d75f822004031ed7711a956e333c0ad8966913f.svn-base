@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.CalculationHistoryMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.CalculationHistory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="way" property="way" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="resason" property="resason" jdbcType="VARCHAR" />
+     <result column="jobId" property="jobId" jdbcType="VARCHAR" />
+      <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+       <result column="flowId" property="flowId" jdbcType="VARCHAR" />
+        <result column="frontusername" property="frontusername" jdbcType="VARCHAR" />
+    <result column="model_id" property="modelId" jdbcType="INTEGER" />
+    <result column="update_url" property="updateUrl" jdbcType="VARCHAR" />
+    <result column="down_url" property="downUrl" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="org.com.drag.model.CalculationHistoryDetail" extends="BaseResultMap">
+  	<association property="user" column="userId" javaType="org.com.drag.model.User" select="org.com.drag.dao.UserMapper.selectById" />
+  	<association property="model" column="model_id" javaType="org.com.drag.model.FacadeModel" select="org.com.drag.dao.FacadeModelMapper.selectByModelId" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, way, status, resason,jobId,create_time,flowId,frontusername,model_id,update_url,down_url,name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from calculation_history
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from calculation_history
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.CalculationHistory" >
+    insert into calculation_history (id, userId, way, 
+      status, resason,jobId,create_time,flowId,frontusername,model_id,update_url,down_url)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{way,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{resason,jdbcType=VARCHAR},#{jobId},#{createTime},#{flowId},#{frontusername},#{modelId},#{updateUrl},#{downUrl},#{name})
+  </insert>
+  <insert id="insertSelective"  keyProperty="id" useGeneratedKeys="true"  parameterType="org.com.drag.model.CalculationHistory" >
+    insert into calculation_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="way != null" >
+        way,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="resason != null" >
+        resason,
+      </if>
+      <if test="jobId != null" >
+        jobId,
+      </if>
+
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    <if test="flowId !=null">
+      flowId,
+    </if>
+     <if test="frontusername !=null">
+      frontusername,
+    </if>
+     <if test="modelId !=null">
+      model_id,
+    </if>
+     <if test="updateUrl !=null">
+      update_url,
+    </if>
+     <if test="downUrl !=null">
+      down_url,
+    </if>
+     <if test="name !=null">
+      name,
+    </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="way != null" >
+        #{way,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="resason != null" >
+        #{resason,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null" >
+        #{jobId},
+      </if>
+
+      <if test="createTime != null" >
+        #{createTime},
+      </if>
+      <if test="flowId">
+        #{flowId},
+      </if>
+       <if test="frontusername">
+        #{frontusername},
+      </if>
+        <if test="modelId">
+        #{modelId},
+      </if>
+        <if test="updateUrl">
+        #{updateUrl},
+      </if>
+        <if test="downUrl">
+        #{downUrl},
+      </if>
+        <if test="name">
+        #{name},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.CalculationHistory" >
+    update calculation_history
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="way != null" >
+        way = #{way,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="resason != null" >
+        resason = #{resason,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null" >
+        jobId = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null and createTime !=''" >
+        create_time = #{createTime},
+      </if>
+
+      <if test="flowId != null">
+        flowId =#{flowId},
+      </if>
+       <if test="frontusername != null">
+        frontusername =#{frontusername},
+      </if>
+       <if test="modelId != null">
+        model_id =#{modelId},
+      </if>
+       <if test="updateUrl != null">
+        update_url =#{updateUrl},
+      </if>
+       <if test="downUrl != null">
+        down_url =#{downUrl}
+      </if>
+       <if test="name != null">
+        down_url =#{name}
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.CalculationHistory" >
+    update calculation_history
+    set userId = #{userid,jdbcType=INTEGER},
+      way = #{way,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      resason = #{resason,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectBySelectiveKey" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+    SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userid = u.id
+    <include refid="whereSql"></include>
+    order BY createTime DESC
+  </select>
+  
+  
+   <select id="selectBySelective" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+    SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userId = u.id
+    where ch.frontusername IS NULL AND ch.userId = #{userid}
+    order BY createTime DESC
+  </select>
+  
+  
+    <select id="selectBySelectiveF" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+    SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userid = u.id
+    where ch.frontusername IS NOT NULL
+    order BY createTime DESC
+  </select>
+  
+   <select id="selectBySelectiveAll" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+    SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userId = u.id
+    where ch.frontusername IS NULL
+    order BY createTime DESC
+  </select>
+  
+  
+    <select id="selectBySelectiveTime" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+   SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userid = u.id
+    <where>
+      
+     <!--  <if test="endTime != null">
+       ch.create_time Between
+         #{startTime}  AND  #{endTime}
+      </if>
+      <if test="startTime != null and endTime == null">
+       ch.create_time >= #{startTime} 
+      </if>
+       -->
+
+      ch.frontusername IS NULL
+      <if test="startTime !=null and startTime !=''">  
+    <![CDATA[   and DATE_FORMAT(ch.create_time, '%Y-%m-%d')>=  DATE_FORMAT(#{startTime}, '%Y-%m-%d')   ]]>  
+    </if>  
+    <if test="endTime !=null and endTime !=''">  
+    <![CDATA[  and DATE_FORMAT(ch.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')    ]]>  
+    </if>  
+    
+       <if test="idList != null">
+        and ch.id in 
+           <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+    </where>
+<!-- where ch.create_time Between #{startTime,jdbcType=VARCHAR} And #{entTime,jdbcType=VARCHAR} -->
+    order BY createTime DESC
+    </select>
+  
+ <select id="selectBySelectiveFTime" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+   SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userid = u.id
+    <where>
+    
+      ch.frontusername IS NOT NULL
+      
+      <if test="startTime !=null and startTime !=''">  
+    <![CDATA[   and DATE_FORMAT(ch.create_time, '%Y-%m-%d')>=  DATE_FORMAT(#{startTime}, '%Y-%m-%d')   ]]>  
+    </if>  
+    <if test="endTime !=null and endTime !=''">  
+    <![CDATA[  and DATE_FORMAT(ch.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')    ]]>  
+    </if>  
+    
+       <if test="idList != null">
+        and ch.id in 
+           <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+    </where>
+    order BY createTime DESC
+    </select>
+  
+
+ <select id="selectBySelectiveHTime" resultType="org.com.drag.model.CalculationHistory" parameterType="org.com.drag.model.CalculationHistory">
+   SELECT ch.id,ch.userId,u.loginname email,ch.way,ch.`status`,ch.resason,ch.jobId jobId,ch.create_time createTime,ch.flowId flowId FROM calculation_history ch
+    LEFT JOIN  user u ON ch.userid = u.id
+    <where>
+      ch.frontusername IS NULL AND ch.userId = #{userid}
+      <if test="startTime !=null and startTime !=''">  
+    <![CDATA[   and DATE_FORMAT(ch.create_time, '%Y-%m-%d')>=  DATE_FORMAT(#{startTime}, '%Y-%m-%d')   ]]>  
+    </if>  
+    <if test="endTime !=null and endTime !=''">  
+    <![CDATA[  and DATE_FORMAT(ch.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')    ]]>  
+    </if>  
+    
+       <if test="idList != null">
+        and ch.id in 
+           <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+    </where>
+    order BY createTime DESC
+    </select>
+  
+
+
+  <sql id="whereSql">
+    <where>
+    
+    <if test="id != null">
+        ch.id = #{id}
+      </if>
+      <if test="status != null">
+       AND ch.status = #{status}
+      </if>
+      
+       <if test="userid != null">
+       AND ch.userid = #{userid}
+      </if>
+
+      <if test="jobId != null and jobId != ''">
+        AND jobId = #{jobId}
+      </if>
+
+      <if test="flowId != null and flowId != ''">
+        AND flowId = #{flowId}
+      </if>
+      
+       <if test="frontusername != null and frontusername != ''">
+        AND frontusername = #{frontusername}
+      </if>
+      
+       <if test="modelId != null and modelId != ''">
+        AND model_id = #{modelId}
+      </if>
+       <if test="updateUrl != null and updateUrl != ''">
+        AND update_url = #{updateUrl}
+      </if>
+       <if test="downUrl != null and downUrl != ''">
+        AND down_url = #{downUrl}
+      </if>
+    </where>
+  </sql>
+  <!--  parameterType="java.util.Map" -->
+  <!-- 
+  	
+   -->
+  <select id="selectByOptions" resultMap="DetailResultMap" parameterType="Map">
+		select
+		<include refid="Base_Column_List" />
+		from calculation_history
+		where frontusername=#{frontusername}
+		<if test="status!=null">
+			and status=#{status}
+		</if>
+		<if test="name!=null">
+			and name like '%#{name}%'
+		</if>
+		<if test="(type!=null and type!='') or (treeId!=null and treeId!='')">
+			and model_id in 
+			(
+				select a.id 
+				from facade_model as a 
+				left join facade_tree as b
+				on a.treeId=b.id
+				<where>
+					<if test="type!=null and type!=''">
+						b.type=#{type}
+					</if>
+					<if test="treeId!=null and treeId!=''">
+						and a.treeId in
+						(
+							select leaf
+							from father_leaff
+							where fid=#{treeId}
+						)
+					</if>
+				</where>
+			)
+		</if>
+		order by create_time desc
+	</select>
+
+    <select id="selectByFlowId" resultType="org.com.drag.model.CalculationHistory" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM calculation_history
+        WHERE flowId=#{flowId}
+        order by create_time desc
+    </select>
+</mapper>

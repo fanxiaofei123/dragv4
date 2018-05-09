@@ -1,0 +1,1215 @@
+/**
+ * Created by cdyoue on 2017/8/1.
+ */
+//文件管理左边树形目录
+var setting = {
+
+    data: {
+        simpleData: {
+            enable: true,
+            // idKey: "idStr",
+            // pidKey: "pidStr"
+
+        }
+    },//data: {"templateCategoryPid": treeNode.id, "templateCategoryIsParent": 1, "templateCategoryName": name},
+    async: {
+        enable: true,
+        url:basePath+"/templateCategory/shownode.do",
+        autoParam:["id", "name","pId","isParent"],
+        // otherParam:{"otherParam":"zTreeAsyncTest"},
+        dataFilter: filter
+    },
+    view: {
+        // addHoverDom: addHoverDom,
+        // removeHoverDom: removeHoverDom,
+        showLine:false,
+        selectedMulti: false,
+//                dblClickExpand: false,
+//                showLine: false
+        //        不显示子节点icon
+        showIcon: showIconForTree
+    },
+    edit: {
+
+
+    },
+    data: {
+        keep: {
+            parent:true,
+            leaf:true
+        },
+        simpleData: {
+            enable: true
+        }
+    },
+    callback: {
+        beforeDrag: beforeDrag,
+        onRemove: onRemove,
+
+//				单击展开节点
+        beforeExpand: beforeExpand,
+        beforeRename: beforeRename,
+        beforeRemove: beforeRemove,
+        onExpand: onExpand,
+
+        onClick: onClick,
+//                右键功能
+        onRightClick: onRightClick
+
+    }
+};
+//上传弹框树形目录(工作流目录)
+var setting1 = {
+    async: {
+        enable: true,
+        url:basePath+"/drag/work/selectZtree.do",
+        autoParam:["id", "name","pId","isParent"],
+        otherParam:{"otherParam":"zTreeAsyncTest"},
+        dataFilter: filter
+    },
+    view: {
+        // addHoverDom: addHoverDom,
+        // removeHoverDom: removeHoverDom,
+        showIcon: showIconForTree,
+        selectedMulti: false
+    },
+    edit: {
+        enable: true,
+        showRemoveBtn: false,
+        showRenameBtn: false
+    },
+    data: {
+        keep: {
+            parent:true,
+            leaf:true
+        },
+        simpleData: {
+            enable: true
+        }
+    },
+    callback: {
+        beforeDrag: beforeDrag
+        // beforeRename: beforeRename,
+
+    }
+};
+function showIconForTree(treeId, treeNode) {
+    return treeNode.level != 2;
+};
+var zNodes =nodeList;
+// var zNodes =[{id:null,pId:-1,name:'AA',isParent:true},{id:30,pId:null,name:'A1',isParent:true}
+//     ,{id:31,pId:30,name:'A2',isParent:true}];
+// var zNodes =[{id:'p2',pId:'p1',name:'AA',isParent:true},
+//     {id:'c2',pId:'p2',name:'A',isParent:false},
+//     {id:'c1',pId:'p2',name:'A1',isParent:false}];
+//  var zNodes =[
+// "{id:'p2',pId:'p1',name:'AA',isParent:true}",
+//     "{id:'c1',pId:'p1',name:'A1',isParent:false}"
+// ]
+// var zNodes =		[{id:'P3', pId:'0', name:"[exedit] 编辑功能 演示", open:false},
+//     {id:'301', pId:'P3', name:"拖拽 节点 基本控制", file:"exedit/drag"},
+//     {id:'302', pId:'P3', name:"拖拽 节点 高级控制", file:"exedit/drag_super"}]
+// ;
+//     [
+//     { id:1, pId:0, name:"模板根目录", open:true},
+//     { id:11, pId:1, name:"父节点11 - 折叠"},
+//     { id:111, pId:11, name:"叶子节点111"},
+//     { id:112, pId:11, name:"叶子节点112"},
+//     { id:113, pId:11, name:"叶子节点113"},
+//     { id:114, pId:11, name:"叶子节点114"},
+//     { id:12, pId:1, name:"父节点12 - 折叠"},
+//     { id:121, pId:12, name:"叶子节点121"},
+//     { id:122, pId:12, name:"叶子节点122"},
+//     { id:123, pId:12, name:"叶子节点123"},
+//     { id:124, pId:12, name:"叶子节点124"},
+//     { id:13, pId:1, name:"父节点13 - 没有子节点", isParent:true},
+// ];
+
+var zNodes1 =workFlowNodeList;
+
+//     [
+//     { id:1, pId:0, name:"父节点1 - 展开", open:true},
+//     { id:11, pId:1, name:"父节点11 - 折叠"},
+//     { id:111, pId:11, name:"叶子节点111",icon:null},
+//     { id:112, pId:11, name:"叶子节点112",icon:null},
+//     { id:113, pId:11, name:"叶子节点113",icon:null},
+//     { id:114, pId:11, name:"叶子节点114"},
+//     { id:12, pId:1, name:"父节点12 - 折叠"},
+//     { id:121, pId:12, name:"叶子节点121"},
+//     { id:122, pId:12, name:"叶子节点122"},
+//     { id:123, pId:12, name:"叶子节点123"},
+//     { id:124, pId:12, name:"叶子节点124"},
+//     { id:13, pId:1, name:"父节点13 - 没有子节点", isParent:true},
+// ];
+// var zNodes2=boxNodeList;
+console.log(zNodes);
+var log, className = "dark";
+//目录树异步加载后的过滤方法
+function filter(treeId, parentNode, childNodes) {
+    console.log(childNodes);
+    if (!childNodes) return null;
+   var aa  = JSON.stringify(childNodes.obj);
+    // childNodes.obj= childNodes.obj.replace(/\.n/g, '.');
+    // var bb = aa.replace(/\"/g, "");
+    var cc = JSON.parse(aa)
+    // for (var i=0; i<childNodes.obj.length;i++) {
+    // }
+
+    return cc;
+
+    // return JSON.stringify(childNodes.obj);
+}
+
+function beforeDrag(treeId, treeNodes) {
+    return false;
+}
+function onRemove(e, treeId, treeNode) {
+    showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+}
+function showLog(str) {
+    if (!log) log = $("#log");
+    log.append("<li class='"+className+"'>"+str+"</li>");
+    if(log.children("li").length > 8) {
+        log.get(0).removeChild(log.children("li")[0]);
+    }
+}
+function getTime() {
+    var now= new Date(),
+        h=now.getHours(),
+        m=now.getMinutes(),
+        s=now.getSeconds(),
+        ms=now.getMilliseconds();
+    return (h+":"+m+":"+s+ " " +ms);
+}
+
+var newCount = 1;
+
+
+function stopDefault( e ) {
+    if ( e && e.preventDefault )
+        e.preventDefault();
+    else {
+        window.event.returnValue = false;
+    }
+
+    return false;
+}
+//右键增加文件夹方法
+function add(e) {
+    hideRMenu();
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        isParent = e.data.isParent,
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var pid = treeNode.pId;
+    // 调用新建文件夹弹框
+    addFile();
+
+    var number = 0;
+    var numberT = 0;
+    $("#confirm").on('click', function  confirm() {
+        var name = $("#fileName").val();
+        if(name.length>20){
+            toastr.error("请书写小于20字符串的文件夹名称！");
+            $("#fileName").val("");
+        }else {
+            if (pid != -1) {
+                //添加模板分类
+                $.ajax({
+                    url: basePath + "/templateCategory/addTemplateCategory.do",
+                    type: 'POST',
+                    data: {"templateCategoryPid": treeNode.id, "templateCategoryIsParent": 1, "templateCategoryName": name},
+                    async: false,
+                    success: function (data) {
+                        var returndata = JSON.parse(data);
+                        if(returndata.code == '417'){
+                            toastr.error(returndata.msg);
+                          refreshNode()
+                        }else if(returndata.code == "200") {
+                            toastr.success(returndata.msg);
+                            refreshNode()
+                          window.location.reload();
+                        }
+                    }
+                });
+                addFileHide()
+            } else {
+                treeNode = zTree.addNodes(null, {
+                    id: (100 + newCount),
+                    pId: 0,
+                    isParent: false,
+                    name: "new node" + (newCount++)
+                });
+               // toastr.error("请先选择工作流！");
+                addFileHide()
+            }
+            // if (treeNode) {
+            //     zTree.editName(treeNode[0]);
+            //     addFileHide()
+            // } else {
+            //     alert("叶子节点被锁定，无法增加子节点");
+            //     addFileHide()
+            // }
+            // number++
+            // }
+            //设置工作流文件夹为空
+            $("#fileName").val("");
+        }
+    })
+
+
+};
+
+
+function remove(e) {
+    hideRMenu();
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    if (nodes.length == 0) {
+        // alert("请先选择一个节点");
+        $("#promptMsg").html("请先选择文件");
+        mesShow();
+        return;
+    }
+    if (nodes && nodes.length>0) {
+        if (nodes[0].children && nodes[0].children.length > 0) {
+            $('#deleteMsg').html('该文件夹不为空，确定要删除？');
+            delTemplateCategoryId(treeNode.id);
+        } else if(treeNode.isParent){
+            $('#deleteMsg').html('该文件夹可能不为空，确认要删除？');
+            delTemplateCategoryId(treeNode.id)
+        } else if(treeNode){
+            $('#deleteMsg').html('确认删除文件？');
+            deleteData(treeNode.id)
+        }
+    }
+};
+
+
+function removeHoverDom(treeId, treeNode) {
+    $("#addBtn_"+treeNode.tId).unbind().remove();
+};
+//        是否显示删除和重命名(不显示根节点的删除和重命名)
+// function showRemoveBtn(treeId, treeNode){
+//     return !(treeNode.level==0);
+// }
+// function showRenameBtn(treeId, treeNode){
+//     return !(treeNode.level==0);
+// }
+//不显示子节点icon
+function showIconForTree(treeId, treeNode){
+    return treeNode.isParent;
+}
+//		点击展开节点
+var curExpandNode = null;
+function beforeExpand(treeId, treeNode) {
+
+    var pNode = curExpandNode ? curExpandNode.getParentNode():null;
+    var treeNodeP = treeNode.parentTId ? treeNode.getParentNode():null;
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    for(var i=0, l=!treeNodeP ? 0:treeNodeP.children.length; i<l; i++ ) {
+        if (treeNode !== treeNodeP.children[i]) {
+            zTree.expandNode(treeNodeP.children[i], false);
+        }
+
+    }
+    while (pNode) {
+        if (pNode === treeNode) {
+            break;
+        }
+        pNode = pNode.getParentNode();
+    }
+    if (!pNode) {
+        singlePath(treeNode);
+    }
+    //删除创建模板的不可选择状态
+    $("a.creat_model").removeClass("haveCheckBox");
+}
+
+function singlePath(newNode) {
+    if (newNode === curExpandNode) return;
+
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        rootNodes, tmpRoot, tmpTId, i, j, n;
+
+    if (!curExpandNode) {
+        tmpRoot = newNode;
+        while (tmpRoot) {
+            tmpTId = tmpRoot.tId;
+            tmpRoot = tmpRoot.getParentNode();
+        }
+        rootNodes = zTree.getNodes();
+        for (i=0, j=rootNodes.length; i<j; i++) {
+            n = rootNodes[i];
+            if (n.tId != tmpTId) {
+                zTree.expandNode(n, false);
+            }
+        }
+    } else if (curExpandNode && curExpandNode.open) {
+        if (newNode.parentTId === curExpandNode.parentTId) {
+            zTree.expandNode(curExpandNode, false);
+        } else {
+            var newParents = [];
+            while (newNode) {
+                newNode = newNode.getParentNode();
+                if (newNode === curExpandNode) {
+                    newParents = null;
+                    break;
+                } else if (newNode) {
+                    newParents.push(newNode);
+                }
+            }
+            if (newParents!=null) {
+                var oldNode = curExpandNode;
+                var oldParents = [];
+                while (oldNode) {
+                    oldNode = oldNode.getParentNode();
+                    if (oldNode) {
+                        oldParents.push(oldNode);
+                    }
+                }
+                if (newParents.length>0) {
+                    zTree.expandNode(oldParents[Math.abs(oldParents.length-newParents.length)-1], false);
+                } else {
+                    zTree.expandNode(oldParents[oldParents.length-1], false);
+                }
+            }
+        }
+    }
+    curExpandNode = newNode;
+}
+
+function onExpand(event, treeId, treeNode) {
+    curExpandNode = treeNode;
+    if (treeNode.name == "模板分类" && treeNode.pId == null) {
+        var page = 1;
+        // var rowNum=$("#choose-num").text();
+        getFileData(page,treeNode.id, treeNode.name);
+    }
+    else if (treeNode.isParent == true) {
+        var page = 1;
+        getFileData(page, treeNode.id, treeNode.name);
+    }
+}
+
+function onClick(e,treeId, treeNode) {
+    var curDir=treeNode.curDir;
+    var page=1;
+    var rowCount=$("#choose-num").text();
+    // getFileData(page,curDir,rowCount);
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    zTree.expandNode(treeNode, null, null, null, true);
+}
+
+
+//        右键功能
+function onRightClick(event, treeId, treeNode) {
+    if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+        zTree.cancelSelectedNode();
+        showRMenu("root", event.clientX-240, event.clientY);
+    } else if(treeNode.level==0){//我的文件（第一级）
+        zTree.selectNode(treeNode);
+        showRMenu("root1", event.clientX-240, event.clientY);
+    }else if (treeNode && !treeNode.noR && !treeNode.isParent) {//文件
+        zTree.selectNode(treeNode);
+        showRMenu("node1", event.clientX-240, event.clientY);
+    }else if (treeNode && !treeNode.noR && treeNode.isParent) {//文件夹
+        zTree.selectNode(treeNode);
+        showRMenu("node", event.clientX-240, event.clientY);
+    }
+}
+function showRMenu(type, x, y) {
+    $("#rMenu ul").show();
+    if (type=="root") {
+        $("#rMenu").hide();
+    }else if(type=="root1"){
+        // $("#remove").removeClass("noEvent");
+        $("#rMenu").show();
+        $("#addParent").removeClass("noEvent");
+        $("#remove2").addClass("noEvent");
+        $("#edit").addClass("noEvent");
+        $("#creat").addClass("noEvent");
+        $("#remove").hide();
+        $("#remove2").show();
+    } else if(type=="node1"){
+        $("#rMenu").show();
+        $("#addParent").addClass("noEvent");
+        $("#remove").removeClass("noEvent");
+        $("#edit").removeClass("noEvent");
+        $("#creat").addClass("noEvent");
+        $("#remove").show();
+        $("#remove2").hide();
+    } else if(type=='node'){
+        $("#rMenu").show();
+        $("#addParent").removeClass("noEvent");
+        $("#remove2").removeClass("noEvent");
+        $("#edit").removeClass("noEvent");
+        $("#creat").removeClass("noEvent");
+        $("#remove2").show();
+        $("#remove").hide();
+    }
+    rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+
+    $("body").bind("mousedown", onBodyMouseDown);
+}
+function hideRMenu() {
+    $("#confirm").off('click');
+    if (rMenu) rMenu.css({"visibility": "hidden"});
+    $("body").unbind("mousedown", onBodyMouseDown);
+}
+function onBodyMouseDown(event){
+    if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+        rMenu.css({"visibility" : "hidden"});
+    }
+}
+
+function beforeRename(treeId, treeNode, newName) {
+    if (newName.length == 0||newName.trim().length==0) {
+        // alert("节点名称不能为空.");
+        $("#promptMsg").html("重命名不能为空");
+        mesShow();
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        setTimeout(function(){zTree.editName(treeNode)}, 10);
+        return false;
+    }else if (newName.length>20){
+        // alert("长度不能超过20个字符");
+        $("#promptMsg").html("字符长度不能超过20个");
+        mesShow();
+        return false;
+    }else{
+        var id=treeNode.id;
+        var newName=newName;
+        if(treeNode.name==newName){
+            toastr.warning("名称未做修改")
+        }else{
+            if (!treeNode.isParent){
+                //模板改名右键
+                $.ajax({
+                    url: basePath + "/template/updateTemplate.do",
+                    type: 'POST',
+                    data:{"templateId":id,"templateName":newName},
+                    success: function (data) {
+                        var returndata = JSON.parse(data);
+                        if(returndata.code == '417'){
+                            toastr.error(returndata.msg);
+                            refreshNode()
+                        }else if(returndata.code == "200") {
+                            toastr.success(returndata.msg);
+                            refreshNode()
+                        }
+                    },
+                });
+            }else{
+                //模板分类改名
+                $.ajax({
+                    url:basePath+"/templateCategory/updateTemplateCategory.do",
+                    type: 'POST',
+                    data: {"templateCategoryId":id,"templateCategoryName":newName},
+                    success: function (data) {
+                        var returndata = JSON.parse(data);
+                        if(returndata.code == '417'){
+                            toastr.error(returndata.msg);
+                            refreshNode()
+                        }else if(returndata.code == "200") {
+                            toastr.success(returndata.msg);
+                            refreshNode()
+                        }
+                    }
+
+                });
+            }
+
+        }
+        return true;
+    }
+    return true;
+}
+
+function beforeRemove(treeId, treeNode) {
+    className = (className === "dark" ? "":"dark");
+    showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    zTree.selectNode(treeNode);
+    return true;
+}
+//        重命名 通过edit方法来自动调用beforeReName方法；
+function edit() {
+    $("#rMenu").hide();
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    if (nodes.length == 0) {
+        // alert("请先选择一个节点");
+        $("#promptMsg").html("请先选择文件");
+        mesShow();
+        return;
+    }
+
+    zTree.editName(treeNode);
+
+
+};
+
+//添加自定义控件
+function addDiyDom(treeId, treeNode) {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        isParent =treeNode.isParent;
+    var aObj = $("#" + treeNode.tId + "_a");
+    if ($("#diyBtn_"+treeNode.id).length>0) return;
+    if(isParent&&!treeNode.level==0){
+        var editStr = "<span class='button diy' id='diyBtn_" + treeNode.tId
+            + "' title='diy node' onfocus='this.blur();'></span>";
+        aObj.append(editStr);
+    }
+    var btn = $("#diyBtn_"+treeNode.tId);
+    console.log(btn);
+    if (btn) btn.bind("click", function(){
+        alert(123)
+
+    });
+};
+//批量删除提示框
+function deleteAllTemplate() {
+    var length=$("input:checked:not(.group-checkable)").length;
+    if (length==0){
+        $('#deleteConfirm').addClass('haveCheckBox');
+        toastr.warning("请选择要删除的模板");
+    }else {
+        $('#deleteMsg2').html("确认删除已选中模板吗？");
+        batchDeleteData();
+    }
+}
+//确认批量删除
+function delete2() {
+    var template = new Array();
+    var choices = $("input[name='checkbox']:checked");
+    if(choices.length == 0){
+        toastr.warning("请选择要删除数据");
+        return;
+    }
+    var tmp = {};
+    for (var i = 0; i < choices.length; i++) {
+        var $that = $(choices[i]);
+        var ids = $that.attr('ids');
+        template.push(ids)
+    }
+    tmp.ids = template;
+    var data = tmp.ids.toString();
+    $.ajax({
+        url:basePath+"/template/delTemplate.do",
+        type: 'POST',
+        dataType: "json",
+        data: {"templateIds":data},
+        success: function (data) {
+            console.log(data);
+            switch (data.code){
+                case 417:toastr.error(data.msg) ;
+                    break;
+                case 200:toastr.success(data.msg);
+                    window.location.reload();
+                    break;
+            }
+
+        }
+    });
+    batchDeleteHide();
+}
+// 删除单个模板
+function deleteData1(id) {
+    $("#dateId").val(id);
+    $('#deleteData1').modal('show');
+}
+//确认删除单个模板
+function delete1() {
+    var data = $("#dateId").val();
+    $.ajax({
+        url:basePath+"/template/delTemplate.do",
+        type: 'POST',
+        dataType: "json",
+        data: {"templateIds":data},
+        success: function (data) {
+            console.log(data);
+            switch (data.code){
+                case 417:toastr.error(data.msg) ;
+                    break;
+                case 200:toastr.success(data.msg);
+                    window.location.reload();
+                    break;
+            }
+
+        }
+    });
+    $('#deleteData1').modal('hide');
+}
+
+// 批量删除模板提示框
+function batchDeleteData() {
+
+    $('#deleteData2').modal('show');
+}
+function batchDeleteHide() {
+    $('#deleteData2').modal('hide');
+}
+//右键删除模板
+function deleteData(id) {
+    $("#delTemplateId").val(id);
+    $('#deleteData').modal('show');
+}
+function delTemplateCategoryId(id) {
+    $("#delTemplateCategoryId").val(id);
+    $('#deleteData').modal('show');
+}
+//右键删除模板
+function hideDeleteData() {
+    var delTemplateId = $("#delTemplateId").val();
+    var delTemplateCategoryId = $("#delTemplateCategoryId").val();
+    if(delTemplateId){
+        $.ajax({
+            url:basePath+"/template/delTemplate.do",
+            type: 'POST',
+            dataType: "json",
+            data: {"templateIds":delTemplateId},
+            success: function (data) {
+                console.log(data);
+                switch (data.code){
+                    case 417:toastr.error(data.msg) ;
+                        break;
+                    case 200:toastr.success(data.msg);
+                        window.location.reload();
+                        break;
+                }
+
+            }
+        });
+    }
+    if(delTemplateCategoryId){
+        $.ajax({
+            url:basePath+"/templateCategory/delTemplateCategory.do",
+            type: 'POST',
+            dataType: "json",
+            data: {"templateCategoryIds":delTemplateCategoryId},
+            success: function (data) {
+                console.log(data);
+                switch (data.code){
+                    case 417:toastr.error(data.msg) ;
+                        break;
+                    case 200:toastr.success(data.msg);
+                        window.location.reload();
+                        break;
+                }
+
+            }
+        });
+    }
+
+    $('#deleteData').modal('hide');
+}
+function creat() {
+    hideRMenu();
+    addTemplate();
+}
+//新建模板
+function addTemplate() {
+    $("#basic").modal('show');
+}
+//查看模板
+function lookTemplate(templateId) {
+    $.ajax({
+        url:basePath+"/template/selectAllByAnyThing.do",
+        type: 'POST',
+        dataType: "json",
+        data:{"templateId":templateId},
+        success:function(json){
+            var templateName = json.rows[0].templateName;
+            var templateDescription = json.rows[0].templateDescription;
+            var templateKeyword = json.rows[0].templateKeyword;
+            var templatePictureName = json.rows[0].templatePictureName;
+            $("#cktemplateName").val(templateName);
+            $("#cktemplateDescription").val(templateDescription);
+            $("#cktemplateKeyword").val(templateKeyword);
+            $("#cktemplatePictureName").val(templatePictureName);
+        }
+    });
+
+    $("#lookTemplate").modal('show');
+}
+//编辑模板
+function editTemplate(templateId) {
+    $.ajax({
+        url:basePath+"/template/selectAllByAnyThing.do",
+        type: 'POST',
+        dataType: "json",
+        data:{"templateId":templateId},
+        success:function(json){
+            var templateName = json.rows[0].templateName;
+            var templateDescription = json.rows[0].templateDescription;
+            var templateKeyword = json.rows[0].templateKeyword;
+            var templatePictureDirectory = json.rows[0].templatePictureDirectory;
+            var templatePictureName = json.rows[0].templatePictureName;
+            $("#templateName").val(templateName);
+            $("#templateDescription").val(templateDescription);
+            $("#templateKeyword").val(templateKeyword);
+            $("#updateFileName1").val(templatePictureName);
+            $("#templateId").val(templateId);
+        }
+    });
+
+    $("#editTemplate").modal('show');
+}
+
+//目录执行删除操作
+function realDelete() {
+    $('#deleteData').modal('hide');
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var curDir=treeNode.curDir;
+    setTimeout("toastr.success('删除成功');",500);
+    setTimeout("refreshParentNode();",500);
+}
+
+/**
+ * 刷新当前节点
+ */
+function refreshNode() {
+    /*根据 treeId 获取 zTree 对象*/
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        type = "refresh",
+        silent = false,
+        /*获取 zTree 当前被选中的节点数据集合*/
+        nodes = zTree.getSelectedNodes();
+        if(nodes.length!=0){
+            /*强行异步加载父节点的子节点。[setting.async.enable = true 时有效]*/
+            zTree.reAsyncChildNodes(nodes[0], type, silent);
+        }
+
+}
+
+/**
+ * 刷新当前选择节点的父节点
+ */
+function refreshParentNode() {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        type = "refresh",
+        silent = false,
+        nodes = zTree.getSelectedNodes();
+    /*根据 zTree 的唯一标识 tId 快速获取节点 JSON 数据对象*/
+
+    if(nodes.length==0){
+        // var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        // var nodes = treeObj.getNodeByParam("id", 1, null);
+        // zTree.reAsyncChildNodes(nodes, "refresh");
+    }else {
+        /*选中指定节点*/
+        var parentNode = zTree.getNodeByTId(nodes[0].parentTId);
+        zTree.selectNode(parentNode);
+        zTree.reAsyncChildNodes(parentNode, type, silent);
+    }
+
+}
+
+getFileData(1,null,"模板分类");
+// selectTempalateByName(null);
+function getFileData(page,id,name) {
+    var tmp = {};
+    tmp.page = page;
+    tmp.id=id;
+    tmp.name=name;
+    $.ajax({
+        url:basePath+"/template/selectAllByAnyThing.do",
+        type: 'POST',
+        dataType: "json",
+        data:{"page":page,"tcid":id,"templateCategoryName":name},
+        /*beforeSend:function(){
+            $("#tbodyList").append("<span id='loading'>loading...</span>");//显示加载动画
+        },*/
+        success:function(json){
+            $("#templateTbody").empty();//清空数据区
+            curPage = json.curPage; //当前页
+            totalPage = json.totalPage; //总页数
+           $("#totalpage").val(totalPage);
+
+            var templatelist = "";
+            var list = json.rows;
+            if (list==""){
+                $("#totalpage").val(1);
+                templatelist +="   <tr class='odd gradeX'>"
+                    +" <td></td>"
+                    +" <td>- -</td>"
+                    +" <td>- -</td>"
+                    +" </tr>";
+            }else {
+                $.each(list,function(index,array){ //遍历json数据列
+                    console.log(list[index]);
+                    templatelist +="<tr class='odd gradeX'>"
+                        +"<td>"
+                        +"<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                        +"<input type='checkbox' name = 'checkbox' class='checkboxes' ids='" + array['templateId'] + "' />"
+                        +"<span></span>"
+                        +"</label>"
+                        +"</td>"
+                        +"<td >"
+                        +"<div class='fileType'>"
+                        +"<i class='fa fa-file-code-o'></i>"
+                        + "</div>"
+                        + "<div class='fileContent'>"
+                        +"<div class='fileTitle'>"
+                        + "<a href='"+basePath+"/drag/dispatcher/templateEditor.do?id="+array['templateId']+"' >" + array['templateName'] + "</a>"
+                        +"</div>"
+                        +"<div class='fileSize'>由 "+array['userName']+"  创建</div>"
+                        + "</div>"
+                        +"</td>"
+                        +"<td class=\"table_three_td_color\">"
+                        +""+array['workFlowName']+""
+                        +"</td>"
+                        +"<td>"
+                        +"<div class='actions'>"
+                        +"<a href='javascript:;' data-toggle='modal' onclick=\"lookTemplate(" + array['templateId'] + ")\" title=\"查看模板\">"
+                        + "<i class='icon iconfont icon-chakan'></i>"
+                        +"</a>"
+                        +"<a href='javascript:;' data-toggle='modal' onclick=\"editTemplate(" + array['templateId'] + ")\" title='编辑模板'>"
+                        +"<i class='icon iconfont icon-bianji2'></i>"
+                        +"</a>"
+                        +"<a href='javascript:;' onclick=\"deleteData1(" + array['templateId'] + ")\"  title='删除模板'>"
+                        +"<i class='icon iconfont icon-cuowuguanbi'></i>"
+                        + "</a>"
+                        + "</div>"
+                        + "<span> </span>"
+                        + "</td>"
+                        +"<td>"
+                        + "" + array['templateUpdateTimes'] + ""
+                        + "</td>"
+                        + "</tr>";
+                });
+            }
+
+            $("#templateTbody").append(templatelist);
+        },
+        complete:function(){ //生成分页条
+            Paginator();
+            // fun();
+        },
+        // error:function(){
+        //     // alert("数据加载失败");
+        //     $("#promptMsg").html("数据加载失败");
+        //     mesShow();
+        // }
+    });
+
+}
+
+
+//        新建文件夹弹框显示
+function addFile() {
+    $("#fileName").val("");
+    $("#addFile").modal('show')
+}
+// 新建文件夹弹框隐藏
+function addFileHide() {
+    $("#confirm").off('click');
+    $("#addFile").modal('hide')
+}
+//提示信息弹框
+function mesShow() {
+    $("#prompt").modal('show')
+}
+function mesHide() {
+    $("#prompt").modal('hide')
+}
+//添加模板的上传文件获取文件名
+$('#file').change(function(){
+    var file = $("#file").val();
+    var fileName = getFileName(file);
+    $('#updateFileName').val(fileName);
+});
+//编辑模板上传文件获取文件名
+$('#fileEdit').change(function(){
+    var file = $("#fileEdit").val();
+    var fileName = getFileName(file);
+    $('#updateFileName1').val(fileName);
+});
+function getFileName(o){
+    var pos=o.lastIndexOf("\\");
+    return o.substring(pos+1);
+}
+
+// 空格过滤
+function removeAllSpace(str) {
+    return str.replace(/\s+/g, "");
+}
+
+
+// 弹框目录树滚动条
+$(window).on("load", function () {
+//    $.mCustomScrollbar.defaults.theme="dark";
+    $("body .treeDeomBox").mCustomScrollbar({
+        theme: "dark-thin",
+        axis: "y",
+        setLeft: 0,
+        scrollbarPosition: "inside"
+    });
+    // zTree添加滚动条
+    $("body #workTreeScroll").mCustomScrollbar({
+        theme: "dark-thin",
+        axis:"yx",
+        setLeft: 0,
+        scrollbarPosition: "inside",
+        scrollInertia: 1,
+        autoDraggerLength: false,
+        alwaysShowScrollbar: 0,
+        autoHideScrollbar:true,
+        autoExpandScrollbar:false
+    });
+});
+//创建新模板,模板编辑说明，也是确认按钮，需要验证
+function addTemplateExplainEdit() {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo1"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var zTreeMB = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodesMB = zTreeMB.getSelectedNodes(),
+        treeNodeMB = nodesMB[0];
+
+       console.log(nodes)
+       console.log(nodesMB)
+
+    if (nodes.length == 0) {
+        // alert("请先选择一个节点");
+        $(".selectMag").html("请先选择一条工作流");
+        return;
+    }
+    if(treeNode.isParent==true){
+        $(".selectMag").html("请先选择一条工作流")
+    }else {
+        var form = new FormData(document.getElementById("form_sample_1"));
+        var templatePictureDirectory = $("#file").val();
+        form.append('imageFile',templatePictureDirectory);
+        form.append('flowId',treeNode.id);
+        form.append('tcid',treeNodeMB.id);
+        var idtemp;
+        $.ajax({
+            url: basePath + "/template/insertTemplate.do",
+            type: 'POST',
+            data:form,
+            processData:false,
+            contentType:false,
+            success: function (data) {
+                var returndata = JSON.parse(data);
+                if(returndata.code == '417'){
+                    toastr.error(returndata.msg);
+                    refreshNode()
+                }else if(returndata.code == "200") {
+                    toastr.success(returndata.msg);
+                    idtemp = returndata.obj;
+                    window.location.href=basePath+"/drag/dispatcher/templateEditor.do?id="+idtemp+"";
+                    refreshNode()
+                }
+            },
+            complete:function(){
+                //进入富文本编辑器
+                $("#basic").modal('hide');
+
+            },
+        });
+
+
+    }
+
+}
+//
+function templateExplainEdit() {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo3"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var zTreeMB = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodesMB = zTreeMB.getSelectedNodes(),
+        treeNodeMB = nodesMB[0];
+
+       console.log(nodes)
+       console.log(nodesMB)
+
+        var form = new FormData(document.getElementById("editorForm"));
+        var templatePictureDirectory = $("#fileEdit").val();
+        var templateId = $("#templateId").val();
+        form.append('imageFile',templatePictureDirectory);
+        form.append('flowId',treeNode.id);
+        form.append("templateId",templateId);
+        $.ajax({
+            url: basePath + "/template/updateTemplate.do",
+            type: 'POST',
+            data:form,
+            processData:false,
+            contentType:false,
+            success: function (data) {
+                var returndata = JSON.parse(data);
+                if(returndata.code == '417'){
+                    toastr.error(returndata.msg);
+                    refreshNode()
+                }else if(returndata.code == "200") {
+                    toastr.success(returndata.msg);
+                    window.location.href=basePath+"/drag/dispatcher/templateEditor.do?id="+templateId+"";
+                    refreshNode()
+                }
+            },
+        });
+
+
+
+}
+//弹框验证
+function templateNameText() {
+    var templateName=$("#templateName1").val()
+    if(templateName==""){
+        $("#templateName1 + .title_text").remove();
+        $("#templateName1 ").after(" <p class='title_text'>* 不能为空哦</p>");
+    }else {
+        $("#templateName1 + .title_text").remove();
+    }
+
+}
+//分页
+function Paginator() {
+    var fileTotal = $("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            if (num != curPage) {
+                // var rowNum = $("#choose-num").text();
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                    nodes = zTree.getSelectedNodes(),
+                    treeNode = nodes[0];
+                // getFileData(num,rowNum);
+                getFileData(num);
+
+            }
+        }
+    });
+}
+
+//搜索
+function selectTempalateByName(page) {
+    var TempalateName = $("#searchName").val();
+    var zTreeMB = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodesMB = zTreeMB.getSelectedNodes(),
+        treeNodeMB = nodesMB[0];
+    // console.log(treeNodeMB)
+    $.ajax({
+        url: basePath + "/template/selectAllByAnyThing.do",
+        type: 'POST',
+        dataType: "json",
+        // data: {"page": page,"templateName": TempalateName},
+        data: {"page": page,"templateName": TempalateName,"templateCategoryName":treeNodeMB.name},
+        success: function (json) {
+            $("#templateTbody").empty();//清空数据区
+            curPage = json.curPage; //当前页
+            totalPage = json.totalPage; //总页数
+            $("#totalpage").val(totalPage);
+            var rightPage = "";
+            var list = json.rows;
+            if (list==""){
+                $("#totalpage").val(1);
+                rightPage= " <tr class='odd gradeX'>" +
+                    "<td></td>" +
+                    "<td>- -</td>" +
+                    "<td>- -</td>" +
+                    "<td></td>" +
+                    "<td>- -</td>" +
+                    "</tr>";
+            }else{
+                $.each(list, function (index, array) { //遍历json数据列
+                    rightPage +="<tr class='odd gradeX'>"
+                        +"<td>"
+                        +"<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                        +"<input type='checkbox' name = 'checkbox' class='checkboxes'  />"
+                        +"<span></span>"
+                        +"</label>"
+                        +"</td>"
+                        +"<td >"
+                        +"<div class='fileType'>"
+                        +"<i class='fa fa-file-code-o'></i>"
+                        + "</div>"
+                        + "<div class='fileContent'>"
+                        +"<div class='fileTitle'>"
+                        // + "<a href='/drag/dispatcher/templateEditor.do?id=50057' >" + array['templateName'] + "</a>"
+                        + "<a href='"+basePath+"/drag/dispatcher/templateEditor.do?id="+array['templateId']+"' >" + array['templateName'] + "</a>"
+                        +"</div>"
+                        +"<div class='fileSize'>由 "+array['userName']+"  创建</div>"
+                        + "</div>"
+                        +"</td>"
+                        +"<td class=\"table_three_td_color\">"
+                        +""+array['workFlowName']+""
+                        +"</td>"
+                        +"<td>"
+                        +"<div class='actions'>"
+                        +"<a href='javascript:;' data-toggle='modal' onclick=\"lookTemplate(" + array['templateId'] + ")\" title=\"查看模板\">"
+                        + "<i class='icon iconfont icon-chakan'></i>"
+                        +"</a>"
+                        +"<a href='javascript:;' data-toggle='modal' onclick=\"editTemplate(" + array['templateId'] + ")\" title='编辑模板'>"
+                        +"<i class='icon iconfont icon-bianji2'></i>"
+                        +"</a>"
+                        +"<a href='javascript:;' onclick=\"deleteData1(" + array['templateId'] + ")\"  title='删除模板'>"
+                        +"<i class='icon iconfont icon-cuowuguanbi'></i>"
+                        + "</a>"
+                        + "</div>"
+                        + "<span> </span>"
+                        + "</td>"
+                        +"<td>"
+                        + "" + array['templateUpdateTimes'] + ""
+                        + "</td>"
+                        + "</tr>";
+                });
+            }
+
+            $("#templateTbody").html(rightPage);
+        },
+        complete: function () { //生成分页条
+            PaginatorByName();
+        },
+
+        error: function () {
+            $("#promptMsg").html("数据加载失败");
+            mesShow();
+        }
+
+    })
+}
+//搜索分页
+function PaginatorByName() {
+    var fileTotal = $("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            if (num != curPage) {
+                // var rowNum = $("#choose-num").text();
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                    nodes = zTree.getSelectedNodes(),
+                    treeNode = nodes[0];
+                selectTempalateByName(num);
+
+            }
+        }
+    });
+}
+
+

@@ -1,0 +1,70 @@
+.modal_body{
+    width: 100%;
+    /*height: 800px;*/
+    background-color: #ffffff;
+    box-shadow: 0 0 5px #dfe3e5;
+    border-radius: 5px!important;
+    border: 1px solid #d0e0e4;
+    margin-top: 28px;
+}
+.modal_body_content{
+    width: 94%;
+    height: 92%;
+    margin: 30px 44px;
+}
+.title_name{
+    float: left;
+    color: #1bbc9b;
+    font-weight: 400;
+}
+.title_name1{
+    color: #1bbc9b;
+    font-weight: 400;
+}
+.lookWorkFlow{
+    float: right;
+    background: #1bbc9b;
+    color: #ffffff;
+    padding: 3px 20px;
+    border: none;
+    border-radius: 4px;
+}
+.creat_model{
+    color: #ffffff;
+}
+.text_description{
+    color: #64848e;
+    font-size: 12px;
+}
+.margin_top_bottom{
+    margin: 15px 0;
+}
+.text_url{
+    padding-left: 10px;
+    color: #64848e;
+    font-size: 14px;
+}
+.example_table{
+    display: inline-block;
+    padding-left: 100px;
+}
+.display_block{
+    display: inline-block;
+}
+.example_table thead th,.example_table tbody tr td{
+    color: #64848e;
+    border:2px solid #f0f3f4;
+    text-align:center;
+
+}
+body .example_table .table td,body .example_table .table th {
+    font-weight: 100;
+    width: 320px;
+}
+.askBody{
+    width: 100%;
+    height: 400px;
+    background: #ecf0f1;
+    border-radius: 5px!important;
+    border: 1px solid #d0e0e4;
+}

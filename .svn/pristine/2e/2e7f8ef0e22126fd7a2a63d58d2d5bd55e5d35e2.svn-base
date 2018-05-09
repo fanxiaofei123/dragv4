@@ -1,0 +1,27 @@
+package org.com.drag.service;
+
+import org.com.drag.model.DataMining;
+import org.com.drag.model.DataMiningCategory;
+
+import java.util.List;
+
+public interface DataMiningCategoryService extends BaseService<DataMiningCategory> {
+
+    List<DataMiningCategory> selectAll(DataMiningCategory dataMiningCategory);
+
+    int updateCategory(DataMiningCategory dataMiningCategory);
+
+    int deleteCategory(Integer id);
+
+    DataMiningCategory getOneCategory(Integer id);
+
+    DataMiningCategory getACategory(Integer id);
+
+    int insertMiningCategory(DataMiningCategory dataMiningCategory);
+
+    int insertMining(DataMining dataMining);
+
+    List<DataMiningCategory> selectZtree(Integer userid, Integer pId, Integer isParent);
+
+    List<DataMiningCategory> selectDataMiningCategory(DataMiningCategory dataMiningCategory);
+}

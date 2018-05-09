@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.TipRecordDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.TipRecord" >
+    <id column="tip_record_id" property="tipRecordId" jdbcType="INTEGER" />
+    <result column="tip_config_id" property="tipConfigId" jdbcType="INTEGER" />
+    <result column="tip_record_status" property="tipRecordStatus" jdbcType="SMALLINT" />
+    <result column="tip_record_send_time" property="tipRecordSendTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="tipConfigId != null" >
+         and tip_config_id = #{tipConfigId}
+      </if>
+      <if test="tipRecordStatus != null" >
+         and tip_record_status = #{tipRecordStatus}
+      </if>
+      <if test="tipRecordSendTime != null" >
+         and tip_record_send_time = #{tipRecordSendTime}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    tip_record_id AS tipRecordId, tip_config_id AS tipConfigId, tip_record_status AS tipRecordStatus, 
+    tip_record_send_time AS tipRecordSendTime
+  </sql>
+  <resultMap  id="ResultMapWithBLOBs" type="org.com.drag.model.TipRecord" extends="BaseResultMap" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tip_record
+    where tip_record_id = #{tipRecordId}
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    update tip_record set is_deleted = 1 
+    where tip_record_id = #{tipRecordId}
+  </update>
+  <insert id="insert" parameterType="org.com.drag.model.TipRecord" >
+    insert into tip_record (tip_config_id, tip_record_status, tip_record_send_time)
+    values (#{tipConfigId}, #{tipRecordStatus}, #{tipRecordSendTime})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.TipRecord" >
+    insert into tip_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tipRecordId != null" >
+        tip_record_id,
+      </if>
+      <if test="tipConfigId != null" >
+        tip_config_id,
+      </if>
+      <if test="tipRecordStatus != null" >
+        tip_record_status,
+      </if>
+      <if test="tipRecordSendTime != null" >
+        tip_record_send_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tipRecordId != null" >
+        #{tipRecordId},
+      </if>
+      <if test="tipConfigId != null" >
+        #{tipConfigId},
+      </if>
+      <if test="tipRecordStatus != null" >
+        #{tipRecordStatus},
+      </if>
+      <if test="tipRecordSendTime != null" >
+        #{tipRecordSendTime},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.TipRecord" >
+    update tip_record
+    <set >
+      <if test="tipConfigId != null" >
+        tip_config_id = #{tipConfigId},
+      </if>
+      <if test="tipRecordStatus != null" >
+        tip_record_status = #{tipRecordStatus},
+      </if>
+      <if test="tipRecordSendTime != null" >
+        tip_record_send_time = #{tipRecordSendTime},
+      </if>
+    </set>
+    where tip_record_id = #{tipRecordId}
+  </update>
+  <select id="selectPage" resultMap="BaseResultMap" parameterType="org.com.drag.model.TipRecord" >
+    select 
+    <include refid="Base_Column_List" />
+    from tip_record
+	<include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectCount" resultType="java.lang.Long" parameterType="org.com.drag.model.TipRecord" >
+    select count(id) from tip_record
+	<include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectByMapPage" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from tip_record
+	<include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectByMapCount" resultType="java.lang.Long" parameterType="java.util.Map" >
+    select count(id) from tip_record
+	<include refid="Example_Where_Clause" />
+  </select>
+  <insert id="batchInsert" parameterType="java.util.List" >
+    insert into tip_record (tip_record_id, 
+      tip_config_id, tip_record_status, tip_record_send_time)
+    values 
+ <foreach collection="list" item="item" index="index" separator="," >   
+(#{item.tipRecordId}, 
+      #{item.tipConfigId}, #{item.tipRecordStatus}, #{item.tipRecordSendTime})
+ </foreach> 
+  </insert>
+  <update id="batchDelete" parameterType="java.util.List" >
+    UPDATE  tip_record set is_deleted = 1 WHERE id IN 
+	<foreach collection="list" item="ids"  open="(" separator="," close=")">     
+		#{ids}
+	</foreach>
+  </update>
+  <!--模糊查询所有-->
+  <select id="selectAll" parameterType="org.com.drag.model.TipRecord" resultType="org.com.drag.model.TipRecord">
+    SELECT tc.tip_config_content as tipContent,tr.tip_record_id AS tipRecordId, tr.tip_config_id AS tipConfigId, tr.tip_record_status AS tipRecordStatus, tr.tip_record_send_time AS tipRecordSendTime,
+    sj.sch_job_name AS schJobName, tc.tip_config_name AS tipConfigName, tc.tip_config_receiver AS tipConfigReceiver,
+    tc.tip_config_send_type AS tipConfigSendType, tc.tip_config_type AS tipConfigType
+    from tip_record tr lEFT JOIN tip_config tc  ON tr.tip_config_id = tc.tip_config_id LEFT JOIN scheduler_job sj on sj.sch_job_id = tc.sch_job_id
+    LEFT JOIN work_flow  wf on wf.id = sj.sch_job_wf_id LEFT JOIN work_space ws on ws.id = wf.workspid
+    LEFT JOIN `user`  us on us.id = ws.userid
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="tipRecordId != null" >
+        and tr.tip_record_id = #{tipRecordId}
+      </if>
+      <if test="tipConfigId != null" >
+        and tr.tip_config_id = #{tipConfigId}
+      </if>
+      <if test="tipConfigSendType != null" >
+        and tc.tip_config_send_type = #{tipConfigSendType}
+      </if>
+      <if test="tipConfigReceiver != null" >
+        and tc.tip_config_receiver = #{tipConfigReceiver}
+      </if>
+      <if test="tipRecordStatus != null" >
+        and tr.tip_record_status = #{tipRecordStatus}
+      </if>
+      <if test="tipRecordSendTime != null" >
+        and tr.tip_record_send_time = #{tipRecordSendTime}
+      </if>
+      <if test="tipConfigType != null" >
+        and tc.tip_config_type = #{tipConfigType}
+      </if>
+      <if test="loginName != null" >
+        and us.loginname  = #{loginName}
+      </if>
+      <if test="inputName != null and inputName!=''" >
+        and concat(sj.sch_job_name,tc.tip_config_name) like "%"#{inputName}"%"
+      </if>
+      <if test="startTime !=null and startTime !='' and endTime !=null and endTime !=''">
+       and tr.tip_record_send_time BETWEEN #{startTime} AND  #{endTime}
+      </if>
+    </trim>
+    order by tr.tip_record_send_time DESC
+  </select>
+  <select id="selectAllCount" resultType="java.lang.Long" >
+    select count(id) from tip_record
+	 where is_deleted=0
+  </select>
+</mapper>

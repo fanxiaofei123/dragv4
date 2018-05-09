@@ -1,0 +1,176 @@
+/*搜索框*/
+.search-common{
+    width: 242px;
+}
+#addWorkDetails .form-group textarea{
+    height: 100px;
+}
+.treeDeomBox{
+    position: relative;
+    /*width: 100%;*/
+    height: 200px;
+    border: 1px solid #dfe3e9;
+    border-radius: 5px;
+}
+.dataList .table-hover > #flowWorkTbody2 .gradeX .actions{
+    position: absolute;
+    width: 90px;
+    left: -100px;
+    color: #fff;
+    display: none;
+
+}
+.line{
+    color: #dfe3e9;
+    padding: 0 18px;
+    font-size: 18px;
+}
+.page-bar div span:first-child{
+    font-size: 16px;
+    /*color: #64848e;*/
+    letter-spacing: 1px;
+}
+
+.page-bar div i{
+    font-size: 20px;
+    margin: 0 5px;
+}
+.page-bar div .creat_model{
+    position: relative;
+    bottom: -6px;
+    text-align: left;
+}
+.page-bar div .creat_model>span span{
+    position: absolute;
+    color: #fff;
+}
+.page-bar div .creat_model>span{
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    left: 20px;
+}
+.haveCheckBox{
+    background-color: #abbcc4!important;
+    pointer-events: none;
+}
+.haveCheckIcon{
+    color: #abbcc4!important;
+    pointer-events: none;
+}
+.iconfont{
+    font-size: 12px;
+}
+.table_three_td_color{
+    color: #1bbc9b;
+}
+.modal .modal-body .form-group  .updateFile{
+    border-bottom-right-radius: inherit !important;
+    border-top-right-radius: inherit !important;
+
+}
+.l-upimg{
+    position: relative;
+    max-width: 40px;
+    max-height: 40px;
+    background-color: #00bb9b;
+    overflow: hidden;
+}
+.l-upimg .icon-wenjianjia1{
+    color: #ffffff;
+}
+.l-upimg input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+.modal .modal-body .form-group .icon-wenjianjia1 input{ opacity:0; width: 40px; height: 40px}
+.dataList .table-hover>tbody>tr:hover td, .dataList table tbody tr:hover td .fileSize, .dataList  table tbody tr:hover td .fileType, .dataList  table tbody tr:hover td .fileContent .fileTitle a {
+    color: #fff!important;
+    border-right: none;
+}
+.dataList .portlet-body table tbody tr td .actions{
+    text-align: right;
+    padding-right: 30px;
+}
+body .dataList .portlet-body table tbody tr td .actions a{
+    color: #fff!important;
+    padding-left: 10px; ;
+}
+body .dataList .portlet-body table tbody tr td,.dataList .portlet-body table tbody tr td .fileContent .fileTitle a {
+    font-weight:normal;
+}
+body .dataList .portlet-body table tbody tr td .actions a:hover {
+    color: #ffffff;
+}
+body .dataList .portlet-body table thead th .icon-xiajian{
+   font-size: 12px;
+}
+.updateDrawLabel{
+    position: relative;
+}
+.updateDrawLabel span{
+    position: absolute;
+    left: -7px;
+}
+/*重要的提示信息*/
+.required{
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+.form-group{
+    position: relative;
+}
+.noClickBack{
+    pointer-events: none;
+    border: 1px solid;
+    border-color: #d7dedf!important;
+    background: #f2f8fa;
+}
+/*弹框的验证样式*/
+.portlet > .portlet-body div .title_text{
+    margin: 10px 0 0 0;
+    padding-left: 10px;
+    color: #f98937;
+
+}
+    /*查看文档编辑示例的样式*/
+.content_example{
+    width: 100%;min-height: 800px;background-color: #ffffff;
+    box-shadow: 0 0 5px #dfe3e5;
+    border-radius: 5px!important;
+    border: 1px solid #d0e0e4;
+    margin-top: 30px;
+}
+.content_example_text{
+    width: 1000px;margin:30px auto;min-height: 800px;
+}
+.example_title{
+    display: inline-block;
+    padding: 10px 0;
+    color: #1bbc9b;
+}
+.example_des{
+    margin: 10px 0;
+    line-height: 1.6;
+    color: #64848e;
+}
+.example_table thead th,.example_table tbody tr td{
+    color: #64848e;
+    border:2px solid #f0f3f4;
+    text-align:center;
+
+}
+body .example_table .table td,body .example_table .table th {
+    font-weight: 100;
+}
+.example_des_bottom{
+    margin-bottom: 20px;
+}
+body .modal-dialog .modal-body .form-group textarea{
+    outline: none;
+}
+
+

@@ -1,0 +1,696 @@
+package org.com.drag.web.controller;
+
+
+import org.apache.ibatis.jdbc.Null;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.com.drag.common.util.Constants;
+import org.com.drag.common.util.StringUtils;
+import org.com.drag.model.*;
+import org.com.drag.service.*;
+import org.com.drag.service.oozie.api.IHdfsApi;
+import org.com.drag.service.oozie.bean.FileInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * Created by cdyoue on 2016/11/8.
+ */
+@Controller
+@RequestMapping("drag/dispatcher")
+public class DispatcherController{
+
+    @Autowired
+    private TemplateCategoryService templateCategoryService;
+    @Autowired
+    private TemplateService templateService;
+    @Autowired
+	private WorkSpaceService workSpaceService;
+	@Autowired
+	private WorkFlowService workFlowService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private UploadHistoryService uploadHistroyService;
+	@Autowired
+	private CalculationHistoryService  calculationHistoryService;
+	@Autowired
+    private TreeService treeService;
+	@Autowired
+    private IHdfsApi iHdfsApi;
+	@Autowired
+    private TipConfigService tipConfigService;
+    /**每页显示数据条数*/
+//    private static final Integer PAGE_NUMBER = 10;
+    /**
+     * 首页分发
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "index", method = RequestMethod.GET)
+    public String  dispatcher(HttpServletRequest request,String messageTips,Model model){
+    	 Subject currentUser = SecurityUtils.getSubject(); 
+         Session session = currentUser.getSession();
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        if(StringUtils.isNotBlank(messageTips)){
+            model.addAttribute("messageTips",messageTips);
+        }
+        if(user == null){
+        	return "login/login";
+        }else{
+        	String contextPath = request.getContextPath();
+    		String path = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+contextPath+"/";
+    		return "redirect:" + path+"drag/dispatcher/drag.do";
+        }
+       
+    }
+    @RequestMapping(value = "workSpace", method = RequestMethod.GET)
+    public String  workSpace(HttpSession session,ModelMap modelMap){
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<WorkSpace> treeList= workSpaceService.selectZtree(user.getId(),0,1);
+        List<String> nodes=new ArrayList<>();
+        nodes.add("{id: 0, pId: -1, name: \"工作流\", isParent: true, open: true}");
+        for (int i=0;i<treeList.size();i++){
+            long nid=treeList.get(i).getId();
+            long pid=treeList.get(i).getPid();
+            String tname=treeList.get(i).getName();
+            String hdfsurl=treeList.get(i).getHdfsUrl(treeList.get(i));
+            Node node= new Node();
+            if(1 == treeList.get(i).getIsParent()){
+                node.setIsParent(true);
+            }else{
+                node.setIsParent(false);
+            }
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            node.setCurDir(hdfsurl);
+            nodes.add("{id:"+nid+",pId:"+pid+",name:'"+tname+"',isParent:"+true+",curDir:'"+hdfsurl+"'}");
+        }
+        modelMap.put("nodeList",nodes);
+        return "/workSpace/workSpaceDetails";
+    }
+    
+    /**
+     * 共享数据跳转
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "share", method = RequestMethod.GET)
+    public String  Share(HttpSession session){
+
+        return "/uploadData/shareData";
+    }
+    
+    /**
+     * 模型上传跳转
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelUpdateList", method = RequestMethod.GET)
+    public String  modelUpdateList(HttpSession session){
+
+        return "/modelSharing/modelUpdateList";
+    }
+    
+    /**
+     * 模型审核
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelAuditList", method = RequestMethod.GET)
+    public String  modelAuditList(HttpSession session){
+
+        return "/modelSharing/modelAuditList";
+    }
+    
+    /**
+     * 模型发布
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelRelease", method = RequestMethod.GET)
+    public String  modelRelease(HttpSession session){
+
+        return "/modelSharing/modelRelease";
+    }
+    
+    /**
+     * 模型状态查看
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelSelectType", method = RequestMethod.GET)
+    public String  modelSelectType(HttpSession session){
+
+        return "/modelSharing/modelSelectList";
+    }
+    
+    /**
+     * 模型订阅审核
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelSubscribe", method = RequestMethod.GET)
+    public String  modelSubscribe(HttpSession session){
+
+        return "/modelSharing/modelSubscribe";
+    }
+    
+    /**
+     * 模型下线
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "modelOffline", method = RequestMethod.GET)
+    public String modelOffline(HttpSession session){
+    	
+    	return "/modelSharing/modelOffline";
+    }
+    
+    @RequestMapping(value = "resultData", method = RequestMethod.GET)
+    public String  ResultData(HttpSession session){
+
+        return "/uploadData/resultData";
+    }
+    @RequestMapping(value = "workSpaceList", method = RequestMethod.GET)
+    public String  workSpaceList(HttpSession session){
+
+        return "/workSpace/workSpaceList";
+    }
+
+
+    /**
+     * 用户详情跳转
+     * @return
+     */
+    @RequestMapping(value = "userD", method = RequestMethod.GET)
+    public String usDetails(){
+        return "/user/details";
+    }
+    
+    /**
+     * 用户列表跳转
+     * @return
+     */
+    @RequestMapping(value = "userList", method = RequestMethod.GET)
+    public String userList(){
+        return "/user/list";
+    }
+    
+
+    /**
+     * 后台所用用户日志列表
+     * @return
+     */
+    @RequestMapping(value = "loglist", method = RequestMethod.GET)
+    public String logList(){
+        return "/logManagement/list";
+    }
+    
+    /**
+     * 前台日志列表
+     * @return
+     */
+    @RequestMapping(value = "logFlist", method = RequestMethod.GET)
+    public String logFList(){
+        return "/logManagement/fList";
+    }
+    
+    /**
+     * 后台用户日志列表
+     * @return
+     */
+    @RequestMapping(value = "logHlist", method = RequestMethod.GET)
+    public String logHList(){
+        return "/logManagement/hList";
+    }
+    
+    
+    /**
+     * 日志详情
+     * @return
+     */
+    @RequestMapping(value = "logdetails", method = RequestMethod.GET)
+    public String logDetails(Model model,CalculationHistory cal){
+    	
+    	List<CalculationHistory> calList = calculationHistoryService.selectBySelectiveKey(cal);
+    	CalculationHistory cals = calList.get(0);
+    	
+    	if(cals.getStatus() == 1){
+    		cals.setStatusName("运行中");
+		}else if(cals.getStatus() == 2){
+			cals.setStatusName("运行成功");
+		}else{
+			cals.setStatusName("运行失败");
+		}
+		 SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		 cals.setCreateTimes(dateformat.format(cals.getCreateTime()));
+    	model.addAttribute("calculationHistory", cals);
+        return "/logManagement/details";
+    }
+    /**
+     * 首页跳转
+     * @return
+     */
+    @RequestMapping(value = "drag", method = RequestMethod.GET)
+    public String drag(Model model){
+    	
+    	int workSpaceNum = workSpaceService.countAll();
+    	int workFlowNum = workFlowService.countAll();
+    	int userNum = userService.countAll();
+    	int histroyNum = uploadHistroyService.countAll();
+    	model.addAttribute("workSpaceNum", workSpaceNum);
+    	model.addAttribute("workFlowNum", workFlowNum);
+    	model.addAttribute("userNum", userNum);
+    	model.addAttribute("histroyNum", histroyNum);
+        return "dragIndex";
+    }
+
+    /**
+     * 用户修改跳转
+     * @return
+     */
+    @RequestMapping(value = "userDetails", method = RequestMethod.GET)
+    public String userDetails(){
+        return "/user/updateDetails";
+    }
+
+
+    /**
+     * 用户修改跳转
+     * @return
+     */
+    @RequestMapping(value = "modelIndex", method = RequestMethod.GET)
+    public String modelIndex(){
+        return "/model/modelIndex";
+    }
+
+
+    /**
+     * 跳转到 数据上传
+     * @return
+     */
+     @RequestMapping("uploadData")
+     public  String uploadData(HttpSession session, Model model,String currentDir){
+         return "uploadData/uploadData";
+    }
+    @RequestMapping("listAllHistory")
+    public String listAllHistory() {
+        return "uploadData/history";
+    }
+
+    @RequestMapping("listAllResult")
+    public String listAllResult() {
+        return "uploadData/Result";
+    }
+    
+    
+    /**
+     * 导航jsp调转
+     * @return
+     */
+    @RequestMapping("navigation")
+    public String Navigation() {
+        return "navigation";
+    }
+
+    /**
+     * 导航jsp调转到问题反馈
+     * @return
+     */
+    @RequestMapping("backMsg")
+    public String backMsg() {
+        return "backMsg";
+    }
+
+    /**
+     * 导航跳转到树形目录,并查出所有的一级目录
+     * @return
+     */
+    @RequestMapping("modeltree")
+    public String modelTree(ModelMap modelMap){
+        List<FacadeTree> treeList= treeService.selectAll();
+        List<String> topicNodes=new ArrayList<String>();
+        List<String> commonNodes=new ArrayList<String>();
+        for (int i=0;i<treeList.size();i++){
+            long id=treeList.get(i).getId();
+            long pid=treeList.get(i).getPid();
+            String name=treeList.get(i).getName();
+            String node="{id:"+id+",pId:"+pid+",name:'"+name+"'}";
+            if (treeList.get(i).getType().equals("COMMON")){
+                commonNodes.add(node);
+            }else {
+                topicNodes.add(node);
+            }
+        }
+        modelMap.put("commonNodes",commonNodes);
+        modelMap.put("topicNodes",topicNodes);
+        return "modelTree/modeltree";
+    }
+
+    /**
+     * 运维中心的监控
+     * @return
+     */
+    @RequestMapping("monitor")
+    public String monitor(){
+        return "ops/monitor";
+    }
+    /**
+     * 任务调度情况
+     * @return
+     */
+    @RequestMapping(value = "taskDispatch")
+    public String taskDispatch(){
+        return "ops/dispatch";
+    }
+
+    @RequestMapping(value = "taskOps")
+    public String taskCount(){
+        return "ops/taskCount";
+    }
+
+
+    /**
+     * 查出一级目录
+     * @param session
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping(value = "filemanage")
+    public String fileManage(HttpSession session, ModelMap modelMap){
+        String currentDir="datas";
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<String> defaultList= new ArrayList<>();
+        List<FileInfo> fileStatusList =  iHdfsApi.list(currentDir,user.getLoginname());
+        Boolean isParent=true;
+        String firstNode="{id:1,pId:0,name:'我的文件',isParent:"+isParent+",open:true,curDir:'datas/'}";
+        defaultList.add(firstNode);
+        int id=2;
+        for (FileInfo fileInfo : fileStatusList) {
+            String treenode="{id:"+id+",pId:"+1+",name:'"+fileInfo.getPath().getName()+"',isParent:"+isParent+",curDir:'"+fileInfo.getPath()+"'}";
+            defaultList.add(treenode);
+            id++;
+        }
+   /*     List<FileInfo> fileInfoList=new ArrayList<>();
+        List<FileInfo> csvList=getAllCsv(currentDir,user.getLoginname(),fileInfoList,session);
+        PageBean pageBean =new PageBean();
+        ListSort(csvList);
+        pageBean.setRows(csvList);
+        pageBean.setTotal(csvList.size());
+
+        modelMap.put("pageBean",pageBean);
+        session.setAttribute("csvList",csvList);*/
+        session.setAttribute("idCount",id);
+        modelMap.put("nodeList",defaultList);
+        return "dataSource/fileManage";
+    }
+
+    /**
+     * 查出所有的csv文件
+     * @param currentDir
+     * @param userName
+     * @param fileInfoList
+     * @param session
+     * @return
+     */
+    public List<FileInfo> getAllCsv(String currentDir, String userName ,List<FileInfo> fileInfoList , HttpSession session){
+        List<FileInfo> fileStatusList =  iHdfsApi.list(currentDir,userName);
+        for (FileInfo fileInfo : fileStatusList) {
+            String curDir= String.valueOf(fileInfo.getPath());
+            if (fileInfo.isDir()){
+                getAllCsv(curDir,userName,fileInfoList,session);
+            }else {
+                fileInfoList.add(fileInfo);
+            }
+        }
+        return fileInfoList;
+    }
+
+    /**
+     * 监控提醒-提醒记录
+     * @param session
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping(value = "remindRecord")
+    public String remindRecord(HttpSession session, ModelMap modelMap){
+        return "remind/remindRecord";
+    }
+    /**
+     * 监控提醒-提醒设置
+     * @param session
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping(value = "remindSetting")
+    public String remindSetting(HttpSession session, TipConfig tipConfig, ModelMap modelMap,Integer page,Integer rowCount){
+//        if (page==null|| page==0){
+//            page=1;
+//        }
+//        if (rowCount==null){
+//            rowCount=PAGE_NUMBER;
+//        }
+//
+//        User user = (User) session.getAttribute(Constants.USER_KEY);
+//        tipConfig.setLoginname(user.getLoginname());
+//        List<TipConfig> list =  tipConfigService.selectAll(tipConfig);
+//        for (TipConfig config : list) {
+//            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//            config.setTipConfigCreateTimes(dateformat.format(config.getTipConfigCreateTime()));
+//            if(config.getTipConfigSendType() == 0){
+//              config.setSendType("邮件");
+//            }else if(config.getTipConfigSendType() == 1){
+//                config.setSendType("手机");
+//            }
+//            if(config.getTipConfigType() == 0){
+//                config.setConfigType("出错");
+//            }else if(config.getTipConfigType() == 1){
+//                config.setConfigType("完成");
+//            }else {
+//                config.setConfigType("未按时完成");
+//            }
+//            if(config.getTipConfigEnable()){
+//                config.setTipConfigEnables("启用");
+//            }else {
+//                config.setTipConfigEnables("未启用");
+//            }
+//        }
+//
+//
+//        List filelist=new ArrayList<>();
+//        int startItem=(page-1)*rowCount;
+//        int endItem=page*rowCount-1;
+//        int totalPage=0;
+//        if (rowCount>list.size()){
+//            totalPage=1;
+//        }else{
+//            totalPage=list.size()%rowCount==0?list.size()/rowCount:list.size()/rowCount+1;
+//        }
+//
+//        if (endItem>list.size()-1){
+//            endItem=list.size()-1;
+//        }
+//        PageBean pageBean = new PageBean();
+//
+//        pageBean.setTotal(list.size());
+//        pageBean.setTotalPage(totalPage);
+//        pageBean.setCurPage(page);
+//
+//        for (int i=startItem;i<=endItem;i++){
+//            filelist.add(list.get(i));
+//        }
+//        pageBean.setRows(filelist);
+//
+//
+//        modelMap.put("TipConfigList",list);
+//        modelMap.put("pageBean",pageBean);
+        return "remind/remindSetting";
+    }
+
+    /**
+     * 模板管理维护
+     * @return
+     */
+    @RequestMapping(value = "templateManage")
+    public String template(HttpSession session,ModelMap modelMap){
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<TemplateCategory> treeList= templateCategoryService.selectZtree(user.getId(), null,1);
+        List<String> nodes=new ArrayList<String>();
+        nodes.add("{id: null, pId: -1, name: \"模板分类\", isParent: true, open: true}");
+        for (int i=0;i<treeList.size();i++){
+            long id=treeList.get(i).getTemplateCategoryId();
+            String pid ;
+            if(treeList.get(i).getTemplateCategoryPid()== null){
+                pid= String.valueOf(treeList.get(i).getTemplateCategoryPid());
+            }else {
+                pid = "";
+            }
+
+            String name=treeList.get(i).getTemplateCategoryName();
+            String node="{id:"+id+",pId:"+pid+",name:'"+name+"',isParent:"+true+"}";
+            nodes.add(node);
+
+        }
+//        nodes.add("{idStr: '0', pidStr: '-1', name: \"模板分类\", isParent: true, open: true}");
+//        for (int i=0;i<treeList.size();i++){
+//            long id=treeList.get(i).getTemplateCategoryId();
+//            long pid=treeList.get(i).getTemplateCategoryPid();
+//            String name=treeList.get(i).getTemplateCategoryName();
+//            if(0 == pid){
+//                String node="{idStr:'"+"p"+id+"',pidStr:'"+pid+"',name:'"+name+"',isParent:"+true+"}";
+//                nodes.add(node);
+//            }
+//
+//        }
+        modelMap.put("nodeList",nodes);
+
+        List<WorkSpace> wftreeList= workSpaceService.selectZtree(user.getId(),0,1);
+        List<String> wfnodes=new ArrayList<>();
+        wfnodes.add("{id: 0, pId: -1, name: \"工作流\", isParent: true, open: true}");
+        for (int i=0;i<wftreeList.size();i++){
+            long nid=wftreeList.get(i).getId();
+            long pid=wftreeList.get(i).getPid();
+            String tname=wftreeList.get(i).getName();
+            String hdfsurl=wftreeList.get(i).getHdfsUrl(wftreeList.get(i));
+            Node node= new Node();
+            if(1 == wftreeList.get(i).getIsParent()){
+                node.setIsParent(true);
+            }else{
+                node.setIsParent(false);
+            }
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            node.setCurDir(hdfsurl);
+            wfnodes.add("{id:"+nid+",pId:"+pid+",name:'"+tname+"',isParent:"+true+",curDir:'"+hdfsurl+"'}");
+        }
+        modelMap.put("workFlowNodeList",wfnodes);
+
+
+
+        return "template/templateManage";
+    }
+    /**
+     * 模板库
+     * @return
+     */
+    @RequestMapping(value = "templateLibrary")
+    public String templateLibrary(HttpSession session,ModelMap modelMap){
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<WorkSpace> wftreeList= workSpaceService.selectZtree(user.getId(),0,1);
+        List<String> wfnodes=new ArrayList<>();
+        wfnodes.add("{id: 0, pId: -1, name: \"工作流\", isParent: true, open: true}");
+        for (int i=0;i<wftreeList.size();i++){
+            long nid=wftreeList.get(i).getId();
+            long pid=wftreeList.get(i).getPid();
+            String tname=wftreeList.get(i).getName();
+            String hdfsurl=wftreeList.get(i).getHdfsUrl(wftreeList.get(i));
+            Node node= new Node();
+            if(1 == wftreeList.get(i).getIsParent()){
+                node.setIsParent(true);
+            }else{
+                node.setIsParent(false);
+            }
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            node.setCurDir(hdfsurl);
+            wfnodes.add("{id:"+nid+",pId:"+pid+",name:'"+tname+"',isParent:"+true+",curDir:'"+hdfsurl+"'}");
+        }
+        modelMap.put("workFlowNodeList",wfnodes);
+        return "template/templateLibrary";
+    }
+
+
+    /**
+     * 模板富文本编辑
+     * @return
+     */
+    @RequestMapping(value = "templateEditor")
+    public String templateEditor(Integer id, Template template, ModelMap modelMap,Map<String,Object> map){
+         template.setTemplateId(id);
+         List<Template> template1 =  templateService.selectAllByUserId(template);
+        modelMap.put("TemplateId",template1.get(0).getTemplateId());
+        modelMap.put("TemplateInstruction",template1.get(0).getTemplateInstruction());
+        map.put("names", template1);
+        return "template/templateEditor";
+    }
+
+    /**
+     * 查看编辑文档示例
+     * @return
+     */
+    @RequestMapping(value = "lookExample")
+    public String lookExample(){
+        return "template/editExample";
+    }
+    /**
+     * 查看编辑文档
+     * @return
+     */
+    @RequestMapping(value = "templateExplain")
+    public String lookEdit(Integer id, Template template, Map<String,Object> map,HttpSession session,ModelMap modelMap){
+        template.setTemplateId(id);
+        List<Template> template1 =  templateService.selectAllByUserId(template);
+        if(!template1.isEmpty()){
+            map.put("templateDescription", template1.get(0).getTemplateInstruction());
+        }
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<WorkSpace> wftreeList= workSpaceService.selectZtree(user.getId(),0,1);
+        List<String> wfnodes=new ArrayList<>();
+        wfnodes.add("{id: 0, pId: -1, name: \"工作流\", isParent: true, open: true}");
+        for (int i=0;i<wftreeList.size();i++){
+            long nid=wftreeList.get(i).getId();
+            long pid=wftreeList.get(i).getPid();
+            String tname=wftreeList.get(i).getName();
+            String hdfsurl=wftreeList.get(i).getHdfsUrl(wftreeList.get(i));
+            Node node= new Node();
+            if(1 == wftreeList.get(i).getIsParent()){
+                node.setIsParent(true);
+            }else{
+                node.setIsParent(false);
+            }
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            node.setCurDir(hdfsurl);
+            wfnodes.add("{id:"+nid+",pId:"+pid+",name:'"+tname+"',isParent:"+true+",curDir:'"+hdfsurl+"'}");
+        }
+        modelMap.put("workFlowNodeList",wfnodes);
+        return "template/templateExplain";
+    }
+
+    /**
+     * 已训练模型
+     * @return
+     */
+    @RequestMapping(value = "trainOverModel")
+    public String trainOverModel(){
+        return "trainModel/trainOverModel";
+    }
+    @RequestMapping(value = "dataExcavateAnalyze")
+    public String dateExcavateAnalyzeShowPage(){
+        return "dataExcavate/dataExcavateAnalyze";
+    }
+
+
+
+
+}

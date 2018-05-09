@@ -1,0 +1,38 @@
+package org.com.drag.model;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class WorkflowNode {
+    String id;
+    List<WorkflowNode> preNodes = new ArrayList<WorkflowNode>();
+    List<WorkflowNode> nextNodes = new ArrayList<WorkflowNode>();
+    Map<String, String> attrs = new HashMap<String, String>();
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public List<WorkflowNode> getPreNodes() {
+        return preNodes;
+    }
+    public void setPreNodes(List<WorkflowNode> preNodes) {
+        this.preNodes = preNodes;
+    }
+    public List<WorkflowNode> getNextNodes() {
+        return nextNodes;
+    }
+    public void setNextNodes(List<WorkflowNode> nextNodes) {
+        this.nextNodes = nextNodes;
+    }
+    public Map<String, String> getAttrs() {
+        return attrs;
+    }
+    public void setAttrs(Map<String, String> attrs) {
+        this.attrs = attrs;
+    }
+}

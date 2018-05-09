@@ -1,0 +1,53 @@
+source /etc/profile
+for arg in $@
+do
+  key=`echo $arg|cut -d "=" -f 1`
+  value=`echo $arg|cut -d "=" -f 2`
+  if [ $key = "inputPath" ]
+  then
+  hdfsInputFile=$value
+  elif [ $key = "tmpOutputData" ]
+  then
+  hdfsOutputData=$value
+  elif [ $key = "tmpOutputModel" ]
+  then 
+  hdfsOutputModel=$value
+  elif [ $key = "scriptPath" ]
+  then
+  scriptPath=$value
+  elif [ $key = "scriptName" ]
+  then
+  scriptName=$value
+  fi
+done
+
+
+#download hdfs data to local path
+#localData=/tmp/custom/localtmpdata.csv
+localData="/tmp/custom/`date +%M%N%S%N`.csv"
+localModel="/tmp/custom/local_tmp_model_`date +%M%N%S.%N`"
+localScript=/tmp/custom/script/${scriptName}
+if [ ! `hadoop fs -test -e $hdfsInputFile` ]
+then
+hadoop fs -get ${hdfsInputFile} ${localData}
+fi
+if [ ! `hadoop fs -test -e $scriptPath` ]
+then
+hadoop fs -get $scriptPath $localScript
+fi
+
+#run local R Script
+R -f $localScript --args $localData $localModel
+rm -f localScript
+
+#upload local file to hdfs
+if [ ! `-f $localData` ]
+then
+hadoop fs -copyFromLocal $localData $hdfsOutputData
+rm -f $localData
+fi
+if [ ! `-f $localModel` ]
+then
+hadoop fs -copyFromLocal $localModel $hdfsOutputModel
+rm -f $localModel
+fi

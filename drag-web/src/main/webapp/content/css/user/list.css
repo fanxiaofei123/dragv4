@@ -1,0 +1,42 @@
+.paging_bootstrap_extended {
+  text-align: right;
+}
+.table-checkable tr > th:first-child,
+.table-checkable tr > td:first-child {
+  text-align: left;
+  padding-left: 10px;
+}
+table.dataTable td.sorting_1,
+table.dataTable td.sorting_2,
+table.dataTable td.sorting_3,
+table.dataTable th.sorting_1,
+table.dataTable th.sorting_2,
+table.dataTable th.sorting_3 {
+  background: transparent !important;
+}
+.dataList {
+  min-width: 1000px;
+}
+.dataList .portlet-title #loginnameId {
+  height: 34px;
+}
+.dataList .portlet-body table tbody tr td {
+  height: 50px;
+  vertical-align: middle;
+}
+.dataList .portlet-body table tbody tr td .fileType {
+  float: left;
+  font-size: 34px;
+  padding-right: 5px;
+}
+.dataList .portlet-body table tbody tr td .fileContent {
+  float: left;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a {
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a:hover {
+  color: #32c5d2;
+}

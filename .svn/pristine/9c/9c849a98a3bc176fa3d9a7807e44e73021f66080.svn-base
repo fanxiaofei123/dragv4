@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.DataMiningMapper" >
+
+    <resultMap id="BaseResultMap" type="org.com.drag.model.DataMining" >
+        <id column="data_mining_id" property="dataMiningId"  jdbcType="INTEGER"/>
+        <result column="work_flow_id" property="workFlowId" jdbcType="INTEGER" />
+        <result column="data_mining_category_id" property="dataMiningCategoryId" jdbcType="INTEGER" />
+        <result column="data_mining_name" property="dataMiningName" jdbcType="VARCHAR" />
+        <result column="data_mining__description" property="dataMiningDescription" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" />
+
+        <result column="name" property="flowName" jdbcType="VARCHAR"/>
+        <result column="data_mining_category_name" property="dataMiningCategoryName" />
+        <result column="loginname" property="loginname" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectAll" parameterType="org.com.drag.model.DataMining" resultMap="BaseResultMap">
+       SELECT dm.data_mining_id,dm.data_mining_name,dm.data_mining__description,dm.create_time,wf.name,dmc.data_mining_category_name,u.loginname,u.email
+        from data_mining dm
+        inner join work_flow wf on dm.work_flow_id = wf.id
+        inner join data_mining_category dmc on dm.data_mining_category_id = dmc.data_mining_category_id
+        inner join `user` u on dmc.userid = u.id
+        order by dm.data_mining_id
+    </select>
+
+    <!--搜索及全局查询-->
+    <select id="getManyOrOneDataMining" parameterType="map" resultMap="BaseResultMap">
+        SELECT dm.data_mining_id,dm.data_mining_name,dm.data_mining__description,dm.create_time,wf.name,dmc.data_mining_category_name,u.loginname,u.email
+        from data_mining dm
+        inner join work_flow wf on dm.work_flow_id = wf.id
+        inner join data_mining_category dmc on dm.data_mining_category_id = dmc.data_mining_category_id
+        inner join `user` u on dmc.userid = u.id
+        <where>
+            dm.data_mining_name like concat("%",#{dataMiningName},"%")
+            <if test="id != null">
+            and   u.id = #{id}
+            </if>
+        </where>
+        order by dm.data_mining_id
+    </select>
+
+    <select id="selectOneDataMiningById" parameterType="int" resultMap="BaseResultMap">
+        select data_mining_id,data_mining_name,data_mining__description,name,data_mining_category_name
+        from data_mining d inner join work_flow w on d.work_flow_id=w.id
+        INNER JOIN data_mining_category dc on dc.data_mining_category_id = d.data_mining_category_id
+        where data_mining_id=#{dataMiningId}
+    </select>
+
+    <update id="updateDataMining" parameterType="org.com.drag.model.DataMining">
+        update data_mining
+        <set>
+            <if test="dataMiningName != null">
+                data_mining_name=#{dataMiningName},
+            </if>
+            <if test="dataMiningDescription != null">
+              data_mining__description=#{dataMiningDescription},
+            </if>
+            <if test="workFlowId != null">
+              work_flow_id=#{workFlowId},
+            </if>
+        </set>
+        where data_mining_id=#{dataMiningId}
+    </update>
+    <!--<update id="updateWorkFlow" parameterType="org.com.drag.model.DataMining">
+        update work_flow
+        <set>
+            <if test="flowName != null">
+                name=#{flowName}
+            </if>
+        </set>
+        where id=#{workFlowId}
+    </update>-->
+
+    <delete id="deleteOneDataMiningById" parameterType="int">
+        delete from data_mining where data_mining_id=#{dataMiningId}
+    </delete>
+
+    <delete id="deleteManyDataMinings" parameterType="string">
+        delete from data_mining
+        <where>
+            data_mining_id 
+            <foreach collection="ids" item="id" open="in (" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectDataMining" parameterType="org.com.drag.model.DataMining" resultMap="BaseResultMap">
+        SELECT data_mining_id,data_mining_category_id,data_mining_name,data_mining__description,create_time
+        from data_mining
+        <where>
+            <if test="dataMiningId != null">
+                data_mining_id = #{dataMiningId}
+            </if>
+            <if test="dataMiningCategoryId != null">
+             and data_mining_category_id = #{dataMiningCategoryId}
+            </if>
+            <if test="dataMiningName != null">
+            and  data_mining_name = #{dataMiningName}
+            </if>
+            <if test="dataMiningDescription != null">
+            and   data_mining__description = #{dataMiningDescription}
+            </if>
+            <if test="createTime != null">
+            and    create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--递归分页-->
+    <select id="getManyDataMining" parameterType="int" resultMap="BaseResultMap">
+        SELECT dm.data_mining_id,dm.data_mining_category_id,dm.data_mining_name,dm.data_mining__description,dm.create_time,wf.name,dmc.data_mining_category_name,u.loginname,u.email
+        from data_mining dm
+        inner join work_flow wf on dm.work_flow_id = wf.id
+        inner join data_mining_category dmc on dm.data_mining_category_id = dmc.data_mining_category_id
+        inner join `user` u on dmc.userid = u.id
+        where dm.data_mining_category_id = #{id}
+        order by dm.data_mining_id
+    </select>
+
+    <!--新建挖掘分析项-->
+    <insert id="insertDataMining" parameterType="org.com.drag.model.DataMining">
+        insert into  data_mining
+        (data_mining_id,work_flow_id,data_mining_category_id,data_mining_name,data_mining__description,create_time)
+        SELECT
+        (select MAX(data_mining_id) from data_mining)+1,#{workFlowId},#{dataMiningCategoryId},#{dataMiningName},#{dataMiningDescription},now()
+    </insert>
+
+    <!--DataMining重命名-->
+    <update id="updateDataMiningName" parameterType="map">
+        update data_mining
+        <set>
+            <if test="name != null">
+                data_mining_name=#{name},
+            </if>
+        </set>
+        where data_mining_id=#{id}
+    </update>
+
+</mapper>

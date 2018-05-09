@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.FacadeTreeMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.FacadeTree" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="nodeindex" property="nodeindex" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="isleaf" property="isleaf" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ctime, name, pid, nodeindex, type, isleaf
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from facade_tree
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from facade_tree
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.FacadeTree" >
+    insert into facade_tree (id, ctime, name, 
+      pid, nodeindex)
+    values (#{id,jdbcType=BIGINT}, #{ctime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, 
+      #{pid,jdbcType=BIGINT}, #{nodeindex,jdbcType=INTEGER},#{type}, #{isleaf})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.FacadeTree" >
+    insert into facade_tree
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="nodeindex != null" >
+        nodeindex,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="isleaf != null" >
+        isleaf,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="nodeindex != null" >
+        #{nodeindex,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type},
+      </if>
+      <if test="isleaf != null" >
+        #{isleaf},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.FacadeTree" >
+    update facade_tree
+    <set >
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="nodeindex != null" >
+        nodeindex = #{nodeindex,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type},
+      </if>
+      <if test="isleaf != null" >
+        isleaf = #{isleaf},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.FacadeTree" >
+    update facade_tree
+    set ctime = #{ctime,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=BIGINT},
+      nodeindex = #{nodeindex,jdbcType=INTEGER},
+      type = #{type},
+      isleaf = #{isleaf}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+  <select id="selectAllTree" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"></include> FROM facade_tree ORDER BY nodeindex
+  </select>
+
+  <select id="selectById" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"></include> FROM facade_tree WHERE id=#{id} ORDER BY nodeindex
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List"></include> FROM facade_tree WHERE name=#{pName} ORDER BY nodeindex
+  </select>
+
+  <select id="selectPNode" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    from facade_tree where pid=#{pid} ORDER BY nodeindex
+  </select>
+
+  <insert id="insertNode" parameterType="org.com.drag.model.FacadeTree" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    INSERT INTO facade_tree(ctime,name,pid,nodeindex) VALUES (#{ctime},#{name},#{pid},#{nodeindex})
+  </insert>
+
+  <update id="updateNode" parameterType="map">
+    UPDATE facade_tree SET name=#{cName},pid=#{pid} WHERE id=#{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM facade_tree
+    where id in
+    <foreach collection="list" item="id" index="index"
+             open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByPId">
+    DELETE FROM facade_tree
+    WHERE pid=#{id}
+  </delete>
+  
+  <select id="selectByPid" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from facade_tree 
+  	where pid=#{pid, jdbcType=BIGINT}
+  </select>
+  <select id="selectLeafByFid" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from facade_tree 
+  	where id in (select leaf from father_leaf where fid=#{fid})
+  </select>
+
+
+  <select id="findByCTime" parameterType="Date" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM facade_tree
+    where ctime=#{ctime}
+  </select>
+
+  <update id="updateType0" parameterType="Long">
+    UPDATE facade_tree SET isleaf=0 WHERE id=#{pid}
+  </update>
+  <update id="updateType1" parameterType="Long">
+    UPDATE facade_tree SET isleaf=1 WHERE id=#{pid}
+  </update>
+
+    <update id="updateNodeType" parameterType="Long">
+        UPDATE facade_tree SET type='TOPIC' WHERE id=#{pid}
+    </update>
+
+  <update id="moveNodeById" parameterType="map">
+    UPDATE facade_tree set pid=#{targetId} WHERE id=#{moveId}
+  </update>
+  
+  <select id="selectByMyModels" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from facade_tree
+  	where id in
+  	(
+  		select a.fid
+  		from father_leaf as a
+  		left join facade_model as b
+  		on a.leaf=b.treeId
+  		where b.id in
+  		(
+  			select model_id
+  			from facade_model_record
+  			where type=2
+  			and f_name=#{frontusername}
+  		)
+  	)
+  	or id in
+  	(
+  		select treeId
+  		from facade_model
+  		where id in
+  		(
+  			select model_id
+  			from facade_model_record
+  			where type=2
+  			and f_name=#{frontusername}
+  		)
+  	)
+  </select>
+  
+  <select id="selectByMyApplies" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_tree
+  	where id in
+  	(
+  		select a.fid
+  		from father_leaf as a
+  		left join facade_model as b
+  		on a.leaf=b.treeId
+  		where b.id in
+  		(
+  			select model_id
+  			from facade_model_record
+  			where (type=1 or type=3)
+  			and f_name=#{frontusername}
+  		)
+  	)
+  	or id in
+  	(
+  		select treeId
+  		from facade_model
+  		where id in
+  		(
+  			select model_id
+  			from facade_model_record
+  			where (type=1 or type=3)
+  			and f_name=#{frontusername}
+  		)
+  	)
+  </select>
+  
+  <select id="selectByForeList" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_tree
+  	where id in
+  	(
+  		select a.fid
+  		from father_leaf as a
+  		left join facade_model as b
+  		on a.leaf=b.treeId
+  		where b.id in
+  		(
+  			select model_id
+  			from calculation_history
+  			where frontusername=#{frontusername}
+  		)
+  	)
+  	or id in
+  	(
+  		select treeId
+  		from facade_model
+  		where id in
+  		(
+  			select model_id
+  			from calculation_history
+  			where frontusername=#{frontusername}
+  		)
+  	)
+  </select>
+  
+  <!-- 当添加一个节点时，在father_leaf中添加一条或多条记录 -->
+  <insert id="insertFatherLeafBatch">
+  	insert into father_leaf
+  	(fid,leaf) values
+  	<foreach collection="fids" item="fid" separator=",">
+      (#{fid},#{leaf})
+  	</foreach>
+  </insert>
+  
+  <!-- 当添加一个节点到叶子节点时，删除原叶子节点在father_leaf的记录 -->
+  <delete id="deleteFatherLeafByFids">
+  	delete from father_leaf
+  	where leaf in
+  	<foreach collection="fids" open="(" close=")" item="fid" separator=",">
+  		#{fid}
+  	</foreach>
+  	or fid in
+  	<foreach collection="fids" open="(" close=")" item="fid" separator=",">
+  		#{fid}
+  	</foreach>
+  </delete>
+  
+  <!-- 当添加一个节点到叶子节点时，删除原叶子节点在father_leaf的记录 -->
+  <delete id="deleteFatherLeafByLeaf">
+  	delete from father_leaf
+  	where leaf=#{treeId}
+  </delete>
+  
+  <!-- 当节点移动的时候，删除原来的father_leaf记录 -->
+  <delete id="deleteFatherLeafBatch">
+  	delete from father_leaf
+  	where leaf in
+  	<foreach collection="leaves" item="leaf" open="(" close=")" separator=",">
+  		#{leaf}
+  	</foreach>
+  </delete>
+  
+  <insert id="insertFatherLeaf">
+  	insert into father_leaf
+  	(fid,leaf) values (#{fid},#{leaf})
+  </insert>
+</mapper>

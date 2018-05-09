@@ -1,0 +1,92 @@
+package org.com.drag.model;
+
+import java.io.Serializable;
+
+/**
+ *
+ * @author Guzhendong
+ *
+ */
+public class DataMiningCategory  implements Serializable {
+    private static final long serialVersionUID = 482503208042514932L;
+
+    private Integer dataMiningCategoryId;
+
+    /**
+     * 目录分类名称
+     */
+    private String dataMiningCategoryName;
+
+    /**
+     * 父节点id
+     */
+    private Integer dataMiningCategoryPid;
+
+    /**
+     * 是否是叶子节点，是：1，否：0
+     */
+    private Byte dataMiningCategoryIsParent;
+
+    private Integer userid;
+
+    public Integer getDataMiningCategoryId() {
+        return dataMiningCategoryId;
+    }
+
+    public void setDataMiningCategoryId(Integer dataMiningCategoryId) {
+        this.dataMiningCategoryId = dataMiningCategoryId;
+    }
+
+    /**
+     * @return 目录分类名称
+     */
+    public String getDataMiningCategoryName() {
+        return dataMiningCategoryName;
+    }
+
+    /**
+     * @param dataMiningCategoryName
+     *            目录分类名称
+     */
+    public void setDataMiningCategoryName(String dataMiningCategoryName) {
+        this.dataMiningCategoryName = dataMiningCategoryName;
+    }
+
+    /**
+     * @return 父节点id
+     */
+    public Integer getDataMiningCategoryPid() {
+        return dataMiningCategoryPid;
+    }
+
+    /**
+     * @param dataMiningCategoryPid
+     *            父节点id
+     */
+    public void setDataMiningCategoryPid(Integer dataMiningCategoryPid) {
+        this.dataMiningCategoryPid = dataMiningCategoryPid;
+    }
+
+    /**
+     * @return 是否是叶子节点，是：1，否：0
+     */
+    public Byte getDataMiningCategoryIsParent() {
+        return dataMiningCategoryIsParent;
+    }
+
+    /**
+     * @param dataMiningCategoryIsParent
+     *            是否是叶子节点，是：1，否：0
+     */
+    public void setDataMiningCategoryIsParent(Byte dataMiningCategoryIsParent) {
+        this.dataMiningCategoryIsParent = dataMiningCategoryIsParent;
+    }
+
+    public Integer getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Integer userid) {
+        this.userid = userid;
+    }
+}

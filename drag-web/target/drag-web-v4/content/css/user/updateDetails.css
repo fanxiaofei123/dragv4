@@ -1,0 +1,10 @@
+.modal .modal-dialog .modal-content .modal-body {
+  padding-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet {
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions {
+  padding: 20px 0;
+  text-align: right;
+}

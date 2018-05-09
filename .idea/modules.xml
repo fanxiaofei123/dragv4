@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/drag-common/drag-common-v4.iml" filepath="$PROJECT_DIR$/drag-common/drag-common-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-config/drag-config-v4.iml" filepath="$PROJECT_DIR$/drag-config/drag-config-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-dao/drag-dao-v4.iml" filepath="$PROJECT_DIR$/drag-dao/drag-dao-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-entity/drag-entity-v4.iml" filepath="$PROJECT_DIR$/drag-entity/drag-entity-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-oozie/drag-oozie-v4.iml" filepath="$PROJECT_DIR$/drag-oozie/drag-oozie-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-service/drag-service-v4.iml" filepath="$PROJECT_DIR$/drag-service/drag-service-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-v4.iml" filepath="$PROJECT_DIR$/drag-v4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/drag-web/drag-web-v4.iml" filepath="$PROJECT_DIR$/drag-web/drag-web-v4.iml" />
+    </modules>
+  </component>
+</project>

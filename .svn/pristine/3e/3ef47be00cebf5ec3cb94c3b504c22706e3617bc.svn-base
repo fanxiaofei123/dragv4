@@ -1,0 +1,73 @@
+source /etc/profile
+for arg in $@
+do
+  key=`echo $arg|cut -d "=" -f 1`
+  value=`echo $arg|cut -d "=" -f 2`
+  if [ $key = "inputPath" ]
+  then
+  hdfsInputFile=$value
+  elif [ $key = "tmpOutputData" ]
+  then
+  hdfsOutputData=$value
+  elif [ $key = "tmpOutputModel" ]
+  then
+  hdfsOutputModel=$value
+  elif [ $key = "scriptPath" ]
+  then
+  scriptPath=$value
+  elif [ $key = "scriptName" ]
+  then
+  scriptName=$value
+  elif [ $key = "function" ]
+  then
+  function=$value
+  elif [ $key = "tmpImgPath" ]
+  then
+  tmpImgPath=$value
+  fi
+done
+
+#download hdfs data to local path
+localScript=/tmp/custom/script/$scriptName
+localData=/tmp/custom/data/`date +%N%S%N`.csv
+localModel=/tmp/custom/model/`date +%N%S%N`.rds
+localImg=/tmp/custom/img/`date +%N%S%N`.jpeg
+
+if [ ! `hadoop fs -test -e $hdfsInputFile` ]
+then
+    hadoop fs -get $hdfsInputFile $localData
+fi
+if [ ! `hadoop fs -test -e $scriptPath` ]
+then
+    hadoop fs -get $scriptPath $localScript
+fi
+
+if [ $function = "R" ]
+then
+#run local R Script
+#arg1-input data;arg2-input model
+R -f $localScript --args $localData $localModel $localImg
+elif [ $function = "python" ]
+then
+#run local python Script
+#arg1-input data;arg2-input model
+python3 $localScript $localData $localModel
+fi
+rm -f $localScript
+
+#upload local file to hdfs
+if [ -e $localData ]
+then
+    hadoop fs -copyFromLocal $localData $hdfsOutputData
+    rm -f $localData
+fi
+if [ -e $localModel ]
+then
+    hadoop fs -copyFromLocal $localModel $hdfsOutputModel
+    rm -f $localModel
+fi
+if [ -e $localImg ]
+then
+    hadoop fs -copyFromLocal $localImg $tmpImgPath
+    #rm -f $localImg
+fi

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.DataModelMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.DataModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="name_english" property="nameEnglish" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="model_sort" property="modelSort" jdbcType="TINYINT" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="flow_details" property="flowDetails" jdbcType="VARCHAR" />
+     <result column="pid_name" property="pidName" jdbcType="VARCHAR" />
+     <result column="left_number" property="leftNumber" jdbcType="VARCHAR" />
+     <result column="right_number" property="rightNumber" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name,name_english, create_time, model_sort, type, pid, flow_details,pid_name,left_number,right_number
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from data_model
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+    <select id="selectByDataModel" resultMap="BaseResultMap" parameterType="org.com.drag.model.DataModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from data_model
+    <where>
+      <if test="id != null" >
+        id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null" >
+       and name = #{name,jdbcType=VARCHAR}
+      </if>
+       <if test="nameEnglish != null" >
+       and name_english = #{nameEnglish,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+       and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="modelSort != null" >
+       and model_sort = #{modelSort,jdbcType=TINYINT}
+      </if>
+      <if test="type != null" >
+        and type = #{type,jdbcType=TINYINT}
+      </if>
+      <if test="pid != null" >
+        and pid = #{pid,jdbcType=INTEGER}
+      </if>
+      <if test="flowDetails != null" >
+       and flow_details = #{flowDetails,jdbcType=VARCHAR}
+      </if>
+      <if test="pidName != null" >
+       and pid_name = #{pidName,jdbcType=VARCHAR}
+      </if>
+      <if test="leftNumber != null" >
+        and left_number = #{leftNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="rightNumber != null" >
+        and right_number = #{rightNumber,jdbcType=VARCHAR}
+      </if>
+      </where>
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from data_model
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.DataModel" >
+    insert into data_model (id, name,name_english, create_time, 
+      model_sort, type, pid, 
+      flow_details,pid_name,left_number,right_number)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{nameEnglish,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modelSort,jdbcType=TINYINT}, #{type,jdbcType=TINYINT}, #{pid,jdbcType=INTEGER}, 
+      #{flowDetails,jdbcType=VARCHAR}, #{pidName,jdbcType=VARCHAR}, #{leftNumber,jdbcType=VARCHAR}, #{rightNumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.DataModel" >
+    insert into data_model
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="name_english != null" >
+        name_english,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modelSort != null" >
+        model_sort,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="flowDetails != null" >
+        flow_details,
+      </if>
+       <if test="pidName != null" >
+        pid_name,
+      </if>
+       <if test="leftNumber != null" >
+        left_number,
+      </if> <if test="rightNumber != null" >
+        right_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+       <if test="nameEnglish != null" >
+        #{nameEnglish,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modelSort != null" >
+        #{modelSort,jdbcType=TINYINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="flowDetails != null" >
+        #{flowDetails,jdbcType=VARCHAR},
+      </if>
+      <if test="pidName != null" >
+        #{pidName,jdbcType=VARCHAR},
+      </if>
+      <if test="leftNumber != null" >
+        #{leftNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="rightNumber != null" >
+        #{rightNumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.DataModel" >
+    update data_model
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+       <if test="nameEnglish != null" >
+        name_english = #{nameEnglish,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modelSort != null" >
+        model_sort = #{modelSort,jdbcType=TINYINT},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="flowDetails != null" >
+        flow_details = #{flowDetails,jdbcType=VARCHAR},
+      </if>
+       <if test="pidName != null" >
+        pid_name = #{pidName,jdbcType=VARCHAR},
+      </if>
+       <if test="leftNumber != null" >
+        left_number = #{leftNumber,jdbcType=VARCHAR},
+      </if>
+       <if test="rightNumber != null" >
+        right_number = #{rightNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.DataModel" >
+    update data_model
+    set name = #{name,jdbcType=VARCHAR},
+       name_english = #{nameEnglish,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      model_sort = #{modelSort,jdbcType=TINYINT},
+      type = #{type,jdbcType=TINYINT},
+      pid = #{pid,jdbcType=INTEGER},
+      flow_details = #{flowDetails,jdbcType=VARCHAR},
+       pid_name = #{pidName,jdbcType=VARCHAR},
+       left_number = #{leftNumber,jdbcType=VARCHAR},
+       right_number = #{rightNumber,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByName" resultType="java.lang.Integer">
+    SELECT id FROM data_model WHERE name = #{dataModelName}
+  </select>
+
+</mapper>

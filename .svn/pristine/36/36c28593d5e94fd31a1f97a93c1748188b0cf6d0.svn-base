@@ -1,0 +1,135 @@
+package org.com.drag.web.controller;
+
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.oozie.client.OozieClientException;
+import org.apache.oozie.client.WorkflowAction;
+import org.apache.oozie.client.WorkflowJob;
+import org.com.drag.common.util.MailAuthorSetting;
+import org.com.drag.common.util.TimeUtil;
+import org.com.drag.model.*;
+import org.com.drag.service.CalculationHistoryService;
+import org.com.drag.service.DataModelService;
+import org.com.drag.service.WorkFlowService;
+import org.com.drag.service.oozie.api.IOozieApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+
+/**
+ * 
+ * Copyright © 2016优易数据. All rights reserved.
+
+ * @ClassName: DataModelController
+
+ * @Description: 模型Controller
+
+ * @author: jiaonanyue
+
+ * @date: 2016年11月7日 下午4:05:04
+ */
+@Controller
+@RequestMapping("/drag/dataModel")
+public class DataModelController {
+	
+	@Autowired
+	private DataModelService dataModelService;
+	@Autowired
+	private WorkFlowService  workFlowService;
+	@Autowired
+	private CalculationHistoryService calculationHistoryService;
+	@Autowired
+	private IOozieApi iOozieApi;
+
+	/**
+	 * 查询数据结构模型 pid
+	 * @return
+	 */
+	@RequestMapping(value = "get", method = RequestMethod.POST)
+	public String getDataModel(Model model,DataModel dataModel){
+		
+		List<DataModel> dataModelList = dataModelService.selectByDataModel(dataModel);
+		model.addAttribute("dataModelList",dataModelList);
+		return "";
+	}
+	
+	/**
+	 * 工作流页面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "select", method = RequestMethod.GET)
+	public String selectDataModel(Model model,String name,String flowId,String workSpaceName) throws OozieClientException {
+		
+		WorkFlow workFlow = workFlowService.selectByPrimaryKey(Integer.parseInt(flowId));
+		if(workFlow != null && workFlow.getContext() != null){
+
+			model.addAttribute("workFlowContxt",workFlow.getContext());
+		}
+		Map<String,List<DataModel>> dataMdoelMap = dataModelService.selectDataModel();
+		List<CalculationHistory> calculationHistoryList = new ArrayList<>();
+		calculationHistoryList = calculationHistoryService.selectByFlowId(flowId);
+		String jobId=null;
+		if (calculationHistoryList.size()>0 && calculationHistoryList!=null){
+			jobId=calculationHistoryList.get(0).getJobId();// 根据flowId查出最近一次记录的jobId
+		}
+		StringBuffer actionInfo= new StringBuffer();
+		if (jobId!=null && jobId!=""){
+			WorkflowJob workflowJob = iOozieApi.getOozieWorkflowInfo(jobId, MailAuthorSetting.HADOOP_OOZIECLIENT_PATH);//根据jobid获得这个工作流的运行记录
+			List<WorkflowAction> actions = workflowJob.getActions();//拿到每一个算子
+			Map<String,String> actionMap= new HashMap<>();
+			for(int i=actions.size()-2;i>0;i--){//去掉第一个和最后一个
+				actionInfo.append(actions.get(i).getName().split("_")[0]+":"+actions.get(i).getStatus().toString()+"/");
+				actionMap.put(actions.get(i).getName(),actions.get(i).getStatus().toString());
+			}
+			model.addAttribute("actionMap",actionMap);
+			model.addAttribute("actionInfo",actionInfo);
+		}
+		model.addAttribute("dataMdoelMap", dataMdoelMap);
+		model.addAttribute("name",  name);
+		model.addAttribute("workSpaceName", workSpaceName);
+		model.addAttribute("flowExplain", workFlow.getFlowExplain());
+		model.addAttribute("createTime", TimeUtil.getSimpleDateFormat(workFlow.getCreateTime()));
+		model.addAttribute("flowId",flowId);
+		model.addAttribute("workFlow",workFlow);
+		model.addAttribute("calculationHistoryList", JSON.toJSONString(calculationHistoryList));
+		return "/workSpace/details";
+	}
+
+
+	@SuppressWarnings({ "unchecked", "serial" })
+	@RequestMapping(value = "model", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Model> test(String flowId) {
+		WorkFlow workFlow = workFlowService.selectByPrimaryKey(Integer.parseInt(flowId));
+
+		Map<String,String> parse = (Map<String, String>) JSON.parse(workFlow.getContext());
+
+
+		final List<Connect> connects = JSON.parseArray(parse.get("connects"), Connect.class);
+		final List<Model> models =JSON.parseArray(parse.get("models"), Model.class);
+		final List<Block> blocks = JSON.parseArray(parse.get("blocks"), Block.class);
+
+
+
+		Map<String,Model> resultMap = new HashedMap(){{
+			put("connects", connects);
+			put("models", models);
+			put("blocks", blocks);
+		}};
+
+		return resultMap;
+
+	}
+
+}

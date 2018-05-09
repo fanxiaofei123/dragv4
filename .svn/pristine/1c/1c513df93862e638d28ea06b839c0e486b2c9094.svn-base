@@ -1,0 +1,185 @@
+package org.com.drag.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class ServiceModel implements Serializable {
+    private static final long serialVersionUID = 629261518669515221L;
+
+    private Integer serviceModelId;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * 登录用户id
+     */
+    private Integer userId;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    /**
+     * 工作流最后一次运行状态
+     * -1：失败  1：运行中  2：成功
+     */
+    private Integer status;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * 登陆用户token用于对应KEY
+     */
+    private String token;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    /**
+     * 登陆用户名
+     */
+    private String userName;
+
+
+    /**
+     * 模型服务名称
+     */
+    private String serviceModelName;
+
+    public String getServiceModelStatus() {
+        return serviceModelStatus;
+    }
+
+    public void setServiceModelStatus(String serviceModelStatus) {
+        this.serviceModelStatus = serviceModelStatus;
+    }
+
+    /**
+     * 1.可以调用 2.工作流训练失败不可以调用 3.在重新训练中不可调用
+     */
+    private String serviceModelStatus;
+
+    /**
+     * 工作流id
+     */
+    private Integer serviceModelFlowId;
+
+    /**
+     * 模型服务描述
+     */
+    private String serviceModelDescription;
+
+    public String getServiceCreateTimes() {
+        return serviceCreateTimes;
+    }
+
+    public void setServiceCreateTimes(String serviceCreateTimes) {
+        this.serviceCreateTimes = serviceCreateTimes;
+    }
+
+    public String getServiceUpdateTimes() {
+        return serviceUpdateTimes;
+    }
+
+    public void setServiceUpdateTimes(String serviceUpdateTimes) {
+        this.serviceUpdateTimes = serviceUpdateTimes;
+    }
+
+    private String serviceCreateTimes;
+
+    private String serviceUpdateTimes;
+
+    private Date serviceCreateTime;
+
+    private Date serviceUpdateTime;
+
+    public Integer getServiceModelId() {
+        return serviceModelId;
+    }
+
+    public void setServiceModelId(Integer serviceModelId) {
+        this.serviceModelId = serviceModelId;
+    }
+
+    /**
+     * @return 模型服务名称
+     */
+    public String getServiceModelName() {
+        return serviceModelName;
+    }
+
+    /**
+     * @param serviceModelName
+     *            模型服务名称
+     */
+    public void setServiceModelName(String serviceModelName) {
+        this.serviceModelName = serviceModelName;
+    }
+
+    /**
+     * @return 工作流id
+     */
+    public Integer getServiceModelFlowId() {
+        return serviceModelFlowId;
+    }
+
+    /**
+     * @param serviceModelFlowId
+     *            工作流id
+     */
+    public void setServiceModelFlowId(Integer serviceModelFlowId) {
+        this.serviceModelFlowId = serviceModelFlowId;
+    }
+
+    /**
+     * @return 模型服务描述
+     */
+    public String getServiceModelDescription() {
+        return serviceModelDescription;
+    }
+
+    /**
+     * @param serviceModelDescription
+     *            模型服务描述
+     */
+    public void setServiceModelDescription(String serviceModelDescription) {
+        this.serviceModelDescription = serviceModelDescription;
+    }
+
+    public Date getServiceCreateTime() {
+        return serviceCreateTime;
+    }
+
+    public void setServiceCreateTime(Date serviceCreateTime) {
+        this.serviceCreateTime = serviceCreateTime;
+    }
+
+    public Date getServiceUpdateTime() {
+        return serviceUpdateTime;
+    }
+
+    public void setServiceUpdateTime(Date serviceUpdateTime) {
+        this.serviceUpdateTime = serviceUpdateTime;
+    }
+}

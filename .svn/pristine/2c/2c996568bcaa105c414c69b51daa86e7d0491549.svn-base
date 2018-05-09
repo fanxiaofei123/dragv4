@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.ServiceModelDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.ServiceModel" >
+    <id column="service_model_id" property="serviceModelId" jdbcType="INTEGER" />
+    <result column="service_model_name" property="serviceModelName" jdbcType="VARCHAR" />
+    <result column="service_model_context" property="serviceModelContext" jdbcType="VARCHAR" />
+    <result column="outputPath" property="outputPath" jdbcType="VARCHAR" />
+    <result column="selectTheColumn" property="selectTheColumn" jdbcType="VARCHAR" />
+    <result column="labelColumn" property="labelColumn" jdbcType="VARCHAR" />
+    <result column="service_model_flow_id" property="serviceModelFlowId" jdbcType="INTEGER" />
+    <result column="service_model_status" property="serviceModelStatus" jdbcType="INTEGER" />
+    <result column="service_model_count" property="serviceModelCount" jdbcType="INTEGER" />
+    <result column="service_model_description" property="serviceModelDescription" jdbcType="VARCHAR" />
+    <result column="service_create_time" property="serviceCreateTime" jdbcType="TIMESTAMP" />
+    <result column="service_update_time" property="serviceUpdateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="serviceModelName != null" >
+         and service_model_name = #{serviceModelName}
+      </if>
+      <if test="serviceModelFlowId != null" >
+         and service_model_flow_id = #{serviceModelFlowId}
+      </if>
+      <if test="serviceModelDescription != null" >
+         and service_model_description = #{serviceModelDescription}
+      </if>
+      <if test="serviceModelCount != null" >
+         and service_model_count = #{serviceModelCount}
+      </if>
+      <if test="serviceCreateTime != null" >
+         and service_create_time = #{serviceCreateTime}
+      </if>
+      <if test="serviceUpdateTime != null" >
+         and service_update_time = #{serviceUpdateTime}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    service_model_id AS serviceModelId, service_model_name AS serviceModelName, service_model_flow_id AS serviceModelFlowId, 
+    service_model_description AS serviceModelDescription, service_create_time AS serviceCreateTime, 
+    service_update_time AS serviceUpdateTime
+  </sql>
+  <insert id="insertServiceModel" parameterType="org.com.drag.model.ServiceModel" >
+    insert into service_model (service_model_id, service_model_name, service_model_flow_id, service_model_description,
+      service_create_time, service_update_time)
+    values (#{serviceModelId}, #{serviceModelName}, #{serviceModelFlowId}, #{serviceModelDescription}, 
+      #{serviceCreateTime}, #{serviceUpdateTime})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.ServiceModel" >
+    insert into service_model
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serviceModelId != null" >
+        service_model_id,
+      </if>
+      <if test="serviceModelName != null" >
+        service_model_name,
+      </if>
+      <if test="serviceModelFlowId != null" >
+        service_model_flow_id,
+      </if>
+      <if test="serviceModelDescription != null" >
+        service_model_description,
+      </if>
+      <if test="serviceCreateTime != null" >
+        service_create_time,
+      </if>
+      <if test="serviceUpdateTime != null" >
+        service_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serviceModelId != null" >
+        #{serviceModelId},
+      </if>
+      <if test="serviceModelName != null" >
+        #{serviceModelName},
+      </if>
+      <if test="serviceModelFlowId != null" >
+        #{serviceModelFlowId},
+      </if>
+      <if test="serviceModelDescription != null" >
+        #{serviceModelDescription},
+      </if>
+      <if test="serviceCreateTime != null" >
+        #{serviceCreateTime},
+      </if>
+      <if test="serviceUpdateTime != null" >
+        #{serviceUpdateTime},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.ServiceModel" >
+    update service_model
+    <set >
+      <if test="serviceModelName != null" >
+        service_model_name = #{serviceModelName},
+      </if>
+      <if test="serviceModelFlowId != null" >
+        service_model_flow_id = #{serviceModelFlowId},
+      </if>
+      <if test="serviceModelStatus != null" >
+        service_model_status = #{serviceModelStatus},
+      </if>
+      <if test="serviceModelDescription != null" >
+        service_model_description = #{serviceModelDescription},
+      </if>
+      <if test="serviceModelCount != null" >
+        and service_model_count = #{serviceModelCount}
+      </if>
+      <if test="serviceCreateTime != null" >
+        service_create_time = #{serviceCreateTime},
+      </if>
+      <if test="serviceUpdateTime != null" >
+        service_update_time = #{serviceUpdateTime},
+      </if>
+    </set>
+    where service_model_id = #{serviceModelId}
+  </update>
+  <update id="updateModelContext" parameterType="org.com.drag.model.ServiceModel" >
+    update service_model
+    <set >
+      <if test="serviceModelContext != null" >
+        service_model_context = #{serviceModelContext},
+      </if>
+    </set>
+    where service_model_id = #{serviceModelId}
+  </update>
+  <!--调用APi次数-->
+  <update id="updateModelCount" parameterType="org.com.drag.model.ServiceModel" >
+    UPDATE service_model SET service_model_count = service_model_count+1 where service_model_id = #{serviceModelId}
+  </update>
+  <update id="updateByFlowId" parameterType="org.com.drag.model.ServiceModel" >
+    update service_model
+    <set >
+      <if test="serviceModelName != null" >
+        service_model_name = #{serviceModelName},
+      </if>
+      <if test="serviceModelStatus != null" >
+        service_model_status = #{serviceModelStatus},
+      </if>
+      <if test="serviceModelDescription != null" >
+        service_model_description = #{serviceModelDescription},
+      </if>
+      <if test="serviceCreateTime != null" >
+        service_create_time = #{serviceCreateTime},
+      </if>
+      <if test="serviceModelCount != null" >
+        service_model_count = #{serviceModelCount},
+      </if>
+      <if test="serviceUpdateTime != null" >
+        service_update_time = #{serviceUpdateTime},
+      </if>
+      <if test="outputPath != null" >
+        outputPath = #{outputPath},
+      </if>
+    </set>
+    where service_model_flow_id = #{serviceModelFlowId}
+  </update>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM service_model
+    where service_model_id in
+    <foreach collection="array" item="serviceModelId" open="(" separator="," close=")">
+      #{serviceModelId}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByServiceModelFlowId" parameterType="java.lang.Integer">
+    DELETE from service_model where service_model_flow_id = #{serviceModelFlowId};
+  </delete>
+
+  <select id="selectAllSerAnyThing" resultMap="BaseResultMap" >
+    SELECT service_model_id AS serviceModelId, service_model_name AS serviceModelName, service_model_flow_id AS serviceModelFlowId,
+    service_model_status as serviceModelStatus,service_model_count as serviceModelCount,wf.context as context,
+    service_model_description AS serviceModelDescription, service_create_time AS serviceCreateTime,
+    service_update_time AS serviceUpdateTime,us.`loginname` as userName,us.token as token,us.id as userId
+    from service_model sm LEFT JOIN work_flow wf ON sm.service_model_flow_id = wf.id
+    LEFT JOIN work_space ws ON ws.id = wf.workspid LEFT JOIN `user` us ON us.id = ws.userid
+    where 1=1
+    <if test="serviceModelName != null and serviceModelName != '' " >
+      and sm.service_model_name like "%"#{serviceModelName}"%"
+    </if>
+    <if test="serviceModelId != null" >
+      and sm.service_model_id = #{serviceModelId}
+    </if>
+    <if test="userId != null" >
+      and us.id = #{userId}
+    </if>
+    order by service_create_time DESC
+  </select>
+
+  <select id="selectFlowIdByStatus" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+    service_model_id AS serviceModelId, service_model_name AS serviceModelName, service_model_flow_id AS serviceModelFlowId,
+    service_model_description AS serviceModelDescription, service_create_time AS serviceCreateTime,service_model_status as serviceModelStatus,
+    service_update_time AS serviceUpdateTime
+    from service_model where service_model_flow_id = #{serviceModelFlowId}
+  </select>
+
+  <select id="selectByServiceModelFlowId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    service_model_id AS serviceModelId, service_model_name AS serviceModelName, service_model_flow_id AS serviceModelFlowId,service_model_count as serviceModelCount,
+    service_model_description AS serviceModelDescription, service_create_time AS serviceCreateTime,service_model_status as serviceModelStatus,
+    service_update_time AS serviceUpdateTime
+    from service_model where service_model_flow_id = #{serviceModelFlowId}
+  </select>
+
+  <select id="selectFlowIdByRunStatus" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    SELECT `status` from calculation_history where flowId = #{serviceModelFlowId} ORDER BY create_time DESC LIMIT 0,1
+  </select>
+  <!-- 查询标签列-->
+  <select id="selectByTypeEight" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+      SELECT DISTINCT mattribute as selectTheColumn from model_attribute where type in(8)
+  </select>
+  <!-- 查询选择列-->
+  <select id="selectByTypeEleven" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+      SELECT DISTINCT mattribute as labelColumn from model_attribute where type in(11)
+  </select>
+
+  <select id="selectByPrimaryKey" resultType="org.com.drag.model.ServiceModel">
+     SELECT service_model_id AS serviceModelId, service_model_name AS serviceModelName, service_model_flow_id AS serviceModelFlowId,sm.service_model_context as serviceModelContext,
+    service_model_status as serviceModelStatus,service_model_count as serviceModelCount,wf.context as context,sm.outputPath as outputPath,
+    service_model_description AS serviceModelDescription, service_create_time AS serviceCreateTime,
+    service_update_time AS serviceUpdateTime,us.`loginname` as userName,us.token as token,us.id as userId,wf.`name` as workFlowName,ws.`name` as workSpaceName
+    from service_model sm LEFT JOIN work_flow wf ON sm.service_model_flow_id = wf.id
+    LEFT JOIN work_space ws ON ws.id = wf.workspid LEFT JOIN `user` us ON us.id = ws.userid
+    where  sm.service_model_id = #{serviceModelId}
+  </select>
+
+</mapper>

@@ -1,0 +1,507 @@
+/**
+ * Created by cdyoue on 2017/10/26.
+ */
+var zNodes = workFlowNodeList;
+
+$(function () {
+    $('.menu_title').on('click','.filter span',function () {
+        if($(this).next('ul').hasClass('dn')){
+            $(this).next('ul').removeClass('dn')
+        }else {
+            $(this).next('ul').addClass('dn')
+        }
+    });
+    $('.menu_title').on('click','.filter ul li',function () {
+        $(this).addClass('filter-active').siblings('li').removeClass('filter-active');
+        var txt=$(this).text();
+        var templateCategoryId=$(this).attr('data-id');
+        if (templateCategoryId==-1){
+            templateCategoryId=null;
+        }
+
+        var adminId=parseInt($(this).attr('data-adminId'));
+        var dataUserId=parseInt($(this).attr('data-userId'));
+
+        var dataAid=parseInt($(this).attr('data-Aid'));
+        var templateCategoryPid=parseInt($(this).attr('data-templateCategoryPid'));
+        $(this).parents('.filter').find('.filter-option').html(txt);
+        $(this).parents('ul').addClass('dn');
+        if(1 != dataAid){
+            dataAid=null;
+        }
+        $(this).parents('.filter').find('.filter-option').attr('data-Aid',dataAid);
+        $(this).parents('.filter').find('.filter-option').attr('data-templateCategoryPid',templateCategoryPid);
+        $(this).parents('.filter').find('.filter-option').attr('data-id',templateCategoryId);
+        $(this).parents(".filter").nextAll(".filter").remove();
+        var level=parseInt($(this).parents("ul.dn").attr('data-level'))+1,levelCH;
+        switch (level){
+            case 2: levelCH="二级：";
+            break;
+            case 3: levelCH="三级：";
+            break;
+            case 4: levelCH="四级：";
+            break;
+        }
+        $.ajax({
+            url: basePath + "/template/selectClassify.do",
+            type: 'POST',
+            dataType: "json",
+            data: {"pid": templateCategoryId,"adminId": dataAid},
+            success: function (json) {
+                if(json.obj.length == 0){
+
+                } else{
+                    if(level<5){
+                        var str='<div class="filter">'+levelCH+'<span><span class="filter-option">请选择分类</span><i class="icon iconfont icon-yousanjiao"></i></span>';
+                        str+='<ul class="dn" data-level="'+level+'">';
+                        str+='<li data-id="'+json.obj[0].templateCategoryId+'" data-Aid="'+json.obj[0].userid+'" data-templateCategoryPid="'+json.obj[0].templateCategoryPid+'" class="filter-active"><i class="glyphicon glyphicon-ok"></i><span>'+json.obj[0].templateCategoryName+'</span></li>';
+                        var str2="";
+                        for(var i=1;i<json.obj.length;i++){
+                            str2+='<li data-id="'+json.obj[i].templateCategoryId+'" data-Aid="'+json.obj[i].userid+'" data-templateCategoryPid="'+json.obj[0].templateCategoryPid+'"><i class="glyphicon glyphicon-ok"></i><span>'+json.obj[i].templateCategoryName+'</span></li>';
+                        }
+                        str+=str2;
+                        str+=' </ul>';
+                        str+='</div>';
+                        $('#choose-type').append(str);
+                    }
+                }
+            },
+            complete:function(){
+                //生成分页条
+                $("#Vuserid").val(null);
+                $("#adminId").val(null);
+                $("#templateCategoryName").val(null);
+                $("#templateCategoryId").val(null);
+                $("#templateCategoryPid").val(null);
+
+
+                if(dataAid != null){
+                    $("#adminId").val(dataAid);
+                    $("#templateCategoryName").val(txt);
+                    $("#templateCategoryId").val(templateCategoryId);
+                    $("#templateCategoryPid").val(templateCategoryPid);
+                    selectTempalateByName(null,dataAid,txt,null,templateCategoryId)
+                }else if(dataUserId){
+                    $("#Vuserid").val(dataUserId);
+                    $("#templateCategoryName").val(txt);
+                    $("#templateCategoryId").val(templateCategoryId);
+                    $("#templateCategoryPid").val(templateCategoryPid);
+                    selectTempalateByName(null,null,txt,dataUserId,templateCategoryId)
+                }else if(dataAid){
+                    $("#Vuserid").val(dataAid);
+                    $("#templateCategoryName").val(txt);
+                    $("#templateCategoryId").val(templateCategoryId);
+                    $("#templateCategoryPid").val(templateCategoryPid);
+                    selectTempalateByName(null,null,txt,dataAid,templateCategoryId)
+                }else{
+                    $("#Vuserid").val(null);
+                    $("#adminId").val(null);
+                    $("#templateCategoryName").val(txt);
+                    $("#templateCategoryId").val(templateCategoryId);
+                    $("#templateCategoryPid").val(templateCategoryPid);
+                    selectTempalateByName(null,null,txt,null,templateCategoryId)
+                }
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            }
+
+        });
+
+
+    })
+    //回车键搜索
+    $("#searchName").keydown(function(event){
+        event=document.all?window.event:event;
+        if((event.keyCode || event.which)==13){
+            selectTempalateByNameMethod(1);
+        }
+    });
+});
+// 首次进入查询使用分页
+function TemplatePaginator(adminId,templateCategoryName,Vuserid,templateCategoryId) {
+    var fileTotal = $("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            if (num != curPage) {
+                if(adminId == 1){
+                    selectTempalateByName(num,adminId,templateCategoryName,null,templateCategoryId)
+                }else {
+                    selectTempalateByName(num,null,templateCategoryName,Vuserid,templateCategoryId)
+                }
+
+            }
+        }
+    });
+}
+//首次进入页面查询(一次)
+selectTempalateByName(null,null,null,null);
+function selectTempalateByName(page,adminId,templateCategoryName,Vuserid,templateCategoryId) {
+    var TempalateName = $("#searchName").val();
+    if(!page){
+        page = 1;
+    }
+    $.ajax({
+        url: basePath + "/template/selectAllByAnyThingVim.do",
+        type: 'POST',
+        dataType: "json",
+        data: {"page": page,"templateName": TempalateName,"adminId":adminId,"templateCategoryName":templateCategoryName,"Vuserid":Vuserid,"tcid":templateCategoryId},
+        success: function (json) {
+            $("#templateBase").empty();//清空数据区
+            curPage = json.curPage; //当前页
+            totalPage = json.totalPage; //总页数
+            $("#totalpage").val(totalPage);
+            var sumNum = json.total;
+            $("#sumNum").html(sumNum+"个模型");
+            var rightPage = "";
+            var list = json.rows;
+            $.each(list, function (index, array) { //遍历json数据列
+                rightPage +="<div class=\"creat\">";
+                if(array['templatePictureDirectory']&&array['templatePictureName']){
+                    rightPage +=  "<div class='img-box'><img src='"+basePath+""+"/"+array['templatePictureDirectory']+"/"+array['templatePictureName']+"'" +
+                        " onerror=javascript:this.src=\""+basePath+"/content/images/template/template.png\"></div>";
+                }else{
+                    rightPage +=  "<div class='img-box'><img src=\""+basePath+"/content/images/template/template.png\" alt=\"\"></div>";
+                }
+                rightPage += "<div class=\"des\">"+
+                    "<div class=\"des_width\">"+
+                    "<p>" + array['templateName'] + "</p>"+
+                    "<p>" +'关键字:' + array['templateKeyword']+ "</p>"+
+                    "<p>" + array['templateDescription'] + "</p>"+
+                    "<input name='templateId' value='"+array['templateId']+"' type='hidden'>"+
+                    "<input name='flowId' value='"+array['flowId']+"' type='hidden'>"+
+                    "</div>"+
+                    "</div>"+
+                    "<div class=\"see\">"+
+                    "<a href=\"#basic\" class=\"creat_model creat-workFlow\">从模板创建</a>"+
+                    "<a href='"+basePath+"/drag/dispatcher/templateExplain.do?id="+array['templateId']+"&flowId="+array['flowId']+"'>查看说明文档</a>"+
+                    "</div>"+
+                    "</div>";
+            });
+            $("#templateBase").html(rightPage);
+        },
+        complete: function () { //生成分页条
+            if(adminId == 1){
+                TemplatePaginator(adminId,templateCategoryName,null,templateCategoryId)
+            }else {
+                TemplatePaginator(null,templateCategoryName,Vuserid,templateCategoryId)
+            }
+        },
+
+        error: function (data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            $("#promptMsg").html("数据加载失败");
+            mesShow();
+        }
+
+    })
+}
+function selectTempalateByName2(page) {
+    selectTempalateByNameMethod(page);
+}
+function selectTempalateByNameMethod(page) {
+    var TempalateName = $("#searchName").val();
+    if(TempalateName==""||TempalateName==null){
+        toastr.warning("搜索内容不能为空")
+    }else {
+        var adminId = $("#adminId").val();
+        var templateCategoryName = $("#templateCategoryName").val();
+        var Vuserid = $("#Vuserid").val();
+        var templateCategoryId = $("#templateCategoryId").val();
+        if(!page){
+            page = 1;
+        }
+        $.ajax({
+            url: basePath + "/template/selectAllByAnyThingVim.do",
+            type: 'POST',
+            dataType: "json",
+            data: {"page": page,"templateName": TempalateName,"adminId":adminId,"templateCategoryName":templateCategoryName,"Vuserid":Vuserid,"tcid":templateCategoryId},
+            success: function (json) {
+                $("#templateBase").empty();//清空数据区
+                curPage = json.curPage; //当前页
+                totalPage = json.totalPage; //总页数
+                $("#totalpage").val(totalPage);
+                var sumNum = json.total;
+                $("#sumNum").html(sumNum+"个模型");
+                var rightPage = "";
+                var list = json.rows;
+                $.each(list, function (index, array) { //遍历json数据列
+                    rightPage +="<div class=\"creat\">";
+                    if(array['templatePictureDirectory']&&array['templatePictureName']){
+                        rightPage +=  "<div class='img-box'><img src='"+basePath+""+"/"+array['templatePictureDirectory']+"/"+array['templatePictureName']+"'></div>";
+                    }else{
+                        rightPage +=  "<div class='img-box'><img src=\""+basePath+"/content/images/template/template.png\" alt=\"\"></div>";
+                    }
+                    rightPage += "<div class=\"des\">"+
+                        "<div class=\"des_width\">"+
+                        "<p>" + array['templateName'] + "</p>"+
+                        "<p>" +'关键字:' + array['templateKeyword']+ "</p>"+
+                        "<p>" + array['templateDescription'] + "</p>"+
+                        "<input name='templateId' value='"+array['templateId']+"' type='hidden'>"+
+                        "<input name='flowId' value='"+array['flowId']+"' type='hidden'>"+
+                        "</div>"+
+                        "</div>"+
+                        "<div class=\"see\">"+
+                        "<a href=\"#basic\" class=\"creat_model creat-workFlow\">从模板创建</a>"+
+                        "<a href='"+basePath+"/drag/dispatcher/templateExplain.do?id="+array['templateId']+"&flowId="+array['flowId']+"'>查看说明文档</a>"+
+                        "</div>"+
+                        "</div>";
+                });
+                $("#templateBase").html(rightPage);
+            },
+            complete: function () { //生成分页条
+                if(adminId = 1){
+                    TemplatePaginator(adminId,templateCategoryName,null)
+                }else {
+                    TemplatePaginator(null,templateCategoryName,userid)
+                }
+            },
+
+            error: function (data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+                $("#promptMsg").html("数据加载失败");
+                mesShow();
+            }
+
+        })
+    }
+
+}
+//上传弹框树形目录(工作流目录)
+var setting = {
+    async: {
+        enable: true,
+        url:basePath+"/drag/work/selectZtreeWindow.do",
+        autoParam:["id", "name","pId","isParent"],
+        otherParam:{"otherParam":"zTreeAsyncTest"},
+        dataFilter: filter
+    },
+    view: {
+        // addHoverDom: addHoverDom,
+        // removeHoverDom: removeHoverDom,
+        showIcon: showIconForTree,
+        selectedMulti: false,
+        showLine: false
+    },
+    edit: {
+        enable: true,
+        showRemoveBtn: false,
+        showRenameBtn: false
+    },
+    data: {
+        keep: {
+            parent:true,
+            leaf:true
+        },
+        simpleData: {
+            enable: true
+        }
+    },
+    callback: {
+        beforeDrag: beforeDrag,
+        // beforeRename: beforeRename,
+        beforeExpand: beforeExpand,
+        onExpand: onExpand,
+        onClick: onClick
+
+    }
+};
+function showIconForTree(treeId, treeNode) {
+    return treeNode.isParent;
+};
+function filter(treeId, parentNode, childNodes) {
+    console.log(childNodes);
+    if (!childNodes) return null;
+    var aa  = JSON.stringify(childNodes.obj);
+    var cc = JSON.parse(aa);
+    return cc;
+
+}
+
+function beforeDrag(treeId, treeNodes) {
+    return false;
+}
+var curExpandNode = null;
+function beforeExpand(treeId, treeNode) {
+    var pNode = curExpandNode ? curExpandNode.getParentNode():null;
+    var treeNodeP = treeNode.parentTId ? treeNode.getParentNode():null;
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    for(var i=0, l=!treeNodeP ? 0:treeNodeP.children.length; i<l; i++ ) {
+        if (treeNode !== treeNodeP.children[i]) {
+            zTree.expandNode(treeNodeP.children[i], false);
+        }
+    }
+    while (pNode) {
+        if (pNode === treeNode) {
+            break;
+        }
+        pNode = pNode.getParentNode();
+    }
+    if (!pNode) {
+        singlePath(treeNode);
+    }
+
+}
+function singlePath(newNode) {
+    if (newNode === curExpandNode) return;
+
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        rootNodes, tmpRoot, tmpTId, i, j, n;
+
+    if (!curExpandNode) {
+        tmpRoot = newNode;
+        while (tmpRoot) {
+            tmpTId = tmpRoot.tId;
+            tmpRoot = tmpRoot.getParentNode();
+        }
+        rootNodes = zTree.getNodes();
+        for (i=0, j=rootNodes.length; i<j; i++) {
+            n = rootNodes[i];
+            if (n.tId != tmpTId) {
+                zTree.expandNode(n, false);
+            }
+        }
+    } else if (curExpandNode && curExpandNode.open) {
+        if (newNode.parentTId === curExpandNode.parentTId) {
+            zTree.expandNode(curExpandNode, false);
+        } else {
+            var newParents = [];
+            while (newNode) {
+                newNode = newNode.getParentNode();
+                if (newNode === curExpandNode) {
+                    newParents = null;
+                    break;
+                } else if (newNode) {
+                    newParents.push(newNode);
+                }
+            }
+            if (newParents!=null) {
+                var oldNode = curExpandNode;
+                var oldParents = [];
+                while (oldNode) {
+                    oldNode = oldNode.getParentNode();
+                    if (oldNode) {
+                        oldParents.push(oldNode);
+                    }
+                }
+                if (newParents.length>0) {
+                    zTree.expandNode(oldParents[Math.abs(oldParents.length-newParents.length)-1], false);
+                } else {
+                    zTree.expandNode(oldParents[oldParents.length-1], false);
+                }
+            }
+        }
+    }
+    curExpandNode = newNode;
+}
+
+function onExpand(event, treeId, treeNode) {
+    curExpandNode = treeNode;
+}
+//创建新的工作流
+function createWorkFlow() {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    nodes = zTree.getSelectedNodes();
+    treeNode = nodes[0];
+    var workFlowName = $("#nameWork").val();
+    var flowExplain = $("#flowExplain").val();
+    var templateId = $("#templateId").val();
+    var flowId = $("#flowId").val();
+    if(workFlowName.trim().length == 0 || workFlowName.trim().length >= 20){
+        $(".selectMagName").html("请填写20以内字符");
+        return;
+    }else{
+        $(".selectMagName").html("");
+    }
+    if (nodes.length == 0) {
+        // alert("请先选择一个节点");
+        $(".selectMag").html("请先选择目录");
+        return;
+    }
+    if(!treeNode.isParent==true){
+        $(".selectMag").html("请先选择目录")
+    }else{
+        $.ajax({
+            url: basePath + "/template/copyWorkFlow.do",
+            type: 'POST',
+            // dataType: "json",
+            data: {"workSpaceId": treeNode.id,"workFlowName": workFlowName,"flowExplain":flowExplain,"workFlowId":flowId},
+            success: function (json) {
+                var returnData = JSON.parse(json);
+                switch (returnData.code) {
+                    case 417:
+                        toastr.error(returnData.msg);
+                        $("#basic").modal("hide");
+                        break;
+                    case 200:
+                        toastr.success(returnData.msg);
+                        window.location.href=basePath+"/drag/dataModel/select.do?name="+workFlowName+"&flowId="+returnData.obj+"&workSpaceName="+treeNode.name;
+                        break;
+                }
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            },
+            complete:function(data){
+                if(data == "AjaxSessionTimeout"){
+                    window.location.href=basePath;
+                    return;
+                }
+            },
+        });
+    }
+
+}
+
+function onClick(e,treeId, treeNode) {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    zTree.expandNode(treeNode, null, null, null, true);
+}
+
+// 从模板创建
+$("#templateBase").on("click",".creat-workFlow",function () {
+    var templateId=$(this).parents(".creat").find("input[name=templateId]").val();
+    var flowId=$(this).parents(".creat").find("input[name='flowId']").val();
+
+    $("#templateId").val(templateId);
+    $("#flowId").val(flowId);
+
+    $("#basic").modal("show");
+
+
+
+})
+// 从模板创建 end
+
+// 弹框目录树滚动条
+$(window).on("load", function () {
+    $("body .treeDeomBox").mCustomScrollbar({
+        theme: "dark-thin",
+        axis:"y",
+        setLeft: 0,
+        scrollbarPosition: "inside"
+    });
+});

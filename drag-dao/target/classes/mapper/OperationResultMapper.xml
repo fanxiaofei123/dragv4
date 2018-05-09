@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.OperationResultMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.OperationResult" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="workflowid" property="workflowid" jdbcType="INTEGER" />
+    <result column="result_time" property="resultTime" jdbcType="TIMESTAMP" />
+    <result column="result_cont" property="resultCont" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, workflowid, result_time, result_cont, name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from operation_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from operation_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.OperationResult" >
+    insert into operation_result (id, userid, workflowid, 
+      result_time, result_cont, name
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{workflowid,jdbcType=INTEGER}, 
+      #{resultTime,jdbcType=TIMESTAMP}, #{resultCont,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.OperationResult" >
+    insert into operation_result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="workflowid != null" >
+        workflowid,
+      </if>
+      <if test="resultTime != null" >
+        result_time,
+      </if>
+      <if test="resultCont != null" >
+        result_cont,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="workflowid != null" >
+        #{workflowid,jdbcType=INTEGER},
+      </if>
+      <if test="resultTime != null" >
+        #{resultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resultCont != null" >
+        #{resultCont,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.OperationResult" >
+    update operation_result
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="workflowid != null" >
+        workflowid = #{workflowid,jdbcType=INTEGER},
+      </if>
+      <if test="resultTime != null" >
+        result_time = #{resultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resultCont != null" >
+        result_cont = #{resultCont,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.OperationResult" >
+    update operation_result
+    set userid = #{userid,jdbcType=INTEGER},
+      workflowid = #{workflowid,jdbcType=INTEGER},
+      result_time = #{resultTime,jdbcType=TIMESTAMP},
+      result_cont = #{resultCont,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

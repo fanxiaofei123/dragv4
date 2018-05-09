@@ -1,0 +1,73 @@
+package org.com.drag.service.impl;
+
+import org.com.drag.dao.DataMiningCategoryMapper;
+import org.com.drag.dao.DataMiningMapper;
+import org.com.drag.model.DataMining;
+import org.com.drag.model.DataMiningCategory;
+import org.com.drag.service.DataMiningCategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class DataMiningCategoryServiceImpl extends BaseServiceImpl<DataMiningCategory> implements DataMiningCategoryService{
+
+    @Autowired
+    private DataMiningCategoryMapper dataMiningCategoryMapper;
+
+    @Autowired
+    private DataMiningMapper dataMiningMapper;
+
+    @Override
+    public List<DataMiningCategory> selectAll(DataMiningCategory dataMiningCategory){
+        List<DataMiningCategory> dataMiningCategoryList = dataMiningCategoryMapper.selectAll(dataMiningCategory);
+        return dataMiningCategoryList;
+    }
+
+    @Override
+    public int updateCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.updateCategoryById(dataMiningCategory);
+    }
+
+    @Override
+    public int deleteCategory(Integer id){
+        return dataMiningCategoryMapper.deleteCategoryById(id);
+    }
+
+    @Override
+    public int insertMiningCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.insertMiningCategory(dataMiningCategory);
+    }
+
+    @Override
+    public int insertMining(DataMining dataMining){
+        return dataMiningMapper.insertDataMining(dataMining);
+    }
+
+    @Override
+    public List<DataMiningCategory> selectZtree(Integer userid, Integer pId, Integer isParent){
+        return dataMiningCategoryMapper.selectZtree(userid,pId,isParent);
+    }
+
+    @Override
+    public List<DataMiningCategory> selectDataMiningCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.selectDataMiningCategory(dataMiningCategory);
+    }
+
+    @Override
+    public List<Map<String, Object>> getDataMiningCategoryBall(){
+        return dataMiningCategoryMapper.getDataMiningCategoryBall();
+    }
+
+    @Override
+    public DataMiningCategory getPid(Integer id){
+        return dataMiningCategoryMapper.selectOneDataMiningCategory(id);
+    }
+
+    @Override
+    public int selectSum(Integer id,String name,Integer pid,Integer uid){
+        return dataMiningCategoryMapper.selectSum(id,name,pid,uid);
+    }
+}

@@ -1,0 +1,30 @@
+GetInputData_port1 <- function(args)
+{
+    filePath <- args[1]
+    if(!file.exists(filePath))
+    {
+	   cat("warning:input data not find!\n")
+	   return(NULL)
+	}
+	inputData <- read.csv(filePath,stringsAsFacotrs = F,encoding = 'UTF-8',check.names = F)
+	if(nrow(inputData) == 0)
+	{
+	   stop('input data is empty\n')
+	}
+	return(inputData)
+}
+GetInputModel_port2 <- function(args)
+{
+    filePath <- args[2]
+    if(!file.exists(filePath))
+    {
+	   cat("warning:input model not find!\n")
+	   return(NULL)
+	}
+	inputModel<- readRDS(filePath)
+	if(is.empty.model(inputModel))
+	{
+	   stop('input model is invalid\n')
+	}
+	return(inputModel)
+}

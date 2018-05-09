@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.DataMiningCategoryMapper" >
+    <resultMap id="BaseResultMap" type="org.com.drag.model.DataMiningCategory">
+        <id column="data_mining_category_id" property="dataMiningCategoryId" jdbcType="INTEGER" />
+        <result column="data_mining_category_description" property="dataMiningCategoryDescription" jdbcType="VARCHAR" />
+
+        <result column="data_mining_category_name" property="dataMiningCategoryName" jdbcType="VARCHAR" />
+        <result column="data_mining_category_pid" property="dataMiningCategoryPid" jdbcType="INTEGER" />
+        <result column="data_mining_category_is_parent" property="dataMiningCategoryIsParent" jdbcType="TINYINT"/>
+        <result column="userid" property="userid" jdbcType="INTEGER"/>
+
+        <result column="data_mining_name" property="dataMiningName" jdbcType="VARCHAR"/>
+        <result column="data_mining__description" property="dataMiningDescription" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select  data_mining_category_id,data_mining_category_name,data_mining_category_pid,data_mining_category_is_parent,userid
+        from data_mining_category
+    </select>
+
+    <update id="updateCategoryById" parameterType="org.com.drag.model.DataMiningCategory">
+        update data_mining_category
+        <set>
+            <if test="dataMiningCategoryName != null">
+                data_mining_category_name=#{dataMiningCategoryName}
+            </if>
+        </set>
+        where data_mining_category_id = #{dataMiningCategoryId}
+    </update>
+    
+    <select id="getOneCategory" parameterType="int" resultMap="BaseResultMap">
+        select data_mining_name,data_mining__description
+        from data_mining_category dmc
+        LEFT JOIN data_mining dm ON dmc.data_mining_category_id=dm.data_mining_category_id
+        WHERE dmc.data_mining_category_id=#{id}
+    </select>
+
+    <select id="getACategory" parameterType="int" resultMap="BaseResultMap">
+        select data_mining_category_id,data_mining_category_name,data_mining_category_pid,data_mining_category_is_parent,userid
+        from data_mining_category
+        where data_mining_category_id = #{id}
+    </select>
+
+    <delete id="deleteCategoryById" parameterType="int">
+        delete from data_mining_category where data_mining_category_id=#{id}
+    </delete>
+
+    <!--新建文件夹-->
+    <insert id="insertMiningCategory" parameterType="org.com.drag.model.DataMiningCategory">
+        insert into data_mining_category
+        (data_mining_category_id,data_mining_category_description,data_mining_category_name,data_mining_category_pid,data_mining_category_is_parent,userid)
+        select
+        (select MAX(data_mining_category_id) from data_mining_category)+1,#{dataMiningCategoryDescription},#{dataMiningCategoryName},#{dataMiningCategoryPid},#{dataMiningCategoryIsParent},#{userid}
+    </insert>
+
+    <!--新建挖掘分析项todo-->
+    <insert id="insertCategory" parameterType="org.com.drag.model.DataMiningCategory">
+        insert into data_mining_category
+        (data_mining_category_id,data_mining_category_description,data_mining_category_name,data_mining_category_pid,data_mining_category_is_parent,userid)
+        select
+        (select MAX(data_mining_category_id) from data_mining_category)+1,#{dataMiningCategoryDescription},#{dataMiningCategoryName},#{dataMiningCategoryPid},#{dataMiningCategoryIsParent},#{userid}
+    </insert>
+
+    <insert id="insertMining" parameterType="org.com.drag.model.DataMiningCategory">
+        insert into data_mining
+        (data_mining_id,work_flow_id,data_mining_category_id,data_mining_name,data_mining__description,create_time)
+        select
+        (select MAX(data_mining_id) from data_mining)+1,null,(select count(1) from data_mining_category),#{dataMiningName},#{dataMiningDescription},now()
+    </insert>
+
+    <select id="selectZtree" parameterType="map" resultMap="BaseResultMap">
+        select dmc.data_mining_category_id,dmc.data_mining_category_name,dmc.data_mining_category_pid,dmc.data_mining_category_is_parent,dmc.userid
+        from data_mining_category dmc
+        where dmc.userid = #{userid} and dmc.data_mining_category_pid=#{pId}
+    </select>
+
+    <select id="selectDataMiningCategory" parameterType="org.com.drag.model.DataMiningCategory" resultMap="BaseResultMap">
+        select data_mining_category_id,data_mining_category_description,data_mining_category_name,
+        data_mining_category_pid,data_mining_category_is_parent,userid
+        from data_mining_category
+        <where>
+            <if test="dataMiningCategoryId != null" >
+                data_mining_category_id=#{dataMiningCategoryId}
+            </if>
+            <if test="dataMiningCategoryDescription != null" >
+                and   data_mining_category_description=#{dataMiningCategoryDescription}
+            </if>
+            <if test="dataMiningCategoryName != null" >
+                and  data_mining_category_name=#{dataMiningCategoryName}
+            </if>
+            <if test="dataMiningCategoryPid != null" >
+                and  data_mining_category_pid=#{dataMiningCategoryPid}
+            </if>
+            <if test="dataMiningCategoryIsParent != null" >
+                and  data_mining_category_is_parent=#{dataMiningCategoryIsParent}
+            </if>
+            <if test="userid != null" >
+                and  userid=#{userid}
+            </if>
+        </where>
+    </select>
+
+    <select id="getDataMiningCategoryBall" resultType="map">
+        select dmc.data_mining_category_id AS dmcId,dmc.data_mining_category_description AS dmcDescription,dmc.data_mining_category_name AS dmcName,
+        dmc.data_mining_category_pid AS dmcPid,dmc.data_mining_category_is_parent AS dmcIsParent,dmc.userid AS dmcUserId,
+        dm.data_mining_id AS dmId,dm.work_flow_id AS dmFlowId,dm.data_mining_category_id AS dmCategoryId,dm.data_mining_name AS dmName,
+        dm.data_mining__description AS dmDescription,dm.create_time AS dmTime,
+        wf.name AS wfName
+        from data_mining_category dmc
+        left join data_mining dm on dmc.data_mining_category_id = dm.data_mining_category_id
+        inner join work_flow wf on dm.work_flow_id = wf.id
+    </select>
+
+    <select id="selectOneDataMiningCategory" resultMap="BaseResultMap" parameterType="int">
+        select dmc.data_mining_category_id,dmc.data_mining_category_description,dmc.data_mining_category_name,
+        dmc.data_mining_category_pid,dmc.data_mining_category_is_parent,dmc.userid
+        from data_mining_category dmc
+        WHERE dmc.data_mining_category_id=#{id}
+    </select>
+
+</mapper>

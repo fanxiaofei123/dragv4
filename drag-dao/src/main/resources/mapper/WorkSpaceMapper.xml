@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.WorkSpaceMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.WorkSpace" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_content" property="createContent" jdbcType="VARCHAR" />
+    <result column="result_contect" property="resultContect" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="hdfs_url" property="hdfsUrl" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, create_time, create_content, result_contect, name, hdfs_url,pid,isParent
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="countAll"  resultType="java.lang.Integer" >
+    select  count(*)  from work_space
+  </select>
+  
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    where name = #{name,jdbcType=INTEGER}
+  </select>
+  
+  <select id="UserCountWorkSpace" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    where userid = #{userId,jdbcType=INTEGER}
+     order BY create_time DESC
+  </select>
+  
+   <select id="selectWorkSpace" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkSpace" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    <where>
+       <if test="w.id != null" >
+       id = #{w.id,jdbcType=INTEGER}
+      </if>
+      <if test="w.userid != null" >
+      and userid = #{w.userid,jdbcType=INTEGER}
+      </if>
+      <if test="w.createTime != null" >
+       and createTime = #{w.createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="w.createContent != null" >
+       and  createContent = #{w.createContent,jdbcType=VARCHAR}
+      </if>
+      <if test="w.resultContect != null" >
+       and resultContect = #{w.resultContect,jdbcType=VARCHAR}
+      </if>
+      <if test="w.name != null" >
+       and name = #{w.name,jdbcType=VARCHAR}
+      </if>
+      <if test="w.hdfsUrl != null" >
+       and hsfsUrl = #{w.hdfsUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="w.pid != null" >
+       and pid = #{w.pid,jdbcType=INTEGER}
+      </if>
+      <if test="w.isParent != null" >
+       and isParent = #{w.isParent,jdbcType=INTEGER}
+      </if>
+    </where>
+     order BY create_time DESC
+  </select>
+  
+  
+  
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkSpace" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    <where>
+       <if test="id != null" >
+       id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="userid != null" >
+      and userid = #{userid,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+       and createTime = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createContent != null" >
+       and  createContent = #{createContent,jdbcType=VARCHAR}
+      </if>
+      <if test="resultContect != null" >
+       and resultContect = #{resultContect,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null" >
+       and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="hdfsUrl != null" >
+       and hsfsUrl = #{hdfsUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="pid != null" >
+       and pid = #{pid,jdbcType=INTEGER}
+      </if>
+      <if test="isParent != null" >
+       and isParent = #{isParent,jdbcType=INTEGER}
+      </if>
+    </where>
+     order BY create_time DESC
+  </select>
+  
+  
+  
+   <select id="selectWorkSpaceName" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkSpace" >
+    select 
+    <include refid="Base_Column_List" />
+    from work_space
+    <where>
+       <if test="w.id != null" >
+       id = #{w.id,jdbcType=INTEGER}
+      </if>
+      <if test="w.userid != null" >
+      and userid = #{w.userid,jdbcType=INTEGER}
+      </if>
+      <if test="w.createTime != null" >
+       and createTime = #{w.createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="w.createContent != null" >
+       and  createContent = #{w.createContent,jdbcType=VARCHAR}
+      </if>
+      <if test="w.resultContect != null" >
+       and resultContect = #{w.resultContect,jdbcType=VARCHAR}
+      </if>
+      <if test="w.name != null" >
+       and name LIKE "%"#{w.name,jdbcType=VARCHAR}"%"
+      </if>
+      <if test="w.hdfsUrl != null" >
+       and hsfsUrl = #{w.hdfsUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="w.pid != null" >
+       and pid = #{w.pid,jdbcType=INTEGER}
+      </if>
+      <if test="w.isParent != null" >
+       and isParent = #{w.isParent,jdbcType=INTEGER}
+      </if>
+    </where>
+     order BY create_time DESC
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work_space
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  
+   <delete id="deleteByBatch" parameterType="org.com.drag.model.WorkSpace">
+    delete from work_space
+    <where>
+     <if test="ids != null">
+        and id in 
+           <foreach item="item" index="index" collection="ids" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+    </where>
+  </delete>
+  
+  
+  
+  <insert id="insert" parameterType="org.com.drag.model.WorkSpace" >
+    insert into work_space (id, userid, create_time, 
+      create_content, result_contect, name, 
+      hdfs_url,pid,isParent)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createContent,jdbcType=VARCHAR}, #{resultContect,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{hdfsUrl,jdbcType=VARCHAR},#{pid,jdbcType=INTEGER},#{isParent,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.WorkSpace" >
+    insert into work_space
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createContent != null" >
+        create_content,
+      </if>
+      <if test="resultContect != null" >
+        result_contect,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="hdfsUrl != null" >
+        hdfs_url,
+      </if>
+      <if test="pid != null" >
+          pid,
+      </if>
+      <if test="isParent != null" >
+          isParent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createContent != null" >
+        #{createContent,jdbcType=VARCHAR},
+      </if>
+      <if test="resultContect != null" >
+        #{resultContect,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="hdfsUrl != null" >
+        #{hdfsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="isParent != null" >
+        #{isParent,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.WorkSpace" >
+    update work_space
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createContent != null" >
+        create_content = #{createContent,jdbcType=VARCHAR},
+      </if>
+      <if test="resultContect != null" >
+        result_contect = #{resultContect,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="hdfsUrl != null" >
+        hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+          pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="isParent != null" >
+          isParent = #{isParent,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.WorkSpace" >
+    update work_space
+    set userid = #{userid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_content = #{createContent,jdbcType=VARCHAR},
+      result_contect = #{resultContect,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=INTEGER},
+      isParent = #{isParent,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <!-- 查询tree所需要的数据-->
+    <select id="selectZtree" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT id, userid, create_time, create_content, result_contect, name, hdfs_url,pid,isParent from work_space where
+        userid = #{userid,jdbcType=INTEGER} and pid = #{pid,jdbcType=INTEGER};
+    </select>
+    <!--查询pid所对应的hdfs路径folderAllPath-->
+    <select id="folderAllPath" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT hdfs_url from work_space where
+        id = #{pid,jdbcType=INTEGER};
+    </select>
+</mapper>

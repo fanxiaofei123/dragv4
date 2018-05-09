@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="loginname" property="loginname" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="usertype" property="usertype" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="token" property="token" jdbcType="VARCHAR" />
+    <result column="hdfs_url" property="hdfsUrl" jdbcType="VARCHAR" />
+    <result column="tips" property="tips" jdbcType="INTEGER" />
+    <result column="user_sex" property="userSex" jdbcType="VARCHAR" />
+    <result column="user_education" property="education" jdbcType="VARCHAR" />
+    <result column="user_school" property="school" jdbcType="VARCHAR" />
+    <result column="user_occupation" property="occupation" jdbcType="VARCHAR" />
+    <result column="user_describe" property="describe" jdbcType="VARCHAR" />
+    <result column="user_developer" property="developer" jdbcType="INTEGER" />
+    <result column="organization_id" property="organizationId" jdbcType="INTEGER" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, loginname, name, password, usertype, status, createdate, email, hdfs_url, token, 
+    tips, user_sex, user_education, user_school, user_occupation, user_describe,user_developer,organization_id,salt
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <select id="countAll"  resultType="java.lang.Integer" >
+    select count(*)  from user
+  </select>
+  
+  
+   <select id="selectByUser" resultMap="BaseResultMap" parameterType="org.com.drag.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+        <if test="loginname != null" >
+         loginname = #{loginname,jdbcType=VARCHAR}
+      </if>
+     <!--  <if test="name != null" >
+        and name = #{name,jdbcType=VARCHAR}
+      </if> -->
+      <if test="password != null" >
+       and password = #{password,jdbcType=VARCHAR}
+      </if>
+      <if test="usertype != null" >
+       and usertype = #{usertype,jdbcType=TINYINT}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="createdate != null" >
+       and  createdate = #{createdate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="email != null" >
+        and email = #{email,jdbcType=VARCHAR}
+      </if>
+      <if test="hdfsUrl != null" >
+       and  hdfs_url = #{hdfsUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="token != null" >
+       and  token = #{token,jdbcType=VARCHAR}
+      </if>
+      <if test="tips != null" >
+       and  tips = #{tips,jdbcType=INTEGER}
+      </if>
+      <if test="userSex != null" >
+       and user_sex = #{userSex,jdbcType=VARCHAR}
+      </if>
+      <if test="education != null" >
+       and user_education = #{education,jdbcType=VARCHAR}
+      </if>
+      <if test="school != null" >
+       and user_school = #{school,jdbcType=VARCHAR}
+      </if>
+      <if test="occupation != null" >
+       and user_occupation = #{occupation,jdbcType=VARCHAR}
+      </if>
+      <if test="describe != null" >
+       and user_describe = #{describe,jdbcType=VARCHAR}
+      </if>
+      <if test="developer != null" >
+       and user_developer = #{developer,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  
+   <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+     ORDER BY createdate DESC
+  </select>
+  
+    <select id="selectNameAll" resultMap="BaseResultMap" parameterType="org.com.drag.model.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+     <where>
+        <if test="loginname != null" >
+         loginname  LIKE "%"#{loginname,jdbcType=VARCHAR}"%"
+      </if>
+      </where>
+     ORDER BY createdate DESC
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey"  parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="org.com.drag.model.User" >
+    insert into user (id, loginname, name, 
+      password, usertype, status, 
+      createdate, email, hdfs_url, 
+      token, tips, user_sex, user_education, 
+      user_school, user_occupation, user_describe,user_developer
+      )
+    values (#{id,jdbcType=INTEGER}, #{loginname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{usertype,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{createdate,jdbcType=TIMESTAMP}, #{email,jdbcType=VARCHAR}, #{hdfsUrl,jdbcType=VARCHAR}, 
+      #{token,jdbcType=VARCHAR}, #{tips,jdbcType=INTEGER}, #{userSex,jdbcType=VARCHAR}, #{education,jdbcType=VARCHAR}, 
+      #{school,jdbcType=VARCHAR}, #{occupation,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR},#{developer,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="loginname != null" >
+        loginname,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="usertype != null" >
+        usertype,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="hdfsUrl != null" >
+        hdfs_url,
+      </if>
+      <if test="token != null" >
+        token,
+      </if>
+      <if test="tips != null" >
+        tips,
+      </if>
+      <if test="sex != null" >
+        user_sex,
+      </if>
+      <if test="education != null" >
+        user_education,
+      </if>
+      <if test="school != null" >
+        user_school,
+      </if>
+      <if test="occupation != null" >
+        user_occupation,
+      </if>
+      <if test="describe != null" >
+        user_describe,
+      </if>
+      <if test="developer != null" >
+        user_developer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="loginname != null" >
+        #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        #{usertype,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="hdfsUrl != null" >
+        #{hdfsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null" >
+        #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="tips != null" >
+        #{tips,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=VARCHAR},
+      </if>
+      <if test="school != null" >
+        #{school,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null" >
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="developer != null" >
+        #{developer,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.User" >
+    update user
+    <set >
+      <if test="loginname != null" >
+        loginname = #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        usertype = #{usertype,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="hdfsUrl != null" >
+        hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null" >
+        token = #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="tips != null" >
+        tips = #{tips,jdbcType=INTEGER},
+      </if>
+      <if test="userSex != null" >
+        user_sex = #{userSex,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        user_education = #{education,jdbcType=VARCHAR},
+      </if>
+      <if test="school != null" >
+        user_school = #{school,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        user_occupation = #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null" >
+        user_describe = #{describe,jdbcType=VARCHAR},
+      </if>
+       <if test="developer != null" >
+        user_developer = #{developer,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.User" >
+    update user
+    set loginname = #{loginname,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      usertype = #{usertype,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      createdate = #{createdate,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR},
+      hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+      token = #{token,jdbcType=VARCHAR},
+      tips = #{tips,jdbcType=INTEGER},
+      user_sex = #{userSex,jdbcType=VARCHAR},
+      user_education = #{education,jdbcType=VARCHAR},
+      user_school = #{school,jdbcType=VARCHAR},
+      user_occupation = #{occupation,jdbcType=VARCHAR},
+      user_describe = #{describe,jdbcType=VARCHAR},
+       user_developer = #{developer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByLoginName" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where loginname=#{username}
+  </select>
+  <select id="selectById" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id=#{userId}
+  </select>
+</mapper>

@@ -1,0 +1,46 @@
+table.dataTable td.sorting_1,
+table.dataTable td.sorting_2,
+table.dataTable td.sorting_3,
+table.dataTable th.sorting_1,
+table.dataTable th.sorting_2,
+table.dataTable th.sorting_3 {
+  background: transparent !important;
+}
+.dataList {
+  min-width: 1000px;
+}
+.dataList .portlet-body #sample_2_filter {
+  float: right;
+}
+.dataList .portlet-body table tbody tr td {
+  height: 50px;
+  vertical-align: middle;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.dataList .portlet-body table tbody tr td .fileType {
+  float: left;
+  font-size: 34px;
+  padding-right: 5px;
+}
+.dataList .portlet-body table tbody tr td .fileContent {
+  float: left;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a {
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a:hover {
+  color: #32c5d2;
+}
+.modal .modal-dialog .modal-content .modal-body {
+  padding-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet {
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions {
+  padding: 20px 0;
+  text-align: right;
+}

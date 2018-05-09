@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.FacadeModelRecordMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.FacadeModelRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="model_id" property="modelId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_url" property="updateUrl" jdbcType="VARCHAR" />
+    <result column="down_url" property="downUrl" jdbcType="VARCHAR" />
+    <result column="f_name" property="fName" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="mail" property="mail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, model_id, create_time, update_url, down_url, f_name, user_name,type,reason,tel,mail
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from facade_model_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  
+    <select id="selectByFacadeModelRecord" resultMap="BaseResultMap" parameterType="org.com.drag.model.FacadeModelRecord" >
+    select 
+    <include refid="Base_Column_List" />
+    from facade_model_record
+    <where>
+    <if test="id != null" >
+       id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="modelId != null" >
+      and model_id = #{modelId,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+       and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateUrl != null" >
+       and update_url =  #{updateUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="downUrl != null" >
+       and down_url = #{downUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="fName != null" >
+       and f_name = #{fName,jdbcType=VARCHAR}
+      </if>
+      <if test="userName != null" >
+       and user_name = #{userName,jdbcType=VARCHAR}
+      </if>
+       <if test="type != null" >
+       and type = #{type,jdbcType=INTEGER}
+      </if>
+       <if test="reason != null" >
+       and reason = #{reason,jdbcType=VARCHAR}
+      </if>
+       <if test="tel != null" >
+       and tel = #{tel,jdbcType=VARCHAR}
+      </if>
+       <if test="mail != null" >
+       and mail = #{mail,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from facade_model_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.FacadeModelRecord" >
+    insert into facade_model_record (id, model_id, create_time, 
+      update_url, down_url, f_name, 
+      user_name,type,reason,tel,mail)
+    values (#{id,jdbcType=INTEGER}, #{modelId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUrl,jdbcType=VARCHAR}, #{downUrl,jdbcType=VARCHAR}, #{fName,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{reason,jdbcType=VARCHAR},#{tel,jdbcType=VARCHAR},#{mail,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.FacadeModelRecord" >
+    insert into facade_model_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="modelId != null" >
+        model_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUrl != null" >
+        update_url,
+      </if>
+      <if test="downUrl != null" >
+        down_url,
+      </if>
+      <if test="fName != null" >
+        f_name,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+       <if test="type != null" >
+        type,
+      </if>
+       <if test="reason != null" >
+        reason,
+      </if>
+       <if test="tel != null" >
+        tel,
+      </if>
+       <if test="mail != null" >
+        mail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="modelId != null" >
+        #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUrl != null" >
+        #{updateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="downUrl != null" >
+        #{downUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fName != null" >
+        #{fName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null" >
+        #{mail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.FacadeModelRecord" >
+    update facade_model_record
+    <set >
+      <if test="modelId != null" >
+        model_id = #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUrl != null" >
+        update_url = #{updateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="downUrl != null" >
+        down_url = #{downUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fName != null" >
+        f_name = #{fName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+       <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+       <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+       <if test="tel != null" >
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+       <if test="mail != null" >
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.FacadeModelRecord" >
+    update facade_model_record
+    set model_id = #{modelId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_url = #{updateUrl,jdbcType=VARCHAR},
+      down_url = #{downUrl,jdbcType=VARCHAR},
+      f_name = #{fName,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+       type = #{type,jdbcType=INTEGER},
+        reason = #{reason,jdbcType=VARCHAR},
+         tel = #{tel,jdbcType=VARCHAR},
+          mail = #{mail,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

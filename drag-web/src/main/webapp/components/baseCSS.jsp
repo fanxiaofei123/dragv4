@@ -1,0 +1,34 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: cdyoue
+  Date: 2016/11/4
+  Time: 16:58
+  To change this template use File | Settings | File Templates.
+--%>
+<jsp:include page="url.jsp" flush="true" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<meta content="" name="description" />
+<meta content="" name="author" />
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="${basePath}/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="${basePath}/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+<link href="${basePath}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="${basePath}/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+
+<%--<link rel="stylesheet" type="text/css" href="${basePath}/assets/global/plugins/iconFont/iconfont.css">--%>
+<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_390250_60q7uszhfov42t9.css">
+
+<!-- END GLOBAL MANDATORY STYLES -->
+<!-- BEGIN THEME GLOBAL STYLES -->
+<link href="${basePath}/assets/global/css/components.css" rel="stylesheet" id="style_components" type="text/css" />
+<link href="${basePath}/assets/global/css/plugins.css" rel="stylesheet" type="text/css" />
+<!-- END THEME GLOBAL STYLES -->
+<!-- BEGIN THEME LAYOUT STYLES -->
+<link href="${basePath}/assets/layouts/layout2/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="${basePath}/assets/layouts/layout2/css/themes/blue.css" rel="stylesheet" type="text/css" id="style_color" />
+<link href="${basePath}/assets/layouts/layout2/css/custom.css" rel="stylesheet" type="text/css" />
+<!-- END THEME LAYOUT STYLES -->
+<link rel="shortcut icon" href="${basePath}/images/favicon.ico" />
+<link rel="stylesheet" href="${basePath}/content/css/base.css">
+

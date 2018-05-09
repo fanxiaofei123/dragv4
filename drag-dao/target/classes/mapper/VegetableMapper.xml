@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.VegetableMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.Vegetable" >
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="market" property="market" jdbcType="VARCHAR" />
+    <result column="price" property="value" jdbcType="VARCHAR" />
+    <result column="empty" property="empty" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    name, market, price, empty, time
+  </sql>
+  <select id="selectGUIYANG" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vegetable
+    where (market like '%贵阳%' or market like '%贵州%')
+    <if test="name != null">
+    	and `name`=#{name}
+    </if>
+    order by `time`
+  </select>
+  <select id="selectName" resultType="java.lang.String">
+  	select distinct `name` from vegetable
+  </select>
+</mapper>

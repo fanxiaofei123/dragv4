@@ -1,0 +1,68 @@
+package org.com.drag.service.impl;
+
+import org.com.drag.dao.DataMiningCategoryMapper;
+import org.com.drag.dao.DataMiningMapper;
+import org.com.drag.model.DataMining;
+import org.com.drag.model.DataMiningCategory;
+import org.com.drag.service.DataMiningCategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class DataMiningCategoryServiceImpl extends BaseServiceImpl<DataMiningCategory> implements DataMiningCategoryService{
+
+    @Autowired
+    private DataMiningCategoryMapper dataMiningCategoryMapper;
+
+    @Autowired
+    private DataMiningMapper dataMiningMapper;
+
+    public List<DataMiningCategory> selectAll(DataMiningCategory dataMiningCategory){
+        List<DataMiningCategory> dataMiningCategoryList = dataMiningCategoryMapper.selectAll(dataMiningCategory);
+        return dataMiningCategoryList;
+    }
+
+    public int updateCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.updateCategoryById(dataMiningCategory);
+    }
+
+    public int deleteCategory(Integer id){
+        return dataMiningCategoryMapper.deleteCategoryById(id);
+    }
+
+    public DataMiningCategory getOneCategory(Integer id){
+        return dataMiningCategoryMapper.getOneCategory(id);
+    }
+
+    public DataMiningCategory getACategory(Integer id){
+        return dataMiningCategoryMapper.getACategory(id);
+    }
+
+    public int insertMiningCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.insertMiningCategory(dataMiningCategory);
+    }
+
+    //@Transactional
+    public int insertMining(DataMining dataMining){
+        return dataMiningMapper.insertDataMining(dataMining);
+    }
+
+    public List<DataMiningCategory> selectZtree(Integer userid, Integer pId, Integer isParent){
+        return dataMiningCategoryMapper.selectZtree(userid,pId,isParent);
+    }
+
+    public List<DataMiningCategory> selectDataMiningCategory(DataMiningCategory dataMiningCategory){
+        return dataMiningCategoryMapper.selectDataMiningCategory(dataMiningCategory);
+    }
+
+    public List<Map<String, Object>> getDataMiningCategoryBall(){
+        return dataMiningCategoryMapper.getDataMiningCategoryBall();
+    }
+
+    public DataMiningCategory getPid(Integer id){
+        return dataMiningCategoryMapper.selectOneDataMiningCategory(id);
+    }
+}

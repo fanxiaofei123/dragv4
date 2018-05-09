@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:util="http://www.springframework.org/schema/util"
+   xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+   http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util 
+    http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 引入jdbc配置文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    
+    <!-- 扫描文件（自动将servicec层注入） -->
+    <context:component-scan base-package="org.com.drag"/>
+    
+    <bean id="springContextUtil" class="org.com.drag.common.util.SpringContextUtil"></bean>
+    
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" >
+       <property name="driverClassName" value="${jdbc_driverClassName}"/>
+       <property name="url" value="${jdbc_url}"/>
+       <property name="username" value="${jdbc_username}"/>
+       <property name="password" value="${jdbc_password}"/>
+       <!-- <property name="url" value="jdbc:mysql://localhost:3306/drag?charsetEncoding=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>-->
+       <!-- 连接池最大使用连接数 -->
+       <property name="maxActive" value="${maxActive}"/>
+       <!-- 初始化连接大小 -->
+       <property name="initialSize" value="${initialSize}"/>
+       <!-- 获取连接最大等待时间 -->
+       <property name="maxWait" value="${maxWait}"/>
+       <!-- 连接池最大空闲 -->
+       <property name="maxIdle" value="${maxIdle}"/>
+       <!-- 连接池最小空闲 -->
+       <property name="minIdle" value="${minIdle}"/>
+       <!-- 自动清除无用连接 -->
+       <property name="removeAbandoned" value="${removeAbandoned}"/>
+       <!-- 清除无用连接的等待时间 -->
+       <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>
+       <!-- 连接属性 -->
+       <property name="connectionProperties" value="${connectionProperties}"/>
+    </bean>
+    
+    <!-- mybatis文件配置，扫描所有mapper文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:dataSource-ref="dataSource"
+        p:configLocation="classpath:conf/mybatis-config.xml"
+        p:mapperLocations="classpath:mapper/*.xml">
+    </bean>
+    <!-- configLocation为mybatis属性 mapperLocations为所有mapper-->
+      
+    <!-- spring与mybatis整合配置，扫描所有dao -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="org.com.drag.dao" 
+        p:sqlSessionFactoryBeanName="sqlSessionFactory">
+    </bean>
+
+
+    <bean id="mailAuthorSetting" class="org.com.drag.common.util.MailAuthorSetting" init-method="init">
+        <property name="proPath" value="/mail.properties"></property>
+    </bean>
+    <bean id="setting" class="org.com.drag.common.util.Setting" init-method="init">
+    </bean>
+
+    <!--<bean id="progressListener" class="org.com.drag.web.listener.FileUploadProgressListener">
+    </bean>-->
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="${task.core_pool_size}" />
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="${task.max_pool_size}" />
+        <!-- 队列最大长度 -->
+        <property name="queueCapacity" value="${task.queue_capacity}" />
+        <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
+        <property name="keepAliveSeconds" value="${task.keep_alive_seconds}" />
+    </bean>
+    <!-- Enables the Spring Task @Scheduled programming model -->
+    <task:executor id="executor" pool-size="1" />
+    <task:scheduler id="scheduler" pool-size="1" />
+    <task:annotation-driven executor="executor" scheduler="scheduler" />
+    <!-- 对数据源进行事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+        p:dataSource-ref="dataSource"/>
+        
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    
+    
+     <aop:config>  
+        <aop:aspect id="aspect" ref="aspectBean">  
+            <!--配置com.lzq.spring.service包下所有类或接口的所有方法-->  
+            <aop:pointcut id="logService"  
+                expression="execution(* org.com.drag.service.*.*(..))" />  
+            <aop:before pointcut-ref="logService" method="doBefore"/>  
+            <aop:after pointcut-ref="logService" method="doAfter"/>  
+            <aop:around pointcut-ref="logService" method="doAround"/>  
+        </aop:aspect>  
+    </aop:config>  
+    <bean id="aspectBean" class="org.com.drag.web.aop.Aspect" />  
+    
+    
+    
+    <import resource="classpath:conf/spring-shiro.xml"/> 
+    
+</beans>

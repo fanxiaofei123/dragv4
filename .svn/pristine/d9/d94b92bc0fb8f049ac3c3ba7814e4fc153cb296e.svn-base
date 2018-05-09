@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.WorkFlowMapper">
+    <resultMap id="BaseResultMap" type="org.com.drag.model.WorkFlow">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="workspid" property="workspid" jdbcType="INTEGER"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="updat_time" property="updatTime" jdbcType="TIMESTAMP"/>
+        <result column="result_contect" property="resultContect" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="hdfs_url" property="hdfsUrl" jdbcType="VARCHAR"/>
+        <result column="jobstatus" property="jobstatus" jdbcType="INTEGER"/>
+        <result column="flow_explain" property="flowExplain" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR"/>
+        <result column="workspaceName" property="workspaceName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, workspid, context, create_time as createTime, updat_time as updatTime, result_contect as resultContect,
+        name, hdfs_url as hdfsUrl,jobstatus,flow_explain as flowExplain,type,userName
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from work_flow
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByCreateTime" parameterType="java.lang.String" resultType="org.com.drag.model.WorkFlow">
+        SELECT f.id ,f.`name`,f.create_time ,f.type,f.flow_explain,s.`name` workspaceName from work_flow f LEFT JOIN
+        work_space s on f.workspid = s.id where f.userName=#{userName} ORDER BY f.create_time DESC limit 1
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer">
+        select count(*) from work_flow
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from work_flow
+        where name = #{name,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectWorkFlowBySpace" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from work_flow
+        where workspid = #{workSpaceId,jdbcType=INTEGER}
+        order BY create_time DESC
+    </select>
+
+    <select id="selectWorkFlow" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        select
+        <include refid="Base_Column_List"/>
+        from work_flow
+        <where>
+            <if test="w.id != null">
+                id = #{w.id,jdbcType=INTEGER}
+            </if>
+            <if test="w.workspid != null">
+                and workspid = #{w.workspid,jdbcType=INTEGER}
+            </if>
+            <if test="w.context != null">
+                and context = #{w.context,jdbcType=VARCHAR}
+            </if>
+            <if test="w.createTime != null">
+                and create_time = #{w.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.updatTime != null">
+                and updat_time = #{w.updatTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.resultContect != null">
+                and result_contect = #{w.resultContect,jdbcType=VARCHAR}
+            </if>
+            <if test="w.name != null">
+                and name = #{w.name,jdbcType=VARCHAR}
+            </if>
+            <if test="w.hdfsUrl != null">
+                and hdfs_url = #{w.hdfsUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="w.jobstatus != null">
+                and jobstatus = #{w.jobstatus,jdbcType=INTEGER}
+            </if>
+            <if test="w.flowExplain != null">
+                and flow_explain = #{w.flowExplain,jdbcType=VARCHAR}
+            </if>
+            <!--  <if test="w.type != null" >
+               and type = #{w.type,jdbcType=INTEGER}
+             </if> -->
+            <if test="w.idList != null">
+                and type in
+                <foreach item="item" index="index" collection="w.idList"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="w.userName != null">
+                and userName = #{w.userName,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order BY create_time DESC
+    </select>
+    <select id="selectAllWorkFlow" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        select
+        f.id, f.workspid, f.context, f.create_time as createTime, f.updat_time as updatTime, f.result_contect as
+        resultContect,
+        f.name, f.hdfs_url as hdfsUrl,f.jobstatus,f.flow_explain as flowExplain,f.type,f.userName,s.`name` workspaceName
+        from work_flow f
+        LEFT JOIN work_space s ON f.workspid = s.id LEFT JOIN user u on u.id = s.userid
+        <where>
+            <if test="userName != null">
+                and f.userName = #{userName,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order BY f.create_time DESC
+    </select>
+
+
+    <select id="selectModelAudit" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        select f.id ,f.`name`,f.create_time ,f.type,f.flow_explain,s.`name` workspaceName ,u.loginname userName from
+        work_flow f LEFT JOIN work_space s on f.workspid = s.id LEFT JOIN user u on u.id = s.userid
+        <where>
+            <if test="userName != null">
+                and userName = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="idList != null">
+                and type in
+                <foreach item="item" index="index" collection="idList"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+        ORDER BY f.type DESC, f.create_time DESC
+    </select>
+
+    <select id="selectModelAuditName" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        select f.id ,f.`name`,f.create_time ,f.type,f.flow_explain,s.`name` workspaceName ,u.loginname userName from
+        work_flow f LEFT JOIN work_space s on f.workspid = s.id LEFT JOIN user u on u.id = s.userid
+        <where>
+            <if test="idList != null">
+                and type in
+                <foreach item="item" index="index" collection="idList"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="name != null">
+                and f.name LIKE "%"#{name,jdbcType=VARCHAR}"%"
+            </if>
+        </where>
+        ORDER BY f.type DESC, f.create_time DESC
+    </select>
+
+    <select id="selectModelRelease" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        SELECT f.id,f.hdfs_url,s.`name` workspaceName,f.`name`,f.context,f.flow_explain,u.loginname userName FROM
+        work_flow f
+        LEFT JOIN work_space s ON f.workspid = s.id
+        LEFT JOIN `user` u ON s.userid = u.id
+        <where>
+            <if test="w.id != null">
+                f.id = #{w.id,jdbcType=INTEGER}
+            </if>
+        </where>
+        order BY f.create_time DESC
+    </select>
+
+
+    <select id="selectWorkFlowName" resultMap="BaseResultMap" parameterType="org.com.drag.model.WorkFlow">
+        select
+        f.id, f.workspid, f.context, f.create_time as createTime, f.updat_time as updatTime, f.result_contect as
+        resultContect,
+        f.name, f.hdfs_url as hdfsUrl,f.jobstatus,f.flow_explain as flowExplain,f.type,f.userName,s.`name` workspaceName
+        from work_flow f
+        LEFT JOIN work_space s ON f.workspid = s.id
+        <where>
+            <if test="w.id != null">
+                f.id = #{w.id,jdbcType=INTEGER}
+            </if>
+            <if test="w.workspid != null">
+                and f.workspid = #{w.workspid,jdbcType=INTEGER}
+            </if>
+            <if test="w.context != null">
+                and f.context = #{w.context,jdbcType=VARCHAR}
+            </if>
+            <if test="w.createTime != null">
+                and f.create_time = #{w.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.updatTime != null">
+                and f.updat_time = #{w.updatTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.resultContect != null">
+                and f.result_contect = #{w.resultContect,jdbcType=VARCHAR}
+            </if>
+            <if test="w.name != null">
+                and f.name LIKE "%"#{w.name,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="w.hdfsUrl != null">
+                and f.hdfs_url = #{w.hdfsUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="w.jobstatus != null">
+                and f.jobstatus = #{w.jobstatus,jdbcType=INTEGER}
+            </if>
+            <if test="w.flowExplain != null">
+                and f.flow_explain = #{w.flowExplain,jdbcType=VARCHAR}
+            </if>
+            <if test="w.type != null">
+                and f.type = #{w.type,jdbcType=INTEGER}
+            </if>
+            <if test="w.userName != null">
+                and f.userName = #{w.userName,jdbcType=VARCHAR}
+            </if>
+            <if test="w.idList != null">
+                and type in
+                <foreach item="item" index="index" collection="w.idList"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order BY f.create_time DESC
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from work_flow
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+
+    <select id="batchSelectWorkFlow" resultType="org.com.drag.model.WorkFlow"
+            parameterType="org.com.drag.model.WorkFlow">
+        select
+        <include refid="Base_Column_List"/>
+        from work_flow
+        <where>
+            <if test="idList != null">
+                and id in
+                <foreach item="item" index="index" collection="idList"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order BY create_time DESC
+    </select>
+
+
+    <delete id="deleteWorkFlow" parameterType="org.com.drag.model.WorkFlow">
+        delete from work_flow
+        <where>
+            <if test="w.id != null">
+                id = #{w.id,jdbcType=INTEGER}
+            </if>
+            <if test="w.workspid != null">
+                and workspid = #{w.workspid,jdbcType=INTEGER}
+            </if>
+            <if test="w.context != null">
+                and context = #{w.context,jdbcType=VARCHAR}
+            </if>
+            <if test="w.createTime != null">
+                and create_time = #{w.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.updatTime != null">
+                and updat_time = #{w.updatTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="w.resultContect != null">
+                and result_contect = #{w.resultContect,jdbcType=VARCHAR}
+            </if>
+            <if test="w.name != null">
+                and name = #{w.name,jdbcType=VARCHAR}
+            </if>
+            <if test="w.hdfsUrl != null">
+                and hdfs_url = #{w.hdfsUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="w.jobstatus != null">
+                and jobstatus = #{w.jobstatus,jdbcType=INTEGER}
+            </if>
+            <if test="w.flowExplain != null">
+                and flow_explain = #{w.flowExplain,jdbcType=VARCHAR}
+            </if>
+            <if test="w.type != null">
+                and type = #{w.type,jdbcType=INTEGER}
+            </if>
+
+            <if test="w.userName != null">
+                and userName = #{w.userName,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+
+    <insert id="insert" parameterType="org.com.drag.model.WorkFlow" useGeneratedKeys="true" keyProperty="id">
+        insert into work_flow ( workspid, context,
+        create_time, updat_time, result_contect,
+        name, hdfs_url,jobstatus,flow_explain,type,userName)
+        values ( #{workspid,jdbcType=INTEGER}, #{context,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updatTime,jdbcType=TIMESTAMP}, #{resultContect,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR},
+        #{hdfsUrl,jdbcType=VARCHAR},#{jobstatus,jdbcType=INTEGER},#{flowExplain,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="org.com.drag.model.WorkFlow">
+        insert into work_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="workspid != null">
+                workspid,
+            </if>
+            <if test="context != null">
+                context,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updatTime != null">
+                updat_time,
+            </if>
+            <if test="resultContect != null">
+                result_contect,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="hdfsUrl != null">
+                hdfs_url,
+            </if>
+            <if test="jobstatus != null">
+                jobstatus,
+            </if>
+            <if test="flowExplain != null">
+                flow_explain,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="userName != null">
+                userName,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="workspid != null">
+                #{workspid,jdbcType=INTEGER},
+            </if>
+            <if test="context != null">
+                #{context,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatTime != null">
+                #{updatTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resultContect != null">
+                #{resultContect,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hdfsUrl != null">
+                #{hdfsUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="jobstatus != null">
+                #{jobstatus,jdbcType=INTEGER},
+            </if>
+            <if test="flowExplain != null">
+                #{flowExplain,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.WorkFlow">
+        update work_flow
+        <set>
+            <if test="workspid != null">
+                workspid = #{workspid,jdbcType=INTEGER},
+            </if>
+            <if test="context != null">
+                context = #{context,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatTime != null">
+                updat_time = #{updatTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resultContect != null">
+                result_contect = #{resultContect,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hdfsUrl != null">
+                hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="jobstatus != null">
+                jobstatus = #{jobstatus,jdbcType=INTEGER},
+            </if>
+            <if test="flowExplain != null">
+                flow_explain = #{flowExplain,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                userName = #{userName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.com.drag.model.WorkFlow">
+        update work_flow
+        <set>
+            <if test="workspid != null">
+                workspid = #{workspid,jdbcType=INTEGER},
+            </if>
+            <if test="context != null">
+                context = #{context,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatTime != null">
+                updat_time = #{updatTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resultContect != null">
+                result_contect = #{resultContect,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hdfsUrl != null">
+                hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="jobstatus != null">
+                jobstatus = #{jobstatus,jdbcType=INTEGER},
+            </if>
+            <if test="flowExplain != null">
+                flow_explain = #{flowExplain,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                userName = #{userName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByWorkspid" parameterType="org.com.drag.model.WorkFlow">
+        update work_flow
+        <set>
+            <if test="workspid != null">
+                workspid = #{workspid,jdbcType=INTEGER},
+            </if>
+            <if test="context != null">
+                context = #{context,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatTime != null">
+                updat_time = #{updatTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="resultContect != null">
+                result_contect = #{resultContect,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="hdfsUrl != null">
+                hdfs_url = #{hdfsUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="jobstatus != null">
+                jobstatus = #{jobstatus,jdbcType=INTEGER},
+            </if>
+            <if test="flowExplain != null">
+                flow_explain = #{flowExplain,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                userName = #{userName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where workspid = #{workspid,jdbcType=INTEGER}
+    </update>
+</mapper>

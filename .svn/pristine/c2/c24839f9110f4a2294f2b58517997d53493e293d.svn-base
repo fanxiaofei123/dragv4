@@ -1,0 +1,34 @@
+.portlet-body tbody tr td {
+   font-weight: 100;
+    color: #64848e;
+}
+.portlet-body thead tr th {
+    font-weight: 400;
+    color: #64848e;
+}
+.portlet-body tbody tr:hover td {
+    color: #fff!important;
+    border-right: none;
+}
+ .portlet-body table tbody tr td .actions a{
+    color: #fff!important;
+    padding-left: 10px; ;
+}
+ .portlet-body table tbody tr td .actions a:hover {
+    color: #ffffff;
+}
+.page-bar div .creat_model{
+    width: 107px;
+    background: #abbcc4!important;
+    pointer-events: none;
+}
+.page-bar div .creat_model i{
+     font-size: 18px;
+    color: #ffffff;
+    margin-left: -7px;
+
+}
+body .page-bar div .haveCheckIcon{
+    background-color: #1bbc9b!important;
+    pointer-events: auto;
+}

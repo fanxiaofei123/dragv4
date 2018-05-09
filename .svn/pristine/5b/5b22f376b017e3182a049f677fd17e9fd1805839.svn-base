@@ -1,0 +1,12 @@
+.portlet.box.blue {
+  border: none;
+}
+.portlet.box.blue .tab-pane h3 {
+  text-align: center;
+}
+.portlet.box.blue .tab-pane .navSection p {
+  padding-top: 10px;
+}
+.portlet.box.blue .tab-pane .navSection img {
+  width: 100%;
+}

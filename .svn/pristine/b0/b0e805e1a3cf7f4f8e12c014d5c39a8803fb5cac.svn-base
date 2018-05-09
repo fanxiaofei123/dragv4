@@ -1,0 +1,18 @@
+args <- commandArgs(TRUE)
+if(length(args) != 3)
+{
+  stop("Arguments Not Equal To 3\n")
+}
+
+data_port1 <- GetInputData_port1(args)
+model_port2 <- GetInputModel_port2(args)
+result <- R_Manipulation(data_port1,model_port2,img_path)
+dev.off()
+if(result[[1]] != NULL)
+{
+	write.csv(result[['data_port3']],file = arg[1],row.names = F,check.names = F)
+}
+if(result[[2] != NULL)
+{
+	saveRDS(result[['data_port4']],file = args[2])
+}

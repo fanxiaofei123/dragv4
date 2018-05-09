@@ -1,0 +1,387 @@
+.page-sidebar-closed {
+  .page-content-wrapper {
+    .page-content {
+      .page-console {
+        margin-left: 54px !important;
+      }
+    }
+  }
+}
+.page-content-wrapper {
+  .page-content {
+    .page-title{
+      font-size: 18px;
+      margin-bottom: 0;
+    }
+    .page-bar{
+      margin-bottom: -10px;
+      ul{
+        li{
+          font-size: 13px;
+          color: #888;
+          text-shadow: none;
+          a:hover{
+            color: #337ab7;
+          }
+        }
+      }
+    }
+  }
+}
+.box.ui-draggable-dragging{
+  width: 96px;
+  position: absolute;
+  margin-bottom: 0;
+  box-shadow: 2px 2px 19px #aaa;
+  border: 1px solid;
+  z-index: 1;
+  opacity: .5;
+  .portlet-title{
+    min-height: 33px;
+    .tools{
+      padding: 8px 0 5px 0;
+    }
+  }
+  .boxBody{
+    height: 79px;
+    padding-top: 8px!important;
+    h5{
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .font-green-jungle{
+      padding-top: 5px;
+    }
+  }
+}
+
+.rotateModel{
+  transform: rotateZ(45deg);
+  -ms-transform: rotateZ(45deg);		/* IE 9 */
+  -webkit-transform: rotateZ(45deg);	/* Safari and Chrome */
+  -o-transform: rotateZ(45deg);		/* Opera */
+  -moz-transform: rotateZ(45deg);		/* Firefox */
+}
+.canvasMain{
+  display: inline;
+  .operatorBlock{
+    //max-width: 237px;
+    border-right: 10px solid #eef1f5;
+    width: 16%;
+    float: left;
+    .portlet.light{
+      margin-bottom: 0;
+      .portlet-body{
+        padding-top: 0;
+        .actions{
+          margin-bottom: 10px;
+          .formInput{
+            .input-small{
+              width: 100%!important;
+            }
+          }
+        }
+        .mt-element-list{
+          .slimScrollDiv{
+            overflow: visible!important;
+          }
+          .mt-list-container{
+            .list-toggle-container{
+              .list-toggle{
+                i{
+                  padding-right: 10px;
+                }
+                font-weight: normal;
+              }
+            }
+            .panel-collapse{
+              .dragList{
+                .mt-list-item{
+                  border-right: 3px solid;
+                  .list-item-content{
+                    padding: 0;
+                    margin-left: 15px;
+                    width: 100%;
+                    h3{
+                      cursor: move;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  //@media (min-width: 1682px) {
+  //  .canvasBlock{
+  //    min-width: 84%;
+  //  }
+  //}
+  //@media (min-width: 1583px)and(max-width: 1681px) {
+  //  .canvasBlock{
+  //    min-width: 83%;
+  //  }
+  //}
+  //@media (min-width: 1509px)and(max-width: 1582px) {
+  //  .canvasBlock{
+  //    min-width: 82%;
+  //  }
+  //}
+  //@media (min-width: 1443px)and(max-width: 1508px) {
+  //  .canvasBlock{
+  //    min-width: 81%;
+  //  }
+  //}
+  //@media (min-width: 1383px)and(max-width: 1442px) {
+  //  .canvasBlock{
+  //    min-width: 80%;
+  //  }
+  //}
+  //@media (min-width: 1329px)and(max-width: 1382px) {
+  //  .canvasBlock{
+  //    min-width: 79%;
+  //  }
+  //}
+  //@media (min-width: 1280px)and(max-width: 1328px) {
+  //  .canvasBlock{
+  //    min-width: 78%;
+  //  }
+  //}
+  //@media (max-width: 1279px) {
+  //  .canvasBlock{
+  //    min-width: 77%;
+  //  }
+  //}
+  .canvasBlock{
+    float: left;
+    width: 84%;
+    .portlet.light{
+      margin-bottom: 0;
+      .portlet-title{
+        .actions{
+          float: left;
+        }
+      }
+      #canvasBody{
+        padding-top: 0;
+        position: relative;
+        overflow: scroll!important;
+        cursor: move;
+        #canvasBlock{
+          width: 50px;
+          height: 50px;
+          position: relative;
+          overflow: visible!important;
+          transform: scale(1.0);
+          transform-origin: 50% 50% 0px;
+          .box{
+            width: 96px;
+            position: absolute;
+            margin-bottom: 0;
+            box-shadow: 2px 2px 19px #aaa;
+            border: 1px solid;
+            z-index: 1;
+            opacity: 1;
+            .portlet-title{
+              min-height: 33px;
+              .tools{
+                padding: 8px 0 5px 0;
+                a{
+                  color: #ffffff;
+                  font-size: 14px;
+                }
+              }
+            }
+            .boxBody{
+              height: 79px;
+              h5{
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+              .font-green-jungle{
+                padding-top: 5px;
+              }
+            }
+            p.blockInfo{
+              position: absolute;
+              width: 94px;
+              word-wrap: break-word;
+              font-size: 12px;
+              padding-top: 5px;
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.page-console{
+  transition: bottom 0.3s;
+  z-index: 9996;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -350px;
+  overflow: hidden;
+  color: #99a8b5;
+  background: #ffffff;
+  box-shadow: 5px 0 15px #ccc;
+  margin-left: 195px;
+  height: 280px;
+  .row{
+    .portlet{
+      padding-bottom: 0;
+      margin-bottom: 0;
+      .portlet-title{
+        margin-bottom: 0;
+        min-height: 30px;
+        .caption{
+          padding: 0;
+        }
+        .actions{
+          padding: 0;
+          a{
+            i{
+              font-size: 20px;
+            }
+          }
+        }
+      }
+      .portlet-body{
+        padding-top: 10px;
+        .progress{
+          height: 15px;
+          margin-bottom: 10px;
+          .progress-bar{
+            .sr-only{
+              position: relative;
+            }
+          }
+        }
+        .row{
+          .col-md-8{
+            padding-right: 0;
+          }
+          .col-md-4{
+            padding-left: 10px;
+          }
+        }
+        .well{
+          height: 180px;
+          p{
+            margin: 5px 0;
+            font-size: 14px!important;
+          }
+        }
+        .table-scrollable{
+          margin: 0!important;
+        }
+      }
+    }
+  }
+}
+.page-console-open{
+  bottom: 0;
+  transition: bottom 0.3s;
+}
+
+#configForm{
+  #formBody{
+    .form-group{
+      margin-bottom: 0;
+      .config-label{
+        margin-bottom: 5px;
+        text-align: left;
+      }
+      .col-md-12{
+        .mt-radio-list{
+          .mt-radio{
+            float: left;
+            margin-right: 15px;
+          }
+        }
+      }
+    }
+    .formBoxHidden{
+      display: none;
+    }
+  }
+}
+
+.modal{
+  .modal-dialog{
+    .modal-content{
+      .modal-body{
+        padding-bottom: 0;
+        .portlet{
+          margin-bottom: 0;
+          .portlet-body{
+            form{
+              .form-body{
+                .form-group{
+                  label{
+                    text-align: center;
+                    padding-left: 0;
+                    padding-right: 0;
+                  }
+                  .col-md-10{
+                    .workFlowInfo{
+                      width: 100%;
+                    }
+                  }
+                }
+                .mt-element-list{
+                  .mt-list-head{
+                    padding: 10px;
+                  }
+                  .mt-list-container{
+                    ul{
+                      .mt-list-item{
+                        .list-item-content{
+                          padding: 0;
+                          h5{
+                            margin-top: 0;
+                            margin-bottom: 0;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              .form-actions{
+                padding: 20px 0;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.uiTree{
+  display: block!important;
+  width: auto!important;
+  text-align: left!important;
+}
+.page-quick-sidebar-wrapper{
+  margin-top: 70px;
+}
+.page-quick-sidebar-toggler{
+  margin-top: 80px;
+}
+.ui-draggable{
+  font-size: 14px!important;
+}
+.tooltipInfo{
+  width: 100px;
+  text-align: center;
+}

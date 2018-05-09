@@ -1,0 +1,27 @@
+#\u90AE\u7BB1\u7684\u914D\u7F6E
+#三期的spark算子
+sparkds=2,4,7,8,9,13,14,15,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
+#模型预测算子
+sparkApplyIds=14,43,48
+#三期的模型算子
+modelIds=9,13,15,32,33,34,35,36,37,38,39
+#三期的数据集合并算子
+ordinaryApplyIds=52
+#四期的数据集合并算子
+ordinaryApplyV4Ids=85
+#数据库算子
+dbSparkIds=53,54
+#输出两个CSV的算子
+doubleOutputDataIds=86
+#输出一个模型，一个CSV的算子
+doubleOutputDataModelIds=90,91,92,93
+#四期的spark ETL算子
+sparkV4Ids=56,57,58,85,82
+#四期的spark 机器学习算子
+sparkV4MlibIds=55,59,60,69
+#python和R算子
+pythonAndRIds=83,84
+
+
+
+

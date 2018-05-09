@@ -1,0 +1,166 @@
+package org.com.drag.common.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+
+/**
+ * Created by cdyoue on 2016/12/30.
+ */
+public class Setting {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Setting.class);
+    private static  List<String> sparkIds = new ArrayList<>();
+    private static  List<String> applyIds = new ArrayList<>();
+    private static  List<String> modelIds = new ArrayList<>();
+    private static  List<String> ordinaryApplyIds = new ArrayList<>();
+    /**
+     * 添加代码 [private static List<String> dbSparkIds = new ArrayList<>();] By gongmingxing 2017.08.22
+     */
+    private static List<String> dbSparkIds = new ArrayList<>();
+    private static List<String> doubleOutputIds = new ArrayList<>();
+
+    private static List<String> sparkV4Ids = new ArrayList<>();
+    private static List<String> sparkV4MlibIds = new ArrayList<>();
+
+    public  void  init(){
+        Properties pro = new Properties();
+        InputStream is = null;
+        try {
+            is = Setting.class.getResourceAsStream("/setting.properties");
+            pro.load(is);
+            String sparkds = pro.getProperty("sparkds");
+            String applyds = pro.getProperty("sparkApplyIds");
+            String modelds = pro.getProperty("modelIds");
+            String ordinaryApplyId = pro.getProperty("ordinaryApplyIds");
+            String doubleOutputApplyIds = pro.getProperty("doubleOutputApplyIds");
+            /**
+             * 添加代码[String dbSparkIds = pro.getProperty("dbSparkIds");]
+             */
+            String dbSparkds = pro.getProperty("dbSparkIds");
+            String sparkV4ds = pro.getProperty("sparkV4Ids");
+            String sparkV4Mlibds = pro.getProperty("sparkV4MlibIds");
+
+            String[] sparkdsSplit = sparkds.trim().split(",");
+            String[] applydsSplit = applyds.trim().split(",");
+            String[] modelIdsSplit = modelds.trim().split(",");
+            String[] ordinaryApplyIdsSplit = ordinaryApplyId.trim().split(",");
+            String[] sparkV4MlibIdsSplit = sparkV4Mlibds.trim().split(",");
+            /**
+             * 添加代码[String[] dbSparkIdsSplit = dbSparkIds.trim().split(",");] By gongmingxing 2017.08.22
+             */
+            String[] dbSparkIdsSplit = dbSparkds.trim().split(",");
+            String[] doubleOutputSplit = doubleOutputApplyIds.trim().split(",");
+            String[] sparkV4Split = sparkV4ds.trim().split(",");
+
+            sparkIds = Arrays.asList(sparkdsSplit);
+            applyIds = Arrays.asList(applydsSplit);
+            modelIds = Arrays.asList(modelIdsSplit);
+            ordinaryApplyIds = Arrays.asList(ordinaryApplyIdsSplit);
+            doubleOutputIds = Arrays.asList(doubleOutputSplit);
+            sparkV4Ids = Arrays.asList(sparkV4Split);
+            /**
+             * 添加代码 [dbSparkIds = Arrays.asList(dbSparkIdsSplit);] By gongmingxing 2017.08.22
+             */
+            dbSparkIds = Arrays.asList(dbSparkIdsSplit);
+            sparkV4MlibIds = Arrays.asList(sparkV4MlibIdsSplit);
+        } catch (IOException e) {
+            LOGGER.error("加载配置文件错误", e);
+        }finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOGGER.error("关闭流错误", e);
+                }
+            }
+        }
+    }
+
+    public static List<String> getModelIds(){
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(modelIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+    public static List<String> getApplyIds(){
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(applyIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    public  static List<String> getSparkIds(){
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(sparkIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+    public  static List<String> getOrdinaryApplyIds(){
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(ordinaryApplyIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    /**
+     * 添加方法[getDbSparkIds()] By gongmingxing 2017.08.22
+     * @return
+     */
+    public static List<String> getDbSparkIds(){
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(dbSparkIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    public static List<String> getDoubleOutputIds() {
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(doubleOutputIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    public static List<String> getSparkV4Ids() {
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(sparkV4Ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    public static List<String> getSparkV4MlibIds() {
+        List<String> ids = new ArrayList<>();
+        try {
+            ids = DeepCopyUtils.deepClone(sparkV4MlibIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+}

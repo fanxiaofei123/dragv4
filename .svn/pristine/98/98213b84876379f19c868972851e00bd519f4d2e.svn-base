@@ -1,0 +1,630 @@
+package org.com.drag.web.quartz;
+
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.collections.map.HashedMap;
+import org.com.drag.common.result.ResponseResult;
+import org.com.drag.common.util.Constants;
+import org.com.drag.common.util.MailAuthorSetting;
+import org.com.drag.model.*;
+import org.com.drag.service.*;
+import org.com.drag.service.impl.RunSchedulerProcessImpl;
+import org.com.drag.service.oozie.api.IHdfsApi;
+import org.com.drag.service.oozie.api.IOozieApi;
+import org.com.drag.web.common.ModelUtils;
+import org.com.drag.web.common.WorkFlowXmlUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.web.context.ServletContextAware;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * job instance which will be executed scheduling.
+ *
+ * @author raojun@youedata.com
+ * 2017年8月21日
+ */
+public class ScheduledWorkflowJob extends QuartzJobBean implements ServletContextAware {
+	Logger logger = LoggerFactory.getLogger(JobSchedulerUtil.class);
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static final Integer TYPE_SCHEDULER=1;
+
+	private static final Byte SCHEDULER_JOB_RUNNING_ONCE=1;
+	private static final String OOZIE_RUNNING="RUNNING";
+	private static final String OOZIE_KILLED="KILLED";
+	private static final String OOZIE_SUCCEEDED="SUCCEEDED";
+	private static final String OOIZE_FAILED="FAILED";
+
+	@Autowired
+	ServletContext servletContext;
+	@Autowired
+	SchedulerJobService schedulerJobService;
+	@Autowired
+	private WorkFlowService workFlowService;
+	@Autowired
+	private WorkSpaceService workSpaceService;
+	@Autowired
+	private JobService jobService;
+	@Autowired
+	private IHdfsApi iHdfsApi;
+	@Autowired
+	HttpSession session;
+	@Autowired
+	private SchedulerJobHistoryService schedulerJobHistoryService;
+	@Autowired
+	private IOozieApi iOozieApi;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private DatabaseConnectService databaseConnectService;
+
+	@Autowired
+	private DatabaseTypeService databaseTypeService;
+
+	@Autowired
+	private ModelTrainedService modelTrainedService;
+
+	@Override
+	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+		JobContext jobContext = (JobContext) context.getMergedJobDataMap().get("context");
+		int schJobId = jobContext.getSchedulerJob().getSchJobId();
+		logger.info("start execute job(groupName: "+jobContext.getGroupName()+", jobName: "+jobContext.getJobName()+")");
+		try {
+			//调度是否生效
+			if(jobContext.getSchedulerJob().getSchJobEnable()==true){
+				Integer flowId=schedulerJobService.findFlowIdBySchJobId(schJobId);
+				//判断这个是不是周期执行
+				Date endTime=jobContext.getSchedulerJob().getSchJobEndTime();
+				SchedulerJobHistory schedulerJobHistory=schedulerJobHistoryService.getMaxTimeFindSchedulerHistory(schJobId);
+				Byte state=null;
+				if(schedulerJobHistory!=null){
+					state=schedulerJobHistory.getSchJobHisStatus();
+					Byte runOverState= (Byte) jobContext.getSchedulerJob().getSchedulerStatusMap().get("RUNNING_OVER");
+					Boolean isEdit=jobContext.getSchedulerJob().getYesOrNo();//判断开机是不被编辑的，
+					//出现关掉服务器的情况处理
+					//开机第一次跑的情况
+					if(isEdit==null){
+						if(runOverState==null){
+							//  invoke oozie api to query job state by jobId
+							String status=iOozieApi.getWorkflowStatus(schedulerJobHistory.getJobId(), MailAuthorSetting.HADOOP_OOZIECLIENT_PATH);
+							// 判断status 为空
+							if(status==null){
+								if(state==Constants.SCHEDULER_JOB_RUNNING || state==Constants.SCHEDULER_JOB_NOT){
+									state=Constants.SCHEDULER_JOB_FAIL;
+								}
+							}else 	if(status!=null){
+								if(OOZIE_RUNNING.equalsIgnoreCase(status)){
+									state=Constants.SCHEDULER_JOB_RUNNING;
+									//开起tomcatsuanz
+
+								}else if(OOZIE_KILLED.equalsIgnoreCase(status)||OOIZE_FAILED.equalsIgnoreCase(status)){
+									state=Constants.SCHEDULER_JOB_FAIL;
+								}else if(OOZIE_SUCCEEDED.equalsIgnoreCase(status)){
+									state=Constants.SCHEDULER_JOB_SUCCESSFUL;
+								}
+								//  update sch_job_hist_status of scheduler history table
+
+							}
+							schedulerJobHistory.setSchJobHisStatus(state);
+							schedulerJobHistoryService.updateSchedulerJobHistory(schedulerJobHistory);
+
+//						// start a thread to monitor and update the status of job
+//						ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+//						executor.scheduleWithFixedDelay(
+//								new RunSchedulerProcessImpl(executor,schedulerJobHistoryService, schedulerJobHistory.getJobId(),schJobId,schedulerJobHistory.getSchJobHisId(),iOozieApi,schedulerJobService),
+//								0,
+//								1400,
+//								TimeUnit.MILLISECONDS);
+							againRunSchJobMethod(state,schedulerJobHistory,jobContext,schJobId,flowId);
+						}else {
+							runSchJobMethod(endTime,state,schedulerJobHistory,jobContext,schJobId,flowId);
+						}
+					}else {
+						runSchJobMethod(endTime,state,schedulerJobHistory,jobContext,schJobId,flowId);
+					}
+
+				}else {
+					runSchJobMethod(endTime,state,schedulerJobHistory,jobContext,schJobId,flowId);
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			logger.info(schJobId+"调度执行失败");
+		}
+
+	}
+
+	/**
+	 * tomcat启动执行调度周期和一次执行的初始化状态
+	 * @param state
+	 * @param schedulerJobHistory
+	 * @param jobContext
+	 * @param schJobId
+	 * @param flowId
+	 */
+	private void againRunSchJobMethod(Byte state,SchedulerJobHistory schedulerJobHistory,JobContext jobContext,Integer schJobId,Integer flowId){
+		//停止调度 结束时间必须比现在的时间小
+		String endTimeDate=schedulerJobHistory.getSchJobHisEndTime();
+		Date schHisEndTime=null;
+		try {
+			if(endTimeDate!=null){
+				endTimeDate=endTimeDate.substring(0,19);
+				schHisEndTime=sdf.parse(endTimeDate);
+
+			}
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		//根据调度的一次执行和周期执行来区分
+		if(jobContext.getSchedulerJob().getSchJobMode()==Constants.SCHEDULER_JOB_MODE_MULTI) {
+
+			if(state==Constants.SCHEDULER_JOB_FAIL || state==Constants.SCHEDULER_JOB_SUCCESSFUL || state==Constants.SCHEDULER_JOB_NOT){
+				String runIntervalTime=jobContext.getSchedulerJob().getRunStatusTimes();//INTERVAL_TIME获取一个间隔时间状态
+				if( runIntervalTime==null||runIntervalTime.equals("")){
+					jobContext.getSchedulerJob().setRunningOver(SCHEDULER_JOB_RUNNING_ONCE);//已经跑过第一次
+					Map<String,Object> schJobStatusMap=new HashedMap();
+					schJobStatusMap.put("RUNNING_OVER",SCHEDULER_JOB_RUNNING_ONCE);
+					jobContext.getSchedulerJob().setSchedulerStatusMap(schJobStatusMap);
+					byte schJobIntervalUnit = jobContext.getSchedulerJob().getSchJobIntervalUnit();
+					int schJobInterval = jobContext.getSchedulerJob().getSchJobInterval();
+					Date start = jobContext.getSchedulerJob().getSchJobStartTime();
+					//获得sch_job_his table 的任务结束时间，判断这个结束时间是到现在的时间 是比间隔的时间大还是小
+					//如果beforeToNow小于间隔时间 就需要 等待 =间隔的时间-（现在的时间-结束的时间），如果结束时间是到现在的时间<间隔时间,那么就立即运行
+					long beforeToNow=(((new Date().getTime())-schHisEndTime.getTime())/(1000*60));//beforeToNow结束时间是到现在的时间分
+					int waitTime=0;
+
+					switch (schJobIntervalUnit) {
+						case Constants.SCHEDULER_JOB_INTERVAL_UNIT_MINUTE:
+							if(beforeToNow < schJobInterval) {
+								waitTime = (int) (schJobInterval - beforeToNow);
+							}
+							jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,waitTime));
+							break;
+						case Constants.SCHEDULER_JOB_INTERVAL_UNIT_HOUR:
+							if((beforeToNow/60) < schJobInterval){
+								waitTime = (int) (schJobInterval - beforeToNow);
+							}
+							jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,waitTime*60));
+							break;
+						case Constants.SCHEDULER_JOB_INTERVAL_UNIT_DAY:
+							if((beforeToNow/(60*24)) < schJobInterval){
+								waitTime = (int) (schJobInterval - beforeToNow);
+							}
+							jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,waitTime*60*24));
+							break;
+
+						default:
+							throw new RuntimeException("Unsupport scheduler job interval unit: "+schJobIntervalUnit);
+					}
+					jobContext.getSchedulerJob().setRunStatusTimes("INTERVAL_TIME");
+					jobContext.getSchedulerJob().setYesOrNo(false);
+					overTimeFiveSecond(jobContext);//加时5秒
+
+				}
+			}
+		}else {
+			//一次执行
+			onceRunSchedulerJob(jobContext, state,schJobId,flowId,schedulerJobHistory);
+		}
+	}
+
+	/**
+	 *
+	 * @param endTime
+	 * @param state
+	 * @param schedulerJobHistory
+	 * @param jobContext
+	 * @param schJobId
+	 * @param flowId
+	 */
+	private void runSchJobMethod(Date endTime,Byte state,SchedulerJobHistory schedulerJobHistory,JobContext jobContext,Integer schJobId,Integer flowId){
+		//停止调度 结束时间必须比现在的时间小
+		if(endTime!=null && new Date().after(endTime)){
+			killOoizeWorkFlowByJobId(state,schedulerJobHistory);//kill workFlow
+           // jobContext.getSchedulerJob().setYesOrNoStopCalculation(true);//是否停止调度上的算子 true是停止，false是不停止,只是存在内存的一个标识
+		}else {
+			//先判断此调度是否为编辑过的调度任务，如果编辑了isEdit为true,否则为false
+			Boolean isEdit=jobContext.getSchedulerJob().getYesOrNo();
+			if(isEdit==null || isEdit==true){
+				killOoizeWorkFlowByJobId(state,schedulerJobHistory);
+                //jobContext.getSchedulerJob().setYesOrNoStopCalculation(true);
+			}
+			//根据调度的一次执行和周期执行来区分
+			if(jobContext.getSchedulerJob().getSchJobMode()==Constants.SCHEDULER_JOB_MODE_MULTI){
+
+				//RUNNING_OVER根据这个参数判断是否为第 一个调度
+				Byte runOver=jobContext.getSchedulerJob().getRunningOver();
+
+				if(runOver==null){
+					//如果被编辑过的就更新上失败或成功的后插入的任务历史记录状态为3的一条数据，
+                    Integer schJobHisId=null;
+                    if(isEdit==null || isEdit==true){
+                        //之前的任务为待运行的更新为结束失败
+                       if(state!=null && state==Constants.SCHEDULER_JOB_NOT){
+                            //讨论后删除无效的待运行
+                            schedulerJobHistoryService.deleteSchJobHisById(schedulerJobHistory.getSchJobHisId());
+                            schJobHisId=insertSchedulerJobHistory(schJobId);
+                        }
+                        else {
+							schJobHisId=insertSchedulerJobHistory(schJobId);
+                            //编辑过后会给数据库存一个被编辑过的状态
+						   Map<String,Object> map=new HashedMap();
+						   map.put("editSchedulerJob",Constants.SCHEDULER_JOB_IS_EDIT);
+						   map.put("schJobId",schJobId);
+						    schedulerJobService.editSchedulerJobStatus(map);
+                        }
+                    }else {
+                        schJobHisId=insertSchedulerJobHistory(schJobId);
+                    }
+
+					runCalculation(schJobId,flowId,schJobHisId);
+					jobContext.getSchedulerJob().setSchJobStartTime(new Date(new Date().getTime() + 1000));
+					jobContext.getSchedulerJob().setRunningOver(SCHEDULER_JOB_RUNNING_ONCE);//已经跑过第一次
+					Map<String,Object> schJobStatusMap=new HashedMap();
+					schJobStatusMap.put("RUNNING_OVER",SCHEDULER_JOB_RUNNING_ONCE);
+					jobContext.getSchedulerJob().setSchedulerStatusMap(schJobStatusMap);
+					jobContext.getSchedulerJob().setYesOrNo(false);
+					JobSchedulerUtil.reschedule(jobContext);
+				}else if(runOver.equals(SCHEDULER_JOB_RUNNING_ONCE)){
+					if(state==null ) {
+						jobContext.getSchedulerJob().setSchJobStartTime(new Date(new Date().getTime() + 2000));
+//						jobContext.getSchedulerJob().setYesOrNo(false);
+						JobSchedulerUtil.reschedule(jobContext );
+					}
+					String runIntervalTime=jobContext.getSchedulerJob().getRunStatusTimes();//间隔时间存在不
+					if(state==Constants.SCHEDULER_JOB_FAIL || state==Constants.SCHEDULER_JOB_SUCCESSFUL || state==Constants.SCHEDULER_JOB_NOT){
+
+						if( runIntervalTime==null||runIntervalTime.equals("")){//不存在间隔时间
+							byte schJobIntervalUnit = jobContext.getSchedulerJob().getSchJobIntervalUnit();
+							int schJobInterval = jobContext.getSchedulerJob().getSchJobInterval();
+							Date start = jobContext.getSchedulerJob().getSchJobStartTime();
+							switch (schJobIntervalUnit) {
+								case Constants.SCHEDULER_JOB_INTERVAL_UNIT_MINUTE:
+									jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,schJobInterval));
+									break;
+								case Constants.SCHEDULER_JOB_INTERVAL_UNIT_HOUR:
+									jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,schJobInterval*60));
+									break;
+								case Constants.SCHEDULER_JOB_INTERVAL_UNIT_DAY:
+									jobContext.getSchedulerJob().setSchJobStartTime(addSchJobInterval(start,schJobInterval*60*24));
+									break;
+
+								default:
+									throw new RuntimeException("Unsupport scheduler job interval unit: "+schJobIntervalUnit);
+							}
+							jobContext.getSchedulerJob().setRunStatusTimes("INTERVAL_TIME");
+//							jobContext.getSchedulerJob().setYesOrNo(false);
+							JobSchedulerUtil.reschedule(jobContext);
+
+
+						}else if(jobContext.getSchedulerJob().getRunStatusTimes().equals("INTERVAL_TIME")){
+							runCalculation(schJobId,flowId,schedulerJobHistory.getSchJobHisId());
+							overTimeFiveSecond(jobContext);//加时5秒
+							jobContext.getSchedulerJob().setYesOrNo(false);
+							jobContext.getSchedulerJob().setRunStatusTimes("");//间隔时间存在不
+						}
+
+
+					}else if(state==Constants.SCHEDULER_JOB_RUNNING){
+						//运行中加间隔时间为5秒
+						overTimeFiveSecond(jobContext);//加时5秒
+					}
+				}
+
+			}else {
+				//一次执行
+				onceRunSchedulerJob(jobContext, state,schJobId,flowId,schedulerJobHistory);
+
+			}
+
+		}
+	}
+	//在结束时间的时候杀死算子，不要算子运行
+	public void killOoizeWorkFlowByJobId(Byte state,SchedulerJobHistory schedulerJobHistory){
+		if(state!=null && state==Constants.SCHEDULER_JOB_RUNNING){
+			//杀死算子运行
+			String jobId=schedulerJobHistory.getJobId();
+			try {
+				iOozieApi.oozieWorkflowStop(jobId,MailAuthorSetting.HADOOP_OOZIECLIENT_PATH);
+			}catch (Exception e){
+				e.printStackTrace();
+				logger.info(jobId+" 任务失败");
+			}
+			schedulerJobHistory.setSchJobHisEndTime(sdf.format(new Date()));
+			schedulerJobHistory.setSchJobHisRunTime(getSchdulerJobRunTime(schedulerJobHistory.getSchJobHisStartTime()));
+			schedulerJobHistory.setSchJobHisStatus(Constants.SCHEDULER_JOB_FAIL);
+			schedulerJobHistoryService.updateSchedulerJobHistory(schedulerJobHistory);
+		}
+	}
+	//获取调度的运行时间
+	public static Integer getSchdulerJobRunTime(String SchStartTime) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date startTime=null;
+		Integer runTime=null;
+		try {
+			if (SchStartTime!=null){
+				startTime=format.parse(SchStartTime);
+			}
+			runTime= Math.toIntExact(((new Date()).getTime() - startTime.getTime()) / 1000);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return runTime;
+	}
+	/**
+	 * 加时5秒
+	 * @param jobContext
+	 */
+    public void overTimeFiveSecond(JobContext jobContext){
+		jobContext.getSchedulerJob().setSchJobStartTime(new Date(new Date().getTime() + 5000));
+		JobSchedulerUtil.reschedule(jobContext);
+	}
+	/**
+	 * 调度的一次执行
+	 * @param jobContext
+	 * @param state
+	 * @param schJobId
+	 * @param flowId
+	 */
+	public void onceRunSchedulerJob(JobContext jobContext,Byte state,Integer schJobId,Integer flowId,SchedulerJobHistory schedulerJobHistory){
+		//一次执行
+		Byte runOver=jobContext.getSchedulerJob().getRunningOver();
+		if(runOver==null){
+			jobContext.getSchedulerJob().setRunningOver(SCHEDULER_JOB_RUNNING_ONCE);//已经跑过第一次
+			Map<String,Object> schJobStatusMap=new HashedMap();
+			schJobStatusMap.put("RUNNING_OVER",SCHEDULER_JOB_RUNNING_ONCE);
+			jobContext.getSchedulerJob().setSchedulerStatusMap(schJobStatusMap);
+			Boolean isEdit=jobContext.getSchedulerJob().getYesOrNo();
+			Integer schJobHisId=null;
+			if(isEdit==null || isEdit==true){
+				//之前的任务为待运行的更新为结束失败
+				if(state!=null && state==Constants.SCHEDULER_JOB_NOT){
+					//讨论后删除无效的待运行
+					schedulerJobHistoryService.deleteSchJobHisById(schedulerJobHistory.getSchJobHisId());
+					schJobHisId=insertSchedulerJobHistory(schJobId);
+				}
+				else {
+					schJobHisId=insertSchedulerJobHistory(schJobId);
+					//编辑过后会给数据库存一个被编辑过的状态
+					Map<String,Object> map=new HashedMap();
+					map.put("editSchedulerJob",Constants.SCHEDULER_JOB_IS_EDIT);
+					map.put("schJobId",schJobId);
+					schedulerJobService.editSchedulerJobStatus(map);
+				}
+			}else {
+				schJobHisId=insertSchedulerJobHistory(schJobId);
+			}
+			runCalculation(schJobId,flowId,schJobHisId);
+			jobContext.getSchedulerJob().setYesOrNo(false);//没有编辑
+			jobContext.getSchedulerJob().setSchJobStartTime(new Date(new Date().getTime()+5000));//隔一个间隔时间
+			JobSchedulerUtil.reschedule(jobContext);
+		}else {
+			if(state==Constants.SCHEDULER_JOB_RUNNING) {
+				//运行中加间隔时间为5秒
+				logger.info("once_run+++++++++++++++++------------");
+				overTimeFiveSecond(jobContext);//加时5秒
+			}
+		}
+	}
+	//加上间隔时间
+	public static Date addSchJobInterval(Date date, int x){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.MINUTE, x);// 分钟
+		date = cal.getTime();
+		return date;
+
+	}
+    public Integer insertSchedulerJobHistory(Integer schJobId){
+
+		SchedulerJob schedulerJob=schedulerJobService.selectSchedulerJob(schJobId);
+		Integer id=schedulerJobService.getUserBySchJobId(schJobId);
+		SchedulerJobHistory schedulerJobHistory=new SchedulerJobHistory();
+		schedulerJobHistory.setSchJobHisUserId(id);
+		schedulerJobHistory.setCreateTime(sdf.format(schedulerJob.getSchJobCreateTime()));
+		schedulerJobHistory.setSjName(schedulerJob.getSchJobName());
+		schedulerJobHistory.setSchJobHisStatus(Constants.SCHEDULER_JOB_NOT);
+		schedulerJobHistory.setSchJobId(schJobId);
+		schedulerJobHistory.setSchJobHisStartTime(sdf.format(new Date()));
+		schedulerJobHistory.setSchJobHisEndTime(sdf.format(new Date()));
+		schedulerJobHistory.setSchJobHisLog("暂无");
+		schedulerJobHistory.setSchJobHisRunTime(0);
+
+		Integer schJobHisId=schedulerJobHistoryService.insertSchedulerJobHistory(schedulerJobHistory);
+		logger.info("第一次插入数据-----------------------------------------------------------------------------------------------------------");
+		return schedulerJobHistory.getSchJobHisId();
+
+	}
+	public void runCalculation(Integer schJobId,Integer flowId,Integer schJobHisId) {
+		//查询工作流
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		WorkFlow workFlows = workFlowService.selectByPrimaryKey(flowId);
+		String context=workFlows.getContext();
+		net.sf.json.JSONObject jsonObject=null;
+		String connectStr="";
+		String modelStr="";
+		try {
+			jsonObject=net.sf.json.JSONObject.fromObject(context);
+			connectStr=jsonObject.getString("connects");
+			modelStr=jsonObject.getString("models");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		String flowName=workFlows.getName();
+		List<Model> models = JSON.parseArray(modelStr,Model.class);
+		List<Connect> connects = JSON.parseArray(connectStr, Connect.class);
+		//查询工作空间
+		WorkSpace workSpace = workSpaceService.selectByPrimaryKey(workFlows.getWorkspid());
+		String workSpaceName=workSpace.getName();
+		Integer id=workSpace.getUserid();
+		//查询用户
+		User user=userService.selectByPrimaryKey(id);
+		String userName = user.getLoginname();
+		//生成xml和properties
+
+		//先插入数据
+		SchedulerJobHistory schedulerJobHistory=schedulerJobHistoryService.selectSchedulerHistoryJobById(schJobHisId);
+		schedulerJobHistory.setSchJobHisUserId(user.getId());
+		schedulerJobHistory.setSchJobHisStatus(Constants. SCHEDULER_JOB_RUNNING);
+		schedulerJobHistory.setSchJobId(schJobId);
+		schedulerJobHistory.setSchJobHisStartTime(sdf.format(new Date()));
+		schedulerJobHistory.setSchJobHisLog("暂无");
+		schedulerJobHistory.setSchJobHisRunTime(0);
+
+		schedulerJobHistoryService.updateSchedulerJobHistory(schedulerJobHistory);
+
+
+		//生成xml和properties
+		ModelUtils modelUtils = new ModelUtils();
+		ModelXmlInfo modelXmlInfo;
+//        boolean oldVersion = false;
+		String version = Constants.OOZIE_GENXML_V4;
+		Properties xmlProperties = null;
+		Properties prop = new Properties();
+		Map<String,String> oozieVersionMap = new HashMap<>();
+		try {
+			InputStream in = new BufferedInputStream(new FileInputStream("oozieVersion.properties"));
+			prop.load(in);
+			Iterator<String> it=prop.stringPropertyNames().iterator();
+			while(it.hasNext()){
+				String key=it.next();
+				oozieVersionMap.put(key,prop.getProperty(key));
+			}
+			for(String key : oozieVersionMap.keySet()){
+				if(key.equals(Constants.OOZIE_GEN_VERSION)){
+					version = oozieVersionMap.get(key);
+				}
+			}
+			in.close();
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			e.printStackTrace();
+		}
+
+		if(version.equals(Constants.OOZIE_GENXML_V3)){
+			modelXmlInfo = modelUtils.getSortingFormatModels(models, connects,new StringBuffer(workSpaceName).append("/").append(flowName).toString(),userName,user.getId(),databaseConnectService,databaseTypeService);
+			String pathPrefix =this.servletContext.getRealPath("/")+"upload\\";
+
+			String tmpoFolderName = new StringBuffer(Constants.WORK_FLOW).append(UUID.randomUUID().toString()).toString();
+
+			String folderPath = new StringBuffer(pathPrefix).append(tmpoFolderName).toString();
+			File file = null;
+			boolean uploadBooler;
+			try {
+				file = new File(folderPath);
+				boolean mkdir = file.mkdir();
+				String  path = new StringBuffer(folderPath).append("/").append(Constants.WORK_FLOW).append(".xml").toString();
+				xmlProperties = WorkFlowXmlUtils.buildXml(modelXmlInfo, path, new StringBuffer(MailAuthorSetting.HDFS_PATH_FEIX).append(userName).append("/workspaces/").append(workSpace.getName()).append("/").append(flowName).toString(),flowName, userName);
+				WorkFlowXmlUtils.updateXml(path, path);
+				//上传xml到hdfs
+				// HdfsFileUtil hdfsFileUtil = new HdfsFileUtil();
+				uploadBooler = iHdfsApi.uploadWorkFlowFile(path, new StringBuffer(Constants.WORKSPACES_SUFFIX).append("/").append(workSpace.getName()).append("/").append(flowName).append("/").append("workflow.xml").toString(), userName);
+			} finally {
+				if(file != null){
+					removedir(file);
+				}
+			}
+		}else if(version.equals(Constants.OOZIE_GENXML_V4)){
+			WorkflowNode startWorkflowNode = modelUtils.getStartNode(models, connects,new StringBuffer(workSpaceName).append("/").append(flowName).toString(),userName,user.getId(),databaseConnectService,databaseTypeService);
+			//把中间输出等属性添加上去
+			ModelUtils.formatWorkflowNodeAttribute(new ArrayList<String>(),startWorkflowNode,userName,user.getId(),new StringBuffer(workSpaceName).append("/").append(flowName).toString(),databaseConnectService,databaseTypeService);
+			//给每个算子模型名称后面加上function名称
+			ModelUtils.addFuctionToStatModel(startWorkflowNode,new ArrayList<WorkflowNode>());
+			String pathPrefix =this.servletContext.getRealPath("/")+"upload\\";
+
+			String tmpoFolderName = new StringBuffer(Constants.WORK_FLOW).append(UUID.randomUUID().toString()).toString();
+
+			String folderPath = new StringBuffer(pathPrefix).append(tmpoFolderName).toString();
+			File file = null;
+			boolean uploadBooler;
+			try {
+				file = new File(folderPath);
+				boolean mkdir = file.mkdir();
+
+				String  path = new StringBuffer(folderPath).append("/").append(Constants.WORK_FLOW).append(".xml").toString();
+				xmlProperties = WorkFlowXmlUtils.builNewXml(startWorkflowNode, path, new StringBuffer(MailAuthorSetting.HDFS_PATH_FEIX).append(userName).append("/workspaces/").append(workSpace.getName()).append("/").append(flowName).toString(),flowName, userName);
+				WorkFlowXmlUtils.updateXml(path, path);
+				//上传xml到hdfs
+				// HdfsFileUtil hdfsFileUtil = new HdfsFileUtil();
+//                String xml = new StringBuffer(Constants.WORKSPACES_SUFFIX).append("/").append(workSpace.getName()).append("/").append(flowName).append("/").append("workflow.xml").toString();
+				uploadBooler = iHdfsApi.uploadWorkFlowFile(path, new StringBuffer(Constants.WORKSPACES_SUFFIX).append("/").append(workSpace.getName()).append("/").append(flowName).append("/").append("workflow.xml").toString(), userName);
+			} finally {
+				if(file != null){
+					removedir(file);
+				}
+			}
+
+
+		}
+
+
+
+//		ModelUtils modelUtils = new ModelUtils();
+//		ModelXmlInfo modelXmlInfo = modelUtils.getSortingFormatModels(models, connects,new StringBuffer(workSpaceName).append("/").append(flowName).toString(),userName,user.getId(),databaseConnectService,databaseTypeService);
+//
+//		String pathPrefix =this.servletContext.getRealPath("/")+"upload\\";
+//
+//		String tmpoFolderName = new StringBuffer(Constants.WORK_FLOW).append(UUID.randomUUID().toString()).toString();
+//
+//		String folderPath = new StringBuffer(pathPrefix).append(tmpoFolderName).toString();
+//		File file = null;
+//		Properties xmlProperties;
+//		boolean uploadBooler;
+//		try {
+//			file = new File(folderPath);
+//
+//			String  path = new StringBuffer(folderPath).append("/").append(Constants.WORK_FLOW).append(".xml").toString();
+//			xmlProperties = WorkFlowXmlUtils.buildXml(modelXmlInfo, path, new StringBuffer(MailAuthorSetting.HDFS_PATH_FEIX).append(userName).append("/workspaces/").append(workSpace.getName()).append("/").append(flowName).toString(),flowName, userName);
+//			WorkFlowXmlUtils.updateXml(path, path);
+//			//上传xml到hdfs
+//			uploadBooler = iHdfsApi.uploadWorkFlowFile(path, new StringBuffer(Constants.WORKSPACES_SUFFIX).append("/").append(workSpace.getName()).append("/").append(flowName).append("/").append("workflow.xml").toString(), userName);
+//		} finally {
+//			if(file != null){
+//				removedir(file);
+//			}
+//		}
+
+		//运行任务
+		 jobService.run(xmlProperties,user.getId(),flowId,workFlows.getName(),null,models.size(), session,TYPE_SCHEDULER,schJobId,schJobHisId);
+
+
+	}
+	public void removedir(File file) {
+		File[] files = file.listFiles();
+		for (File f : files) {
+			if (f.isDirectory())//递归调用
+			{
+				removedir(f);
+			} else {
+				f.delete();
+			}
+		}
+		//一层目录下的内容都删除以后，删除掉这个文件夹
+		file.delete();
+	}
+	@Override
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext=servletContext;
+	}
+}

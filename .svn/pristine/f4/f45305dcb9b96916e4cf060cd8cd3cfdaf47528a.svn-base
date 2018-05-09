@@ -1,0 +1,216 @@
+package org.com.drag.web.controller;
+
+import org.com.drag.common.page.PageBean;
+import org.com.drag.common.result.ResponseResult;
+import org.com.drag.common.util.Constants;
+import org.com.drag.model.*;
+import org.com.drag.service.ServiceModelService;
+import org.com.drag.service.WorkFlowService;
+import org.com.drag.service.WorkSpaceService;
+import org.com.drag.service.oozie.api.IHdfsApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Created by Guzhendong on 2017/10/19 0019.
+ */
+@Controller
+@RequestMapping("/service")
+public class ServiceModelController {
+    /**
+     * 每页显示数据条数
+     */
+    private static final Integer PAGE_NUMBER = 6;
+    /**
+     * 模板库前台页面每页显示条数
+     */
+    private static final Integer PAGE_NUMBER_VIM = 12;
+    @Autowired
+    private ServiceModelService serviceModelService;
+    @Autowired
+    private WorkFlowService workFolwService;
+    /**
+     * 模型服务列表
+     * @param page
+     * @param rowCount
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("selectAllByAnyThing")
+    public PageBean selectAllSerAnyThing(Integer page, Integer rowCount, ServiceModel serviceModel,
+                                         HttpSession session) {
+        if (page == null || page == 0) {
+            page = 1;
+        }
+        if (rowCount == null) {
+            rowCount = PAGE_NUMBER;
+        }
+
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+        List<ServiceModel> list = new ArrayList<>();
+        serviceModel.setUserId(user.getId());
+        list =   serviceModelService.selectAllSerAnyThing(serviceModel);
+        for (ServiceModel serviceModel1 : list) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            if(null != serviceModel1.getServiceUpdateTime()){
+                serviceModel1.setServiceUpdateTimes(dateFormat.format(serviceModel1.getServiceUpdateTime()));
+            }else {
+                serviceModel1.setServiceUpdateTimes("--     --");
+            }
+            serviceModel1.setServiceCreateTimes(dateFormat.format(serviceModel1.getServiceCreateTime()));
+        }
+
+
+        List fileList = new ArrayList<>();
+        int startItem = (page - 1) * rowCount;
+        int endItem = page * rowCount - 1;
+        int totalPage = 0;
+        if (rowCount > list.size()) {
+            totalPage = 1;
+        } else {
+            totalPage = list.size() % rowCount == 0 ? list.size() / rowCount : list.size() / rowCount + 1;
+        }
+        if (endItem > list.size() - 1) {
+            endItem = list.size() - 1;
+        }
+        PageBean pageBean = new PageBean();
+
+        pageBean.setTotal(list.size());
+        pageBean.setTotalPage(totalPage);
+        pageBean.setCurPage(page);
+
+        for (int i = startItem; i <= endItem; i++) {
+            fileList.add(list.get(i));
+        }
+        pageBean.setRows(fileList);
+        return pageBean;
+    }
+
+    @RequestMapping("selectFlowNameByFlowId")
+    @ResponseBody
+    public String selectFlowNameByFlowId(Integer flowId){
+      WorkFlow workFlow = workFolwService.selectByPrimaryKey(flowId);
+        return workFlow.getName();
+    }
+
+
+
+    /**
+     * web模型删除
+     * @param serviceModelIds 传入的id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("delServiceModel")
+    public ResponseResult delServiceModel(String serviceModelIds){
+        String[] serviceModelId = serviceModelIds.split(",");
+        Integer integer = serviceModelService.deleteById(serviceModelId);
+        if (0 != integer) {
+            return new ResponseResult(HttpStatus.OK, "删除成功");
+        } else {
+            return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "删除失败");
+        }
+    }
+
+
+    /**
+     * 查询模型是否部署
+     * @param flowId
+     * @return
+     */
+    @RequestMapping("selectFlowIdByStatus")
+    @ResponseBody
+    public ResponseResult selectFlowIdByStatus(Integer flowId){
+        Integer integer = serviceModelService.selectFlowIdByStatus(flowId);
+        if(integer != null){
+            return new ResponseResult(HttpStatus.OK, "已经部署");
+        }
+        return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "未部署");
+    }
+
+    /**
+     * 查询工作流最后一次运行状态
+     * @param flowId
+     * @return
+     */
+    @RequestMapping("selectFlowIdByRunStatus")
+    @ResponseBody
+    public ResponseResult selectFlowIdByRunStatus(Integer flowId){
+        Integer integer = serviceModelService.selectFlowIdByRunStatus(flowId);
+        if(null == integer){
+            return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "工作流未成功运行");
+        }
+        else if(integer == 2){
+            return new ResponseResult(HttpStatus.OK, "工作流成功运行");
+        }
+        return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "工作流未成功运行");
+    }
+
+    /**
+     * 部署模型
+     * @return
+     */
+    @RequestMapping("insertServiceModel")
+    @ResponseBody
+    public ResponseResult insertServiceModel(ServiceModel  serviceModel){
+        serviceModelService.deleteByServiceModelFlowId(serviceModel.getServiceModelFlowId());
+        serviceModel.setServiceCreateTime(new Date());
+        Integer integer = serviceModelService.insertServiceModel(serviceModel);
+        if(integer == 1){
+            return new ResponseResult(HttpStatus.OK, "成功");
+        }
+        return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "失败");
+    }
+
+    /**
+     * 重新训练
+     * @return
+     */
+    @RequestMapping("updateByFlowId")
+    @ResponseBody
+    public ResponseResult updateByFlowId(ServiceModel  serviceModel){
+       ServiceModel serviceModel1 =  serviceModelService.selectByFlowId(serviceModel.getServiceModelFlowId());
+       if(null == serviceModel1){
+           return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "不存在。");
+       }
+        serviceModel1.setServiceUpdateTime(new Date());
+        serviceModel1.setServiceModelStatus(serviceModel.getServiceModelStatus());
+        Integer integer = serviceModelService.updateByFlowId(serviceModel1);
+        if(integer == 1){
+            return new ResponseResult(HttpStatus.OK, "成功");
+        }
+        return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "失败");
+    }
+
+    /**
+     * 查询是否满足重新训练
+     * @return
+     */
+    @RequestMapping("selectRebootModel")
+    @ResponseBody
+    public ResponseResult selectRebootModel(ServiceModel  serviceModel){
+       ServiceModel serviceModel1 =  serviceModelService.selectByFlowId(serviceModel.getServiceModelFlowId());
+        if(null != serviceModel1){
+            return new ResponseResult(HttpStatus.OK, "满足重新训练");
+        }
+        return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "不满足重新训练");
+    }
+
+
+
+
+
+
+
+}

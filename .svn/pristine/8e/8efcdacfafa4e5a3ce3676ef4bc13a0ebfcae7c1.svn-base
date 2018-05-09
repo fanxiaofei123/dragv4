@@ -1,0 +1,248 @@
+.buttonStates{
+    background-color: #1bbc9b;
+    color: #ffffff;
+    width: 110px;
+    height: 30px;
+    border-radius: 18px !important;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    float:left;
+    margin-right: 10px;
+    float:left;
+
+}
+.buttonState{
+    background-color: #1bbc9b;
+    color: #ffffff;
+    width: 110px;
+    height: 30px;
+    border-radius: 18px !important;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    float:left;
+    margin-right: 10px;
+    float:left;
+
+}
+.buttonState:hover{
+    background-color: #f98937;
+
+}
+
+/*鼠标移动上去显示X*/
+.buttonState font{
+    display: none;
+    font-size:24px ;
+}
+.buttonState:hover span{
+    display: none;
+}
+.buttonState:hover font{
+    display: block;
+}
+.selectState{
+    float:left;
+}
+/*全部显示样式*/
+
+.buttonStates  font{
+    display: none;
+}
+
+.selectDiv{
+    background-color: #FFFFFF;
+
+    width: 109px;
+    height: 29px;
+    border-radius: 18px !important;
+    line-height: 29px;
+    border: 1px solid #1BBC9B;
+
+    float:left;
+}
+.xiala{
+    position: relative;
+    top: 16px;
+    left: 85px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 12px solid #1BBC9B;
+    z-index: 100;
+}
+/*添加样式*/
+.addState{
+    background-color: #1bbc9b;
+    color: #ffffff;
+    width: 40px;
+    height: 20px;
+    border-radius: 18px !important;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.xianshi{
+    position: absolute;
+    z-index: 10;
+    margin-top:40px;
+    width:110px;
+    /*height: 152px;*/
+    background-color: #FFFFFF;
+    box-shadow:0px 0 10px #d5dacc;
+    border-radius:10px  !important;
+    display: none;
+}
+.xianshi >div{
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 12px;
+
+}
+.setOne{
+    margin-left: 10px;
+
+}
+.addAllState{
+    display: none;
+}
+
+
+
+/*新写复选框功能样式*/
+.dn{
+    display: none!important;
+}
+.db{
+    display: block!important;
+}
+.allTypeNum{
+    overflow: hidden;
+}
+.allType,.allType span,.selectType,
+.typeChild,.typeChild span
+{
+    width: 105px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    border-radius: 25px;
+}
+.allType,.typeChild{
+    position: relative;
+    background: #1bbc9b;
+    color: #fff;
+}
+.allType span,.typeChild span{
+    position: absolute;
+    left: 0;
+    display: inline-block;
+}
+.allType span:nth-child(2),
+.typeChild span:nth-child(2){
+    background: #f98937;
+}
+.allType span:nth-child(2) i,
+.typeChild span:nth-child(2) i{
+    font-size: 18px;
+}
+/*选择框*/
+.selectType{
+    border: 1px solid #1bbc9b;
+}
+.selectType span:nth-child(2){
+    position: absolute;
+    top: 7px;
+    right: 3px;
+    font-size: 22px;
+    color: #1bbc9b;
+
+}
+/*下拉框*/
+.typeAll,.typeAll>div{
+    float: left;
+}
+.allType,.typeChild{
+    float: left;
+}
+.typeChild,.add,.choose{
+    margin-left: 30px;
+}
+.line{
+    float: left;
+}
+.choose{
+    position: relative;
+}
+.selectChoose{
+    position: absolute;
+    top: 40px;
+    z-index: 2;
+    width: 105px;
+    padding: 9px 7px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(9, 84, 109, 0.13);
+}
+.selectChoose .option{
+    width: 92px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+.selectChoose .option:hover{
+    background: #1abc9c;
+}
+/*添加按钮*/
+.add{
+    width: 54px;
+    height: 25px;
+    line-height: 25px;
+    color: #7f8fa4;
+}
+.add>span{
+    position: relative;
+    top: 3px;
+    left: 10px;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    /*color: #fff;*/
+    /*background: #1abc9c;*/
+    /*border-radius: 16px;*/
+}
+.add>span i{
+    position: absolute;
+    /*font-size: 10px;*/
+    top: 1px;
+    left: 3px;
+    /*color: #ecf0f1;*/
+}
+/*end*/
+/*鼠标效果*/
+.typeAll .typeChild:hover span:last-child{
+    display: block!important;
+}
+.noClick{
+    background: #d5d9db;
+    color: #ffffff;
+}
+.noClick:hover span:last-child{
+    display: block!important;
+}
+/*end*/
+/*不可点击状态*/
+.pointNone{
+    pointer-events: none;
+}
+/*end*/

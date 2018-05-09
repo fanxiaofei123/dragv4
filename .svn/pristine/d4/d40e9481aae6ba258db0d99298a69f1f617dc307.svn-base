@@ -1,0 +1,57 @@
+a,
+button,
+code,
+div,
+img,
+input,
+label,
+li,
+p,
+pre,
+select,
+span,
+svg,
+table,
+td,
+textarea,
+th,
+ul {
+  /*border-radius: 0!important;*/
+}
+a {
+  text-decoration: none!important;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Microsoft YaHei", "Open Sans", sans-serif;
+}
+.page-header .page-header-inner .page-logo .logo-default {
+  width: 120px;
+  margin: 20px 0 0 0;
+}
+.page-sidebar {
+  z-index: 997;
+}
+.page-sidebar .page-sidebar-menu li a {
+  font-size: 14px;
+}
+.page-sidebar .page-sidebar-menu li.active a {
+  font-size: 16px;
+}
+.page-content-wrapper .page-content .page-bar {
+  margin-bottom: 10px;
+  padding: 0 25px;
+  height: 60px;
+}
+.page-content-wrapper .page-content .page-bar ul li {
+  font-size: 13px;
+  color: #888;
+  text-shadow: none;
+}
+.page-content-wrapper .page-content .page-bar ul li a:hover {
+  color: #337ab7;
+}

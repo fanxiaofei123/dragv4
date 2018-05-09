@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.TipConfigDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.TipConfig" >
+    <id column="tip_config_id" property="tipConfigId" jdbcType="INTEGER" />
+    <result column="sch_job_id" property="schJobId" jdbcType="INTEGER" />
+    <result column="tip_config_name" property="tipConfigName" jdbcType="VARCHAR" />
+    <result column="tip_config_type" property="tipConfigType" jdbcType="SMALLINT" />
+    <result column="tip_config_send_type" property="tipConfigSendType" jdbcType="SMALLINT" />
+    <result column="tip_config_receiver" property="tipConfigReceiver" jdbcType="VARCHAR" />
+    <result column="loginname" property="loginname" jdbcType="VARCHAR" />
+    <result column="schJobName" property="schJobName" jdbcType="VARCHAR" />
+    <result column="tip_config_create_time" property="tipConfigCreateTime" jdbcType="TIMESTAMP" />
+    <result column="tip_config_enable" property="tipConfigEnable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="schJobId != null" >
+         and sch_job_id = #{schJobId}
+      </if>
+      <if test="tipConfigName != null" >
+         and tip_config_name = #{tipConfigName}
+      </if>
+      <if test="tipConfigType != null" >dao
+         and tip_config_type = #{tipConfigType}
+      </if>
+      <if test="tipConfigSendType != null" >
+         and tip_config_send_type = #{tipConfigSendType}
+      </if>
+      <if test="tipConfigReceiver != null" >
+         and tip_config_receiver = #{tipConfigReceiver}
+      </if>
+      <if test="tipConfigCreateTime != null" >
+         and tip_config_create_time = #{tipConfigCreateTime}
+      </if>
+      <if test="tipConfigEnable != null" >
+         and tip_config_enable = #{tipConfigEnable}
+      </if>
+      <if test="tipConfigContent != null" >
+         and tip_config_content = #{tipConfigContent}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    tip_config_id AS tipConfigId, sch_job_id AS schJobId, tip_config_name AS tipConfigName, 
+    tip_config_type AS tipConfigType, tip_config_send_type AS tipConfigSendType, tip_config_receiver AS tipConfigReceiver, 
+    tip_config_create_time AS tipConfigCreateTime, tip_config_enable AS tipConfigEnable
+  </sql>
+  <!--查询监控-->
+  <select id="selectByPrimaryKey" resultType="org.com.drag.model.TipConfig">
+    SELECT tip_config_id AS tipConfigId, sch_job_id AS schJobId, tip_config_name AS tipConfigName,
+    tip_config_type AS tipConfigType, tip_config_send_type AS tipConfigSendType, tip_config_receiver AS tipConfigReceiver,
+    tip_config_create_time AS tipConfigCreateTime, tip_config_enable AS tipConfigEnable from tip_config where tip_config_id = #{id}
+  </select>
+  <!--添加监控信息-->
+  <insert id="insert" parameterType="org.com.drag.model.TipConfig" >
+    insert into tip_config (sch_job_id, tip_config_name, tip_config_type, tip_config_send_type,
+    tip_config_receiver, tip_config_create_time, tip_config_enable, tip_config_content
+    )
+    values ( #{schJobId}, #{tipConfigName}, #{tipConfigType}, #{tipConfigSendType},
+    #{tipConfigReceiver}, #{tipConfigCreateTime}, #{tipConfigEnable}, #{tipConfigContent}
+    )
+  </insert>
+  <!--修改监控信息-->
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.TipConfig" >
+    update tip_config
+    <set >
+      <if test="schJobId != null" >
+        sch_job_id = #{schJobId},
+      </if>
+      <if test="tipConfigName != null" >
+        tip_config_name = #{tipConfigName},
+      </if>
+      <if test="tipConfigType != null" >
+        tip_config_type = #{tipConfigType},
+      </if>
+      <if test="tipConfigSendType != null" >
+        tip_config_send_type = #{tipConfigSendType},
+      </if>
+      <if test="tipConfigReceiver != null" >
+        tip_config_receiver = #{tipConfigReceiver},
+      </if>
+      <if test="tipConfigCreateTime != null" >
+        tip_config_create_time = #{tipConfigCreateTime},
+      </if>
+      <if test="tipConfigEnable != null" >
+        tip_config_enable = #{tipConfigEnable},
+      </if>
+      <if test="tipConfigContent != null" >
+        tip_config_content = #{tipConfigContent},
+      </if>
+    </set>
+    where tip_config_id = #{tipConfigId}
+  </update>
+  <!--删除-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tip_config where tip_config_id = #{id}
+  </delete>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM tip_config
+    where tip_config_id in
+    <!--<foreach collection="list" item="tip_config_id" index="index"-->
+             <!--open="(" close=")" separator=",">-->
+      <!--#{id}-->
+    <!--</foreach>-->
+    <foreach collection="array" item="tipConfigId" open="(" separator="," close=")">
+      #{tipConfigId}
+    </foreach>
+  </delete>
+
+  <select id="selectAllCount" resultType="java.lang.Long" parameterType="org.com.drag.model.TipConfig">
+    select count(id) from tip_config <include refid="Example_Where_Clause" />
+  </select>
+  <!--模糊查询所有-->
+  <select id="selectAll" parameterType="org.com.drag.model.TipConfig" resultType="org.com.drag.model.TipConfig">
+    SELECT tc.tip_config_id AS tipConfigId, tc.sch_job_id AS schJobId, tc.tip_config_name AS tipConfigName,tc.tip_config_content as tipConfigContent,
+    tc.tip_config_type AS tipConfigType, tc.tip_config_send_type AS tipConfigSendType, tc.tip_config_receiver AS tipConfigReceiver,
+    tc.tip_config_create_time AS tipConfigCreateTime, tc.tip_config_enable AS tipConfigEnable,us.loginname as loginname,
+    sj.sch_job_name as schJobName
+    from tip_config tc LEFT JOIN scheduler_job sj on sj.sch_job_id = tc.sch_job_id
+    LEFT JOIN work_flow  wf on wf.id = sch_job_wf_id LEFT JOIN work_space ws on ws.id = wf.workspid
+    LEFT JOIN `user`  us on us.id = ws.userid
+    <!--where us.loginname = "gzd1"-->
+      <trim prefix="where" prefixOverrides="and|or" >
+        <if test="schJobId != null" >
+          and tc.sch_job_id = #{schJobId}
+        </if>
+        <if test="tipConfigName != null" >
+          and tc.tip_config_name like "%" #{tipConfigName} "%"
+        </if>
+        <if test="tipConfigType != null" >dao
+          and tc.tip_config_type = #{tipConfigType}
+        </if>
+        <if test="tipConfigSendType != null" >
+          and tc.tip_config_send_type = #{tipConfigSendType}
+        </if>
+        <if test="tipConfigReceiver != null" >
+          and tc.tip_config_receiver = #{tipConfigReceiver}
+        </if>
+        <if test="tipConfigCreateTime != null" >
+          and tc.tip_config_create_time = #{tipConfigCreateTime}
+        </if>
+        <if test="tipConfigEnable != null" >
+          and tc.tip_config_enable = #{tipConfigEnable}
+        </if>
+        <if test="tipConfigContent != null" >
+          and tc.tip_config_content = #{tipConfigContent}
+        </if>
+        <if test="loginname != null" >
+          and us.loginname  = #{loginname}
+        </if>
+        <if test="tipConfigName != null" >
+          or sj.sch_job_name  like "%" #{tipConfigName} "%"
+        </if>
+        <if test="flowId != null" >
+          and wf.id = #{flowId}
+        </if>
+      </trim>
+    order by tipConfigCreateTime DESC
+  </select>
+  <!--查询任务调度-->
+  <select id="selectByJobName"  parameterType="java.lang.String" resultType="org.com.drag.model.TipConfig">
+    SELECT
+    sj.sch_job_name as schJobName,sj.sch_job_id as schJobId
+    from scheduler_job sj
+    LEFT JOIN work_flow  wf on wf.id = sch_job_wf_id LEFT JOIN work_space ws on ws.id = wf.workspid
+    LEFT JOIN `user`  us on us.id = ws.userid where 1=1 and us.loginname  = #{loginname}
+  </select>
+
+  <!--<select id="selectAllByWorkFlowId" parameterType="org.com.drag.model.TipConfig" resultType="org.com.drag.model.TipConfig">-->
+    <!--SELECT tc.tip_config_id AS tipConfigId, tc.sch_job_id AS schJobId, tc.tip_config_name AS tipConfigName,tc.tip_config_content as tipConfigContent,-->
+    <!--tc.tip_config_type AS tipConfigType, tc.tip_config_send_type AS tipConfigSendType, tc.tip_config_receiver AS tipConfigReceiver,-->
+    <!--tc.tip_config_create_time AS tipConfigCreateTime, tc.tip_config_enable AS tipConfigEnable,us.loginname as loginname,-->
+    <!--sj.sch_job_name as schJobName,,wf.id  as workId-->
+    <!--from tip_config tc LEFT JOIN scheduler_job sj on sj.sch_job_id = tc.sch_job_id-->
+    <!--LEFT JOIN work_flow  wf on wf.id = sch_job_wf_id LEFT JOIN work_space ws on ws.id = wf.workspid-->
+    <!--LEFT JOIN `user`  us on us.id = ws.userid-->
+    <!--<trim prefix="where" prefixOverrides="and|or" >-->
+      <!--<if test="workId != null" >-->
+        <!--and wf.id = #{workId}-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--order by tipConfigCreateTime DESC-->
+  <!--</select>-->
+</mapper>

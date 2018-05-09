@@ -1,0 +1,530 @@
+.opsDescribe{
+    color: #1bbc9b;
+    font-weight: bold;
+    position: relative;
+    top: -10px;
+}
+.menu_ops{
+    width: 100%;
+    height: 60px;
+    background-color: #ffffff;
+}
+.opsLefts{
+    float: left;
+    margin-top: 17px;
+}
+
+.opsLeft{
+    float: left;
+   margin-top: 22px;
+    margin-left: 20px;
+
+}
+.opsRight{
+    float: right;
+    margin-top: 17px;
+    margin-left: 50px;
+}
+.opsDiv{
+   margin: 0px 30px;
+}
+.opsColor{
+    color: #7f8fa4;
+    font-size: 14px;
+}
+.trueDiv{
+    width: 105px;
+    height: 25px;
+    border-radius: 15px !important;
+    background-color: #1bbc9b;
+
+}
+.falseDiv{
+    width: 105px;
+    height: 25px;
+    border-radius: 15px !important;
+    background-color: #fa9850;
+
+}
+.falseDiv span{
+    color: #ffffff;
+}
+.trueDiv span{
+    color: #ffffff;
+}
+.leftSpan{
+    font-size: 18px;
+
+    position: relative;
+    left: 10px;
+}
+.rightSpan{
+   float: right;
+    margin-right: 15px;
+    margin-top: 3px;
+
+}
+.timeSort{
+    width: 44%;
+    height: 370px;
+    display: inline-block;
+    background-color: #ecf0f1;
+    float: right;
+    margin-top: 30px;
+    border-radius: 4px !important;
+}
+.tableRecord{
+    background-color: #ffffff;
+    height: 329px;
+    border-radius: 3px !important;
+    box-shadow: 0px 0 10px #d5dadc;
+}
+.allState{
+    width: 105px;
+    height: 25px;
+    border-radius: 15px !important;
+    background-color: #1bbc9b;
+    position: relative;
+    top: 17px;;
+    border: 1px solid #1bbc9b;
+    color: #ffffff;
+
+}
+.allStateDiv{
+    display: none;
+    background-color: #ffffff;width: 110px;height: 152px;z-index: 100;box-shadow: 1px 1px 5px 5px #d4dee1;position: relative;top: 30px;
+}
+.allStateSpan{
+    color: #ffffff;text-align: center;margin-left: 23px;    position: relative; top: 1px;
+
+}
+.optionSelect{
+    height: 38px;
+    text-align: center;
+    padding-top: 7px;
+    cursor: pointer;
+}
+/*.optionSelect :hover{*/
+    /*background-color: #1bbc9b;*/
+    /*color: #ffffff;*/
+
+/*}*/
+.allState:hover .allStateDiv{
+    display: block;
+}
+.addTask{
+    margin-left: 130px;
+    position: relative;
+    top: -158px;
+    display: block;
+
+
+}
+.allStateCount{
+    width: 160px;
+    height: 25px;
+    border-radius: 15px !important;
+    background-color: #1bbc9b;
+    position: relative;
+    top: 22px;;
+    border: 1px solid #1bbc9b;
+    color: #ffffff;
+    z-index: 1;
+
+}
+
+.runStateCount{
+    margin-left: 230px;
+
+}
+.runStateCount span{
+    color: #7f8fa4;
+    margin-left: 38px;
+    font-size: 14px;
+}
+.borderRadius{
+    border-radius: 5px !important;
+}
+.table1 > tbody > tr > td,  .table1 > tfoot > tr > td, .table > tfoot > tr > th, .table1 > thead > tr > td{
+    border-right: 1px solid #e7ecf1;
+    padding: 0px;
+}
+.tableTh{
+    border: 1px solid #dce3e4;width: 1270px;margin: 10px 30px  0px;
+}
+.dateSelectDiv{
+    position: relative;top: 5px;left: 30px
+}
+.selectDivFound{
+    width: 1350px;height: 800px;position: relative;left: -350px;background: #ffffff !important;    border-bottom-left-radius: 5px;    border-bottom-right-radius: 5px;
+}
+.tableBorderSolid{
+    border: 1px solid #dce3e4;width: 1270px;height: 681px;position: absolute;left: 30px;
+}
+.table2 > tbody > tr > td, .table > tbody > tr > th, .table2 > tfoot > tr > td, .table > tfoot > tr > th, .table2 > thead > tr > td, .table2 > thead > tr > th{
+    padding: 0px;
+}
+.index .table2 > tbody td:nth-child(4) {
+    color: #fff;
+}
+.index .table2 > tbody td:nth-child(3) {
+    color: #64848e;
+}
+/*给每个按钮之间添加 间隔距离*/
+.table2 > tbody >tr >td >i {
+    padding-left: 24px;
+}
+
+.table3 > tbody > tr > td, .table > tbody > tr > th, .table3 > tfoot > tr > td, .table > tfoot > tr > th, .table3 > thead > tr > td, .table3 > thead > tr > th{
+    padding: 0px;
+}
+.index .table3 > tbody td:nth-child(4) {
+    color: #64848e;
+}
+
+.index .table3 > tbody td:nth-child(3) {
+    color: #fff;
+}
+.addTaskDis,.deleteTaskDis{
+    cursor: pointer;color: #ffffff;
+}
+
+.addAndDelete{
+    width: 78px;
+    height: 25px;
+    border-radius: 15px !important;
+    background-color: #1bbc9b;
+    color: #ffffff;
+    display: inline-block;
+    padding:1px 5px
+}
+.addSpan,.deleteSpan{
+    padding-left:25px;font-size: 12px ;display: none
+}
+
+.spanPadding{
+    padding: 1px 6px;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+
+    background-color: #1bbc9b;
+    border-color: #1bbc9b;
+}
+.pagination > li > a, .pagination > li > span{
+    color: #1bbc9b;
+}
+/*模态框*/
+.modal-header{
+    background: #1bbc9b;
+    color: #fff;
+}
+.font-color{
+    color: #1bbc9b;
+}
+.border-color{
+    border-color: #1bbc9b;
+}
+.btn-default:hover{
+    color: #fff;
+    background: #1bbc9b;
+    border-color: #1bbc9b;
+}
+/*div表框发光*/
+.boxshadow{
+    box-shadow:0px 0 3px #1bbc9b;border-radius: 4px !important
+}
+
+.textWordFlow{
+     width:520px; height:336px;border: 1px #ced6d9 solid;margin: 5px 66px 0px;border-radius: 6px !important;overflow: hidden;
+
+
+}
+.line{
+    color: #dfe3e9;
+    padding: 0 18px;
+    font-size: 18px;
+}
+.textWordFlowDiv {
+    width: 607px;
+    height: 500px;
+    border: 1px #ced6d9 solid;
+    margin: 5px 20px 0px;
+    border-radius: 6px !important;
+    overflow: hidden;
+}
+
+.ulLi >li{
+    padding-top: 5px;
+    padding-left: 4px;
+    padding-bottom: 5px;
+    color: #95aab1;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.ulLi >li:hover{
+    background-color: #1bbc9b;
+    color: #ffffff;
+}
+.ulLi >li>i:hover{
+    background-color: #1bbc9b;
+    color: #ffffff;
+}
+
+.dropdown-menu {
+    min-width: 78px;
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    float: left;
+    list-style: none;
+    text-shadow: none;
+    padding: 1px 2px 1px 8px;
+    background-color: #ffffff;
+    margin: 10px 0px 0px 0px;
+    border: 1px solid #eee;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-radius: 4px;
+    left: 50px;
+}
+.times> .icon-dui{
+    float: left;
+    color: #1bbc9b;
+    font-size: 16px;
+}
+
+.form-group{
+    margin-top: 20px;
+}
+.fontDisColor{
+    color: #85989e;
+}
+.buttonColor{
+    background: #ffffff;
+    border: none;
+    color: #1bbc9b;
+    border: none;
+}
+.hideIntervalTime{
+    display: none;
+
+}
+.dropdown-menu{
+    text-align: right;
+}
+
+.paddingLeft{
+    padding-left: 16px;
+}
+.inputPaddingLeft{
+    width:200px; margin-right:10px;height: 30px;border: 1px solid #1bbc9b;border-radius: 5px !important;padding-left: 6px
+}
+.portlet.light.portlet-fit > .portlet-body {
+    padding: 0;
+}
+.portlet.light .portlet-body {
+    padding-top: 0;
+}
+
+
+/*查看日志*/
+.lookLog{
+    cursor: pointer;
+}
+.buttonStates{
+    background-color: #1bbc9b;
+    color: #ffffff;
+    width: 160px;
+    height: 25px;
+    border-radius: 18px !important;
+    text-align: center;
+    line-height: 25px;
+    float:left;
+
+
+}
+.taskCondition{
+
+    float: left;
+    padding-top: 3px;
+
+}
+.taskConditionRight{
+    float: right;
+    padding-left: 28px;
+    color: #7f8fa4;
+}
+.conditionFrom{
+    height: 50px;background-color: #ffffff;border-top-left-radius: 4px ;border-top-right-radius: 4px;    padding: 20px  40px 10px 18px;
+}
+.laydate-time-list ol{
+    list-style: none;
+    padding-left: 0;
+}
+.laydate-time-list p{
+    margin: 0;
+}
+.noClickBack{
+    pointer-events: none;
+    border: 1px solid;
+    border-color: #d7dedf!important;
+    background: #ecf0f1;
+}
+#schedulerName:focus{
+
+}
+.listUpShow{
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 16px!important;
+    padding-left: 5px;
+}
+.yoyDownStyle{
+    color: #fa9850;
+    font-size: 16px!important;
+}
+.yoyUpStyle{
+    color: #34c3a6;
+    font-size: 16px!important;
+}
+#chooseDate2,#chooseDate1{
+    width: 194px;
+    background: url("../../../content/images/remind/choosedate.png") no-repeat right;
+    cursor: pointer;
+    margin-right:10px;border: none;color: #7f8fa4
+}
+#chooseDate{
+    width: 212px;
+    background: url("../../../content/images/remind/choosedate.png") no-repeat right;
+    cursor: pointer;
+    margin-right:10px;border: none; color: #7f8fa4;
+}
+.buttonTimeSelect{
+    width: 70px;
+    background: url("../../../content/images/remind/choosedate.png") no-repeat right;
+    cursor: pointer;
+    margin-right:10px;border: none; color: #7f8fa4;
+    outline: none;
+
+}
+
+/*提醒设置*/
+
+.modal .modal-body .form-group .form-control {
+    height: 40px;
+    border-radius: 5px!important;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group label {
+    /* text-align: center; */
+    text-align: right;
+    padding-left: 0;
+    padding-right: 0;
+}
+.btn-default.active, .btn-default:active, .btn-default:hover, .open>.btn-default.dropdown-toggle {
+    background: #1bbc9b;
+    border-color: #1bbc9b;
+    color: #fff;
+}
+.form-actions .btn {
+    margin: 0 30px;
+    width: 127px;
+    height: 36px;
+}
+
+.border-color {
+    border-color: #1bbc9b;
+}
+
+
+.font-color {
+    color: #1bbc9b;
+}
+
+
+.btn-default {
+
+    border-radius: 5px!important;
+
+}
+.remindBtn{
+     margin-left: 100px!important;
+
+ }
+.remindBtn1{
+    margin-left: 50px!important;
+
+}
+.modal .modal-header .close {
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+
+}
+
+.modal .modal-header .close {
+    margin-top: 4px!important;
+    color: #fff;
+}
+.disbl {
+    display: block!important;
+}
+
+
+
+.modal .modal-dialog .modal-content .modal-body {
+    padding-bottom: 0;
+}
+/**/
+.table-hover > tbody > tr:hover, .table > tbody > tr.active > td, .table > tbody > tr.active > th, .table > tbody > tr > td.active, .table > tbody > tr > th.active, .table > tfoot > tr.active > td, .table > tfoot > tr.active > th, .table > tfoot > tr > td.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > thead > tr.active > th, .table > thead > tr > td.active, .table > thead > tr > th.active {
+    background: rgba(16, 254, 251, 0.05);
+    color: #1bbc9b!important;
+}
+.addTaskDis:focus,.addTaskDis:hover,.deleteTaskDis:focus,.deleteTaskDis:hover{
+  color: #ffffff;
+}
+
+.stopTimeDiv {
+    display: none;
+}
+.msgDiv{
+    /*display: none;*/
+}
+/*取消点击在输入框出现的效果*/
+.form-group input{
+    outline: none;
+}
+.opsDiv input{
+    outline: none;
+}
+
+/*提示*/
+.linkError {
+    margin: 0;
+}
+.linkNameError{
+    margin-top: 8px;
+}
+.font-orange {
+    color: #f98937;
+}
+/*固定宽度的td,超过则隐藏*/
+.table_fix_width{
+    border-radius: 4px !important;
+    box-shadow: 0px 0 10px #d5dadc;
+    table-layout: fixed;
+    width: 700px;
+}
+.table_fix_width_list{
+    border-radius: 4px !important;
+    box-shadow: 0px 0 10px #d5dadc;
+    table-layout: fixed;
+    width: 1348px;
+}
+.k_table_td{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#complete >div{
+    border-radius: 4px !important;
+}

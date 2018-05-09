@@ -1,0 +1,77 @@
+/**
+ * Created by cdyoue on 2017/11/23.
+ */
+var configForm;
+var dateFrom=["config118","config119","config20"];
+var str;
+var str1="";
+var str2="";
+function creatCode(dateFrom) {
+    for (var i=0;i<dateFrom.length;i++){
+        if(dateFrom[i]=="config118"){
+            str1+=  dateFrom[i]+': {'+
+                'required: true,'+
+                'minlength: 2'+
+                '},';
+            str2+= dateFrom[i]+': {'+
+                'required: "请输入用户名0000",'+
+                'minlength: "用户名必需由两个字母组成000"'+
+                '},';
+        }else if(dateFrom[i]=="config20"){
+            str1+=  dateFrom[i]+': {'+
+                'required: true,'+
+                'minlength: 2'+
+                '},';
+            str2+= dateFrom[i]+': {'+
+                'required: "请输入用户名111",'+
+                'minlength: "用户名必需由两个字母组成11"'+
+                '},';
+        }else if(dateFrom[i]=="config119"){
+            str1+=  dateFrom[i]+': {'+
+                'required: true,'+
+                'minlength: 2'+
+                '},';
+            str2+= dateFrom[i]+': {'+
+                'required: "请输入用户名22222",'+
+                'minlength: "用户名必需由两个字母组成22222"'+
+                '},';
+        }
+    }
+
+    str='configForm = $("#configForm").validate({' +
+        'rules:{'+str1+
+
+        '},'+
+        'messages:{'+str2+
+
+        '}'+
+        '});'+'configForm.form();';
+    eval(str);
+
+
+         // 'configForm.form();';
+
+    // console.log(eval(str))
+}
+ creatCode(dateFrom) ;
+// function configMethod() {
+//     eval("configForm.form()")
+// }
+// creatCode("config20");
+
+    // var configForm = $("#configForm").validate({
+    //     rules:{
+    //         config20: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     messages:{
+    //         config20: {
+    //             required: "请输入用户名",
+    //             minlength: "用户名必需由两个字母组成"
+    //         }
+    //     }
+    // });  //对表单初始化验证
+
+

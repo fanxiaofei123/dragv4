@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.BackmsgMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.Backmsg" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="frontname" property="frontname" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectByPrimaryKey" resultType="org.com.drag.model.Backmsg" >
+    SELECT  id, frontname, phone, email, createtime, content from backmsg
+    where id = #{id}
+  </select>
+
+  <insert id="insert" parameterType="org.com.drag.model.Backmsg" >
+    insert into backmsg (frontname, phone, email, createtime, content)
+    values (#{frontname}, #{phone}, #{email}, #{createtime}, #{content})
+  </insert>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from backmsg where id = #{id}
+  </delete>
+  <select id="selectBySelectiveTime" resultType="org.com.drag.model.Backmsg" parameterType="org.com.drag.model.Backmsg">
+    SELECT id, frontname, phone, email, createtime, content from backmsg
+    <where>
+      <if test="frontname != null">
+        and frontname = #{frontname}
+      </if>
+      <if test="phone != null">
+        and phone LIKE CONCAT('%',#{phone},'%' )
+      </if>
+      <if test="email != null">
+        and email LIKE CONCAT('%',#{email},'%' )
+      </if>
+      <if test="startTime !=null and startTime !=''">
+        <![CDATA[   and DATE_FORMAT(createtime, '%Y-%m-%d') >=  DATE_FORMAT(#{startTime}, '%Y-%m-%d')   ]]>
+      </if>
+      <if test="endTime !=null and endTime !=''">
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')    ]]>
+      </if>
+    </where>
+    order BY createtime DESC
+  </select>
+
+</mapper>

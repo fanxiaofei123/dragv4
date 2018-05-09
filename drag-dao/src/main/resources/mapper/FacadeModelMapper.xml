@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.FacadeModelMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.FacadeModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="creatime" property="creatime" jdbcType="TIMESTAMP" />
+    <result column="flowExplain" property="flowExplain" jdbcType="VARCHAR" />
+    <result column="interfaceNum" property="interfacenum" jdbcType="INTEGER" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="modelContext" property="modelContext" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="treeId" property="treeid" jdbcType="INTEGER" />
+    <result column="spaceName" property="workspaceName" jdbcType="VARCHAR" />
+    <result column="flowId" property="flowId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="org.com.drag.model.ModelDetail" extends="org.com.drag.dao.FacadeModelMapper.BaseResultMap">
+  	<association property="user" javaType="org.com.drag.model.User" select="org.com.drag.dao.UserMapper.selectByLoginName" column="userName" />
+  	<association property="uploadInfo" javaType="org.com.drag.model.FacadeUploadInfo" select="org.com.drag.dao.FacadeUploadInfoMapper.selectByFlowId" column="flowId" />
+  	<association property="flow" javaType="org.com.drag.model.WorkFlow" select="org.com.drag.dao.WorkFlowMapper.selectByPrimaryKey" column="{id=flowId}" />
+  </resultMap>
+  <resultMap id="ModelRecordMap" type="org.com.drag.model.ModelFrontUser" extends="org.com.drag.dao.FacadeModelMapper.BaseResultMap">
+  	<result column="bid" property="bid" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateUrl" property="updateUrl" jdbcType="VARCHAR" />
+    <result column="downUrl" property="downUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, creatime, flowExplain, interfaceNum, userName, modelContext, type, treeId, spaceName,flowId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from facade_model
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+   <select id="selectFacadeModel" resultMap="BaseResultMap" parameterType="org.com.drag.model.FacadeModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from facade_model
+    <where>
+      <if test="name != null" >
+           name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="creatime != null" >
+       and creatime = #{creatime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="flowExplain != null" >
+       and flowExplain = #{flowExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="interfacenum != null" >
+       and interfaceNum = #{interfacenum,jdbcType=INTEGER}
+      </if>
+      <if test="userName != null" >
+       and userName = #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="modelContext != null" >
+       and modelContext = #{modelContext,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null" >
+       and type = #{type,jdbcType=TINYINT}
+      </if>
+       <if test="idList != null">
+        and type in 
+           <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+      
+        <if test="idListTree != null">
+        and treeId in 
+           <foreach item="item" index="index" collection="idListTree" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+      
+      <if test="treeid != null" >
+        and treeId = #{treeid,jdbcType=INTEGER}
+      </if>
+      <if test="workspaceName != null" >
+       and spaceName = #{workspaceName,jdbcType=VARCHAR}
+      </if>
+       <if test="flowId != null" >
+       and flowId = #{flowId,jdbcType=INTEGER}
+      </if>
+    </where>
+     order BY creatime DESC
+  </select>
+  
+  
+  <select id="selectFacadeModelByType" resultMap="BaseResultMap" parameterType="org.com.drag.model.FacadeModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from facade_model
+    <where>
+       <if test="idList != null">
+           type in 
+           <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+      </if>
+    </where>
+    order BY creatime DESC
+  </select>
+
+  <select id="selectFacadeModelByTypeName" resultMap="BaseResultMap" parameterType="org.com.drag.model.FacadeModel" >
+    select
+    <include refid="Base_Column_List" />
+    from facade_model
+    <where>
+      <if test="idList != null">
+        type in
+        <foreach item="item" index="index" collection="idList"
+                 open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="name!=null">
+        and name LIKE "%"#{name,jdbcType=VARCHAR}"%"
+      </if>
+    </where>
+    order BY creatime DESC
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from facade_model
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.com.drag.model.FacadeModel" >
+    insert into facade_model (id, name, creatime, 
+      flowExplain, interfaceNum, userName, 
+      modelContext, type, treeId, 
+      spaceName,flowId)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{creatime,jdbcType=TIMESTAMP}, 
+      #{flowExplain,jdbcType=VARCHAR}, #{interfacenum,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{modelContext,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{treeid,jdbcType=INTEGER}, 
+      #{workspaceName,jdbcType=VARCHAR},#{flowId,jdbcType=INTEGER},)
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.FacadeModel" >
+    insert into facade_model
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="creatime != null" >
+        creatime,
+      </if>
+      <if test="flowExplain != null" >
+        flowExplain,
+      </if>
+      <if test="interfacenum != null" >
+        interfaceNum,
+      </if>
+      <if test="userName != null" >
+        userName,
+      </if>
+      <if test="modelContext != null" >
+        modelContext,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="treeid != null" >
+        treeId,
+      </if>
+      <if test="workspaceName != null" >
+        spaceName,
+      </if>
+      <if test="flowId != null" >
+        flowId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatime != null" >
+        #{creatime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flowExplain != null" >
+        #{flowExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="interfacenum != null" >
+        #{interfacenum,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelContext != null" >
+        #{modelContext,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="treeid != null" >
+        #{treeid,jdbcType=INTEGER},
+      </if>
+      <if test="workspaceName != null" >
+        #{workspaceName,jdbcType=VARCHAR},
+      </if>
+       <if test="flowId != null" >
+        #{flowId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.FacadeModel" >
+    update facade_model
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatime != null" >
+        creatime = #{creatime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="flowExplain != null" >
+        flowExplain = #{flowExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="interfacenum != null" >
+        interfaceNum = #{interfacenum,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        userName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelContext != null" >
+        modelContext = #{modelContext,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="treeid != null" >
+        treeId = #{treeid,jdbcType=INTEGER},
+      </if>
+      <if test="workspaceName != null" >
+        spaceName = #{workspaceName,jdbcType=VARCHAR},
+      </if>
+       <if test="flowId != null" >
+        flowId = #{flowId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.FacadeModel" >
+    update facade_model
+    set name = #{name,jdbcType=VARCHAR},
+      creatime = #{creatime,jdbcType=TIMESTAMP},
+      flowExplain = #{flowExplain,jdbcType=VARCHAR},
+      interfaceNum = #{interfacenum,jdbcType=INTEGER},
+      userName = #{userName,jdbcType=VARCHAR},
+      modelContext = #{modelContext,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      treeId = #{treeid,jdbcType=INTEGER},
+      spaceName = #{workspaceName,jdbcType=VARCHAR},
+       flowId = #{flowId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByTreeIds" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_model
+  	where treeId in
+  	<foreach item="item" index="index" collection="treeIds" open="(" separator="," close=")">
+  		#{item}
+    </foreach>
+  </select>
+  <!-- <if test="type!=null">
+  			and b.type=#{type}
+  		</if> -->
+  <select id="selectByFid" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_model
+  	where treeId in
+  	(
+  		select a.leaf 
+  		from father_leaf a
+  		left join facade_tree b
+  		on a.leaf=b.id 
+  		where a.fid=#{fid}
+  		<if test="type!=null and type!=''">
+  			and b.type=#{type}
+  		</if>
+  	)
+  	and type =4 
+  </select>
+  <!-- <if test="type!=null">
+  			and b.type=#{type}
+  		</if> -->
+  <select id="selectByFidWithModelRecord" resultMap="ModelRecordMap">
+  	select
+  	a.id,a.name,a.creatime,a.flowExplain,a.interfaceNum,a.userName,a.modelContext,
+  	a.type,a.treeId,a.flowId,b.id as bid,b.create_time as createTime,
+  	b.update_url as updateUrl,b.down_url as downUrl,b.type as status
+  	from facade_model as a
+  	left join facade_model_record as b
+  	on a.id=b.model_id and b.f_name=#{frontName}
+  	where 
+  	a.type=4 
+  	and a.treeId in
+  	(
+  		select a.leaf 
+  		from father_leaf a
+  		left join facade_tree b
+  		on a.leaf=b.id 
+  		where a.fid=#{fid}
+  		<if test="type!=null and type!=''">
+  			and b.type=#{type}
+  		</if>
+  	)
+  	order by b.type desc
+  </select>
+  <select id="selectWithDetail" resultMap="DetailResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_model
+  	where id=#{id}
+  </select>
+  <!-- <if test="type!=null">
+  			and b.type=#{type}
+  		</if> -->
+   <select id="selectMyModels" resultMap="ModelRecordMap">
+    select
+  	a.id,a.name,a.creatime,a.flowExplain,a.interfaceNum,a.userName,a.modelContext,
+  	a.type,a.treeId,a.flowId,b.id as bid,b.create_time as createTime,
+  	b.update_url as updateUrl,b.down_url as downUrl,b.type as status
+  	from facade_model as a
+  	left join facade_model_record as b
+  	on a.id=b.model_id
+  	where 
+  	a.type=4 
+  	and a.treeId in
+  	(
+  		select a.leaf 
+  		from father_leaf a
+  		left join facade_tree b
+  		on a.leaf=b.id 
+  		where a.fid=#{fid}
+  		<if test="type!=null and type!=''">
+  			and b.type=#{type}
+  		</if>
+  	)
+  	and b.f_name=#{frontName}
+  	and b.type=2
+  </select>
+  <!-- <if test="type!=null">
+			and b.type=#{type}
+		</if> -->
+   <select id="selectMyApply" resultMap="ModelRecordMap">
+    select
+  	a.id,a.name,a.creatime,a.flowExplain,a.interfaceNum,a.userName,a.modelContext,
+  	a.type,a.treeId,a.flowId,b.id as bid,b.create_time as createTime,
+  	b.update_url as updateUrl,b.down_url as downUrl,b.type as status
+  	from facade_model as a
+  	left join facade_model_record as b
+  	on a.id=b.model_id
+  	where 
+  	a.type=4 
+  	and b.f_name=#{frontName}
+  	and a.treeId in
+	(
+		select a.leaf 
+		from father_leaf a
+		left join facade_tree b
+		on a.leaf=b.id 
+		where a.fid=#{fid}
+		<if test="type!=null and type!=''">
+  			and b.type=#{type}
+  		</if>
+	)
+  	order by b.create_time desc
+  </select><!-- and (b.type=1 or b.type=3) -->
+  <!-- 为calculationmapper使用 -->
+  <select id="selectByModelId" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from facade_model
+  	where id=#{model_id}
+  </select>
+
+    <select id="selectTreeIds" resultType="long">
+        select treeId FROM facade_model where type=4
+    </select>
+</mapper>

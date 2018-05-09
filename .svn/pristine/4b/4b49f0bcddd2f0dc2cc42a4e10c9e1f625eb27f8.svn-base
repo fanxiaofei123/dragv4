@@ -1,0 +1,279 @@
+package org.com.drag.web.controller;
+
+import org.com.drag.common.result.ResponseResult;
+import org.com.drag.common.util.Constants;
+import org.com.drag.model.DataMining;
+import org.com.drag.model.DataMiningCategory;
+import org.com.drag.model.Node;
+import org.com.drag.model.User;
+import org.com.drag.service.DataMiningCategoryService;
+import org.com.drag.service.DataMiningService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+@Controller
+@RequestMapping("/drag/dataMiningCategory")
+public class DataMiningCategoryController {
+
+    @Autowired
+    private DataMiningCategoryService dataMiningCategoryService;
+
+    @Autowired
+    private DataMiningService dataMiningService;
+
+    /**
+     * 查询所有目录分类名称
+     * @param dataMiningCategory
+     * @return
+     */
+    @RequestMapping(value = "getAll",method = RequestMethod.GET)
+    @ResponseBody
+    public List<DataMiningCategory> getMiningCategory(DataMiningCategory dataMiningCategory){
+        List<DataMiningCategory> dataMiningCategoryList = dataMiningCategoryService.selectAll(dataMiningCategory);
+        return dataMiningCategoryList;
+    }
+
+    /**
+     * 文件夹 重命名
+     * @param dataMiningCategory
+     * @return
+     */
+    @RequestMapping(value = "updateCategoryName",method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseResult updateMiningCategoryName(DataMiningCategory dataMiningCategory){
+        int rowCount = dataMiningCategoryService.updateCategory(dataMiningCategory);
+        return new ResponseResult(HttpStatus.OK,"重命名成功",rowCount);
+    }
+
+    /**
+     * 删除文件
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "deleteCategory",method = RequestMethod.GET)
+    @ResponseBody
+    public int deleteMiningCategoryName(String id){
+        //System.out.println("$$$$$$$$$$$$$$$$"+id);
+        return dataMiningCategoryService.deleteCategory(Integer.valueOf(id));
+    }
+
+    /**
+     * 回显单个 Category数据
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "getOneCategory",method = RequestMethod.GET)
+    @ResponseBody
+    public DataMiningCategory getOneCategory(Integer id){
+        return dataMiningCategoryService.getOneCategory(id);
+    }
+
+    /**
+     * 新建挖掘分析项
+     * @param dataMining
+     * @return
+     */
+    @RequestMapping(value = "insertMiningAndCategory",method = RequestMethod.GET)
+    @ResponseBody
+    public int insertMiningAndCategory(DataMining dataMining){
+
+        return dataMiningCategoryService.insertMining(dataMining);
+    }
+
+    /**
+     * 新建文件夹
+     * @param dataMiningCategory
+     * @return
+     */
+    @RequestMapping(value = "insertCategoryFolder",method = RequestMethod.GET)
+    @ResponseBody
+    public int insertMiningCategoryFolder(HttpSession session,DataMiningCategory dataMiningCategory){
+       //User user = (User) session.getAttribute(Constants.USER_KEY);
+        //dataMiningCategory.setUserid(user.getId());
+        dataMiningCategory.setUserid(1);
+        return dataMiningCategoryService.insertMiningCategory(dataMiningCategory);
+    }
+
+    /**
+     * 递归查询文件
+     * @param categoryId
+     * @return
+     */
+    /*@RequestMapping("selectDeepDataMiningCategory")
+    @ResponseBody
+    public List<DataMiningCategory> getAllDataMiningCategoryList(Integer categoryId) {
+        List<DataMiningCategory> menuList = dataMiningCategoryService.selectAll(new DataMiningCategory());
+
+        Set<Integer> ids = getChildNodes(menuList,categoryId,new HashSet());
+        List<DataMiningCategory> dataMiningCategoryList = new ArrayList<DataMiningCategory>();
+        DataMiningCategory dataMiningCategory = null;
+        for(Integer id : ids ){
+            dataMiningCategory = dataMiningCategoryService.getACategory(id);
+            dataMiningCategoryList.add(dataMiningCategory);
+        }
+        return dataMiningCategoryList;
+    }*/
+
+    /**
+     * 查询分类目录
+     * @param session
+     * @param id
+     * @param isParent
+     * @param name
+     * @param pId
+     * @return
+     */
+    @RequestMapping("selectAllDataMiningCategory")
+    @ResponseBody
+    public ResponseResult selectZtree(HttpSession session, String id, boolean isParent, String name, String pId) {
+       /* User user = (User) session.getAttribute(Constants.USER_KEY);
+        if(null == user){
+            return new ResponseResult(HttpStatus.EXPECTATION_FAILED, "用户未登录");
+        }
+        Integer	isp = 0;
+        if(isParent){
+            isp = 1;
+        }else{
+            isp = 0;
+        }
+
+        List<DataMiningCategory> treeList= dataMiningCategoryService.selectZtree(user.getId(),id,isp);
+        DataMiningCategory dataMiningCategory = new DataMiningCategory();
+        dataMiningCategory.setDataMiningCategoryPid(id);
+        List<DataMiningCategory> list = dataMiningCategoryService.selectDataMiningCategory(dataMiningCategory);
+
+        DataMining dataMining = new DataMining();
+        dataMining.setDataMiningCategoryId(id);
+        List<DataMining> dataMiningList = dataMiningService.selectDataMining(dataMining);
+
+        for (DataMining dataMining1: dataMiningList){
+            System.out.println("############"+dataMining1.getDataMiningName());
+        }
+
+        List<Node> nodes = new ArrayList<>();
+        for (int i= 0;i<treeList.size();i++){
+            long nid = treeList.get(i).getDataMiningCategoryId();
+            long pid = treeList.get(i).getDataMiningCategoryPid();
+            String tname = treeList.get(i).getDataMiningCategoryName();
+            Node node = new Node();
+            if (1 == treeList.get(i).getDataMiningCategoryIsParent()){
+                node.setIsParent(true);
+            }else {
+                node.setIsParent(false);
+            }
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            nodes.add(node);
+        }
+
+        for (DataMining dataMining1 : dataMiningList) {
+            Node node = new Node();
+            node.setId(Long.valueOf(dataMining1.getDataMiningId()));
+            node.setpId(Long.valueOf(dataMining1.getDataMiningCategoryId()));
+            node.setName(dataMining1.getDataMiningName());
+            node.setIsParent(false);
+            nodes.add(node);
+        }
+
+        for (int i=0;i<list.size();i++){
+            String tname=list.get(i).getDataMiningCategoryName();
+            long pid=list.get(i).getDataMiningCategoryPid();
+            long nid=list.get(i).getDataMiningCategoryId();
+
+            Node node= new Node();
+            node.setId(nid);
+            node.setpId(pid);
+            node.setName(tname);
+            nodes.add(node);
+        }*/
+
+        User user = (User) session.getAttribute(Constants.USER_KEY);
+
+        DataMiningCategory dataMiningCategory = new DataMiningCategory();
+        dataMiningCategory.setDataMiningCategoryPid(Integer.valueOf(id));
+        dataMiningCategory.setUserid(user.getId());
+        List<DataMiningCategory> dataMiningCategoryList = dataMiningCategoryService.selectDataMiningCategory(dataMiningCategory);
+        DataMining dataMining = new DataMining();
+        dataMining.setDataMiningCategoryId(Integer.valueOf(id));
+        List<DataMining> dataMiningList = dataMiningService.selectDataMining(dataMining);
+        List<Node> nodes=new ArrayList<Node>();
+
+        for (DataMiningCategory dataMiningCategory1 : dataMiningCategoryList) {
+            Node node = new Node();
+            node.setId(Long.valueOf(dataMiningCategory1.getDataMiningCategoryId()));
+            node.setpId(Long.valueOf(dataMiningCategory1.getDataMiningCategoryPid()));
+            node.setName(dataMiningCategory1.getDataMiningCategoryName());
+            node.setIsParent(true);
+            nodes.add(node);
+
+        }
+
+        for (DataMining dataMining1 : dataMiningList) {
+            Node node = new Node();
+            node.setId(Long.valueOf(dataMining1.getDataMiningId()));
+            node.setpId(Long.valueOf(dataMining1.getDataMiningCategoryId()));
+            node.setName(dataMining1.getDataMiningName());
+            node.setIsParent(false);
+            nodes.add(node);
+        }
+
+        return new ResponseResult(HttpStatus.OK,"查询成功",nodes);
+    }
+
+    //查询同级文件及文件夹
+   /* @RequestMapping("selectLevelDataMiningCategory")
+    @ResponseBody
+    public List<DataMiningCategory> getLevelDataMiningCategoryList(@RequestParam(value = "categoryId" ,defaultValue = "0") Integer categoryId) {
+
+        List<DataMiningCategory> menuList = dataMiningCategoryService.selectAll(new DataMiningCategory());
+        if(menuList == null)
+            return null;
+        Set<Integer> ids = new HashSet<>();
+        for (DataMiningCategory dataMiningCategory : menuList){
+            if (categoryId.equals(dataMiningCategory.getDataMiningCategoryPid())){
+                ids.add(dataMiningCategory.getDataMiningCategoryId());
+            }
+        }
+        DataMiningCategory dataMiningCategory = null;
+        List<DataMiningCategory> dataMiningCategoryList = new ArrayList<>();
+        for(Integer id : ids ){
+            dataMiningCategory = dataMiningCategoryService.getACategory(id);
+            dataMiningCategoryList.add(dataMiningCategory);
+        }
+        return dataMiningCategoryList;
+    }*/
+
+    /**
+     * 先查询出父节点相关集合，在遍历出子节点id集合
+     * @param list
+     * @param parent_id
+     * @param returnList
+     * @return
+     */
+    public static Set<Integer> getChildNodes(List<DataMiningCategory> list, Integer parent_id, Set returnList) {
+        if(list == null && parent_id == null) return null;
+        for (Iterator<DataMiningCategory> iterator = list.iterator(); iterator.hasNext();) {
+            DataMiningCategory node = (DataMiningCategory) iterator.next();
+            // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
+//			System.out.println("pid:"+node.getPid());
+//			System.out.println("####################");
+            if (parent_id.equals(node.getDataMiningCategoryPid())) {
+                returnList.add(node.getDataMiningCategoryId());
+                //递归遍历子后子
+                getChildNodes(list, node.getDataMiningCategoryId(), returnList);
+            }
+        }
+        return returnList;
+    }
+}

@@ -1,0 +1,407 @@
+/**
+ * Created by cdyoue on 2017/8/9.
+ */
+//    分页
+    function Paginator() {
+    var fileTotal=$("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            // alert('当前第' + num + '页');
+            // getData(num);
+
+            if(num!=curPage){
+                var rowCount = $("#choose-num").text();
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                    nodes = zTree.getSelectedNodes(),
+                    treeNode = nodes[0];
+                var curDir=null;
+                if(treeNode!=null){
+                   curDir = treeNode.curDir;
+                }
+                    getFileData(num,curDir,rowCount);
+
+            }
+        }
+    });
+}
+
+//    搜索分页
+function searchPaginator() {
+    var fileTotal=$("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            // alert('当前第' + num + '页');
+            // getData(num);
+
+            if(num!=curPage){
+                var rowCount = $("#choose-num").text();
+                var inputName=$("#formInput").val();
+                getInputFile(num,rowCount,inputName);
+
+            }
+        }
+    });
+}
+
+
+
+//双击表名显示表数据
+function dataExcel() {
+    $('#dataExcel').modal('show');
+}
+$('#flowWorkTbody').on('click','.fileTitle a',function () {
+    var curDir=$(this).next().val();
+    reViewAjax(curDir);
+    // dataExcel();
+});
+//ajax文件预览
+function reViewAjax(curDir) {
+    $.ajax({
+        url:basePath+"/drag/filemanage/readfile.do",
+        type: 'POST',
+        dataType: "json",
+        data:{"curDir":curDir} ,
+        success: function (data) {
+            console.log(data);
+            // alert(data[0][0])
+            var tr="";
+            var dataLength=50;
+            var columns=1;
+            if (data.length<50){
+                dataLength=data.length;
+            }
+            for (var i=0;i<dataLength;i++){
+                if (data[i].length>columns){
+                    columns=data[i].length;
+                }
+                tr+="<tr>";
+                for (var j=0;j<data[i].length;j++){
+                    tr+="<td>"+data[i][j]+"</td>";
+                }
+                tr+="</tr>";
+            }
+            $("#columns").text(columns);
+            $("#bodyRowCount").text(dataLength)
+            $("#tbody").empty();
+            $("#tbody").html(tr);
+            dataExcel();
+        }
+
+    });
+
+}
+function seeData(obj) {
+    var curDir=$(obj).siblings("input").val();
+    reViewAjax(curDir);
+}
+//滚动条
+$(window).on("load",function(){
+    $("body .excel_content").mCustomScrollbar({
+        theme: "dark-thin",
+        axis:"yx",
+        setLeft: 0,
+        scrollbarPosition: "outside",
+        autoDraggerLength: false
+    });
+    // zTree添加滚动条
+    $("body #treeScroll").mCustomScrollbar({
+        theme: "dark-thin",
+        axis:"yx",
+        setLeft: 0,
+        scrollbarPosition: "inside",
+        scrollInertia: 1,
+        autoDraggerLength: false,
+        alwaysShowScrollbar: 0,
+        autoHideScrollbar:true,
+        autoExpandScrollbar:false
+
+    });
+    // 添加数据弹框增加滚动条
+    $("body .addData").mCustomScrollbar({
+        // theme: "dark-thin",
+        axis:"y",
+        setLeft: 0,
+        scrollbarPosition: "inside",
+        scrollInertia: 1,
+        autoDraggerLength: false,
+        // autoHideScrollbar:true,
+        alwaysShowScrollbar: 1
+
+    });
+});
+// 下拉选择展示多少条数据
+var clickType=true;
+function showUl() {
+    $('.chooseNum ul').show();
+    clickType=false;
+}
+function hideUl() {
+    $('.chooseNum ul').hide();
+    clickType=true;
+}
+$('.chooseNum').mouseleave(function () {
+    hideUl();
+});
+$('.chooseNum').on('click','.chooseNum-des',function () {
+    if(clickType){
+        showUl();
+    }else {
+        hideUl();
+    }
+});
+$('.chooseNum').on('click','ul li',function () {
+    var txt=$(this).text();
+    $('#choose-num').html(txt);
+    $(this).find('i').addClass('glyphicon-ok').parents('li').siblings().children('i').removeClass('glyphicon-ok');
+    hideUl();
+    var page=1;
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var curDir=null;
+    if(treeNode!=null){
+        curDir = treeNode.curDir;
+    }
+    var inputName=$("#formInput").val();
+    if(inputName==""||inputName==null){
+        getFileData(page,curDir,txt);
+    }else {
+        getInputFile(page,txt,inputName);
+    }
+
+
+
+});
+// 批量删除
+// $('input[type="checkbox"]').is(':checked')
+$('#portlet_tab1').on('click','input[type="checkbox"]',function () {
+    if($('input[type="checkbox"]').is(':checked')){
+        $('#deleteConfirm').removeClass('haveCheckBox');
+    }else{
+        $('#deleteConfirm').addClass('haveCheckBox');
+    }
+
+});
+
+
+//批量删除
+function delete2() {
+    var length=$("input:checked:not(.group-checkable)").length;
+    if(length){
+        $("input:checked:not(.group-checkable)").each(function () {
+            var curDir=$(this).attr('curDir');
+            $.post(basePath+"/drag/filemanage/delDir.do",{curDir:curDir},function (data) {
+                reLoadFileList(length); // length 选中要删除的条数
+            });
+        });
+        batchDeleteHide();
+        // setTimeout("toastr.success('删除成功');",500);
+        setTimeout("toastrMsg();",100);
+
+
+    }
+}
+
+//批量删除
+function deleteConfirm() {
+    var length=$("input:checked:not(.group-checkable)").length;
+    if (length==0){
+        $('#deleteConfirm').addClass('haveCheckBox');
+    }else {
+        $('#deleteMsg2').html("确认删除已选中文件吗？");
+        batchDeleteData();
+        // var temp=1;
+        // $('#realdelete2').on('click',function () {
+        //     if (temp==1){
+        //         // alert(length);
+        //         $("input:checked:not(.group-checkable)").each(function () {
+        //             var curDir=$(this).attr('curDir');
+        //             $.post(basePath+"/drag/filemanage/delDir.do",{curDir:curDir},function (data) {
+        //                 reLoadFileList();
+        //             });
+        //         });
+        //         batchDeleteHide();
+        //         temp++;
+        //         toastrMsg();
+        //     }
+        //     return false;
+        // });
+    }
+}
+//单个删除
+var curTempDir;
+function  deleteFile(obj) {
+    curTempDir=$(obj).siblings("input").val();
+    $("#deleteSingleData").modal("toggle")
+}
+
+function deleteSingleData() {
+    $("#deleteSingleData").modal("toggle");
+    if(curTempDir){
+        $.post(basePath+"/drag/filemanage/delDir.do",{curDir:curTempDir},function (data) {
+            reLoadFileList(1); // 1 删除的条数
+            toastrMsg();
+        });
+    }
+}
+
+//重新加载文件列表
+function reLoadFileList(delLength) {
+    var fileCount = $(".odd").length; //删除前页面上的记录数
+    // alert(fileCount-length);
+    var curFileCount = fileCount-delLength;//执行删除后页面上的记录条数
+    var pageNum=$("#new_num").text();
+    if(curFileCount==0){
+        pageNum=pageNum-1;
+    }
+    var rowCount=$("#choose-num").text();
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes(),
+        treeNode = nodes[0];
+    var curDir=null;
+    if(treeNode!=null){
+        curDir = treeNode.curDir;
+    }
+    getFileData(pageNum,curDir,rowCount);
+}
+function toastrMsg() {
+    var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes()
+    if (nodes.length!=0){
+        treeNode = nodes[0];
+        if(treeNode.isParent==true){
+            refreshNode();
+        }else {
+            refreshParentNode();
+        }
+    }
+    setTimeout("toastr.success('删除成功');",500);
+}
+
+function downloadFile(obj) {
+    var curDir='';
+    curDir=$(obj).prev().val().trim();
+    window.location.href=basePath+'/drag/filemanage/download.do?curDir='+curDir+'';
+}
+
+
+function searchFile(){
+    var inputName=$("#formInput").val();
+    var pageNum=$("#new_num").text();
+    var rowCount=$("#choose-num").text();
+    getInputFile(1,rowCount,inputName);
+}
+$("#formInput").keydown(function(event){
+    event=document.all?window.event:event;
+    if((event.keyCode || event.which)==13){
+        var inputName=$("#formInput").val();
+        getInputFile(1,5,inputName);
+    }
+});
+
+function getInputFile(page,rowCount,inputName) {
+    var tmp = {};
+    tmp.page = page;
+    tmp.inputName=inputName;
+    tmp.rowCount=rowCount;
+    $.ajax({
+        url:basePath+"/drag/filemanage/inputfilelist.do",
+        type: 'POST',
+        dataType: "json",
+        data:{"page":page,"rowCount":rowCount,"inputName":inputName},
+        /*beforeSend:function(){
+         $("#tbodyList").append("<span id='loading'>loading...</span>");//显示加载动画
+         },*/
+        success:function(json){
+            $("#flowWorkTbody").empty();//清空数据区
+            /*  next = json.next;//下一页数
+             previous = json.previous; //上一页数*/
+            curPage = json.curPage; //当前页
+            totalPage = json.totalPage; //总页数
+            $("#totalpage").val(totalPage);
+
+            var filelist = "";
+            var list = json.rows;
+            if (list==""){
+                $("#totalpage").val(1);
+                filelist +="   <tr class='odd gradeX'>"
+                    +" <td></td>"
+                    +" <td>- -</td>"
+                    +" <td>- -</td>"
+                    +" </tr>";
+            }else {
+                $.each(list, function (index, array) { //遍历json数据列
+                    console.log(list[index]);
+                    filelist += "   <tr class='odd gradeX'>"
+                        + " <td>"
+                        + " <label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                        + " <input name='checkbox' class='checkboxes' ids='286' type='checkbox' curDir='" + array['curDir'] + "'><span></span>"
+                        + " </label>"
+                        + " </td>"
+                        + " <td>"
+                        + " <div class='fileType'><i class='fa fa-file-code-o'></i></div>"
+                        + " <div class='fileContent'>" + " <div class='fileTitle'>"
+                        + " <a>" + list[index].path.name + "</a>"
+                        + " <input type='hidden' id='curPath' value='" + array['curDir'] + "'/>"
+                        + " </div>"
+                        + " </div>"
+                        + " </td>"
+                        + " <td>"
+                        + " <div class='actions'>"
+                        + " <a data-toggle='modal' onclick='seeData(this)' title='查看表数据'>"
+                        + " <i class='icon iconfont icon-chakan'></i>"
+                        + " </a>"
+                        + " <input type='hidden' id='curPath' value='" + array['curDir'] + "'/>"
+                        + " <a href='javascript:;' data-toggle='modal' onclick='uploadFile(this)' title='下载'>"
+                        + " <i class='icon iconfont icon-input-copy'></i>"
+                        + " </a>"
+                        + " <a href='javascript:;' onclick='deleteFile(this)' title='删除文件'>"
+                        + " <i class='icon iconfont icon-cuo2'></i>"
+                        + " </a>"
+                        + " </div>"
+                        + " <span>" + array['modifiedTime'] + "</span>"
+                        + " </td>"
+                        + " </tr>";
+                });
+            }
+            $("#flowWorkTbody").append(filelist);
+        },
+        complete:function(){ //生成分页条
+            searchPaginator();
+            // fun();
+        },
+        error:function(){
+            alert("数据加载失败");
+        }
+    });
+
+}
+
+function unBind() {
+    $("#confirm").off('click');
+}
+
+
+

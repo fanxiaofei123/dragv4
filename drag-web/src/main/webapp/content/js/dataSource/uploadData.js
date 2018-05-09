@@ -1,0 +1,312 @@
+/**
+ * Created by sky on 2017/8/2.
+ */
+// 添加数据
+
+
+
+var flag;
+
+function initUpload() {
+    // for more info visit the official plugin documentation:
+    // http://docs.jquery.com/Plugins/Validation
+
+    var form1 = $('#simple_form1');
+    var error1 = $('.alert-danger', form1);
+    var success1 = $('.alert-success', form1);
+
+    form1.validate({
+        errorElement: 'span', //default input error message container
+        errorClass: 'help-block help-block-error', // default input error message class
+        focusInvalid: false, // do not focus the last invalid input
+        ignore: "",  // validate all fields including form hidden input
+        messages: {
+            select_multi: {
+                maxlength: jQuery.validator.format("Max {0} items allowed for selection"),
+                minlength: jQuery.validator.format("At least {0} items must be selected")
+            },
+            file: {
+                required: "请上传文件"
+            },
+            name: {
+                required: "请填写名字"
+            }
+        },
+        rules: {
+            name: {
+                minlength: 1,
+                required: true
+            },
+            file: {
+                required: true
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            url: {
+                required: true,
+                url: true
+            }
+        },
+
+        invalidHandler: function (event, validator) { //display error alert on form submit
+            success1.hide();
+            error1.show();
+            App.scrollTo(error1, -200);
+        },
+
+        highlight: function (element) { // hightlight error inputs
+            $(element)
+                .closest('.form-group').addClass('has-error'); // set error class to the control group
+        },
+
+        unhighlight: function (element) { // revert the change done by hightlight
+            $(element)
+                .closest('.form-group').removeClass('has-error'); // set error class to the control group
+        },
+
+        success: function (label) {
+            label
+                .closest('.form-group').removeClass('has-error'); // set success class to the control group
+        },
+        submitHandler: function (form) {
+
+          submitData();
+        }
+    });
+}
+
+function submitData() {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+    var nodes = treeObj.getSelectedNodes();
+    if(nodes.length==0){
+        alert("请选择一个文件夹")
+    }else{
+        var curDir=nodes[0].curDir;
+        $("#curDir1").val(curDir);
+        // $("#basic").modal("hide")
+        flag = 1;
+        processingFlag = true;
+        var formData = new FormData();
+        var file=$("#file1")[0].files[0];
+        var fileExtension=file.name.substring(file.name.lastIndexOf(".")+1).toLowerCase();//获取文件扩展名
+        if (fileExtension != 'txt' && fileExtension != 'csv'){
+            $('#addDataModal').modal('hide');
+            alert("请选择.txt文件或.csv文件!");
+        }else{
+            var path=curDir+"/"+file.name;
+            $.post(basePath+"/drag/filemanage/checkupload.do",{"path":path},function (data) {
+                var returndata = JSON.parse(data)
+                console.log(data);
+                switch (returndata.code) {
+                    case 417:
+                        toastr.error(returndata.msg);
+                        $('#addDataModal').modal('hide')
+                        break;
+                    case 200:
+                        showProcessing();
+                        formData.append('currentDir',curDir);
+                        formData.append('file',file);
+                        console.log($("#curDir1").val());
+                        console.log(file);
+                        console.log(formData);
+                        $.ajax({
+                            url:basePath+"/drag/upload/data.do",
+                            type: 'POST',
+                            data: formData,
+                            async: true,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            beforeSend :function () {
+
+                            },
+                            success: function (data) {
+                                var returndata = JSON.parse(data)
+                                console.log(data);
+                                switch (returndata.code){
+                                    case 417:toastr.error(returndata.msg) ;
+                                        $('#addDataModal').modal('hide')
+                                        break;
+                                    case 200:
+                                        $('#addDataModal').modal('hide')
+                                        break;
+                                }
+
+
+                            },
+                            error:function(data) {
+                                if (data.responseText == "AjaxSessionTimeout") {
+                                    window.location.href = basePath;
+                                    return;
+                                }
+                            },
+                            complete :function (data) {
+                                    if(data == "AjaxSessionTimeout"){
+                                        window.location.href=basePath;
+                                        return;
+                                    }
+                                processingFlag = false;
+                            }
+                        });
+                }
+            })
+        }
+
+    }
+}
+
+function rightSubmitData() {  //右键上传
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    var nodes = treeObj.getSelectedNodes();
+    if(nodes.length==0){
+        alert("请选择一个文件夹")
+    }else{
+        var curDir=nodes[0].curDir;
+        $("#curDir2").val(curDir);//通过把curDir放在隐藏域，传到后台
+        // $("#basic").modal("hide")
+        flag = 1;
+        processingFlag = true;
+        var formData = new FormData();
+        var file=$("#file2")[0].files[0];  //获取表单中要上传的file
+        var fileExtension=file.name.substring(file.name.lastIndexOf(".")+1).toLowerCase();//获取文件扩展名
+        if (fileExtension != 'txt' && fileExtension != 'csv'){
+            $('#addDataModal').modal('hide');
+            alert("请选择.txt文件或.csv文件!");
+        }else{
+            var path=curDir+"/"+file.name;
+            $.post(basePath+"/drag/filemanage/checkupload.do",{"path":path},function (data) {
+                var returndata = JSON.parse(data)
+                console.log(data);
+                switch (returndata.code){
+                    case 417:toastr.error(returndata.msg) ;
+                        break;
+                    case 200:
+                        showProcessing();
+                        formData.append('currentDir',curDir);
+                        formData.append('file',file);
+                        console.log($("#curDir2").val());
+                        console.log(file);
+                        console.log(formData);
+                        $.ajax({
+                            url:basePath+"/drag/upload/data.do",
+                            type: 'POST',
+                            data: formData,
+                            async: true,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            beforeSend :function () {
+
+                            },
+                            success: function (data) {
+                                var returndata = JSON.parse(data)
+                                console.log(data);
+                                switch (returndata.code){
+                                    case 417:toastr.error(returndata.msg) ;
+                                        $('#addDataModal').modal('hide')
+                                        break;
+                                    case 200:
+                                        $('#addDataModal').modal('hide')
+                                        break;
+                                }
+
+
+                            },
+                            error:function(data) {
+                                if (data.responseText == "AjaxSessionTimeout") {
+                                    window.location.href = basePath;
+                                    return;
+                                }
+                            },
+                            complete :function (data) {
+                                    if(data == "AjaxSessionTimeout"){
+                                        window.location.href=basePath;
+                                        return;
+                                    }
+                                processingFlag = false;
+                            }
+                        });
+                }
+            })
+        }
+
+    }
+}
+
+/*
+function showProcessing() {
+    $.ajax({
+        url: basePath + "/drag/progress.do",
+        type: 'get',
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        success: function (data) {
+            var data = JSON.parse(data);
+            console.log(data.progress);
+            $("#progress-value").html(data.progress)
+            $("#progress-bar").css('width', data.progress);
+            if (processingFlag) {
+                if (flag == 1) {
+                    $("#progress").show();
+                    $.bootstrapLoading.start({loadingTips: "正在处理数据，请稍候..."});
+                }
+                flag = 5;
+                // setTimeout(showProcessing, 1000);
+                var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                treeObj.refresh();
+            } else {
+                $("#progress").hide();
+                $.bootstrapLoading.end();
+                toastr.success("文件已经,缓存到服务器.正在上传到hdfs.....");
+            }
+        }});
+
+ }*/
+function showProcessing() {
+    $.ajax({
+        url: basePath + "/drag/progress.do",
+        type: 'get',
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        success: function (data) {
+            var data = JSON.parse(data);
+            console.log(data.progress);
+            $("#progress-value").html(data.progress)
+            $("#progress-bar").css('width', data.progress);
+            if (processingFlag) {
+                if (flag == 1) {
+                    $("#progress").show();
+                    $.bootstrapLoading.start({loadingTips: "正在处理数据，请稍候..."});
+                }
+                flag = 5;
+                setTimeout(showProcessing,1);
+            } else {
+                toastr.success("文件已经,缓存到服务器.正在上传到hdfs.....");
+                $("#progress").hide();
+                $.bootstrapLoading.end();
+                refreshNode();
+            }
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        },
+        complete:function(data){
+            if(data == "AjaxSessionTimeout"){
+                window.location.href=basePath;
+                return;
+            }
+        },});
+
+}
+

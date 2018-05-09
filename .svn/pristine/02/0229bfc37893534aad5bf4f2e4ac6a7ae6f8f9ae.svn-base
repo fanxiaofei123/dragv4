@@ -1,0 +1,105 @@
+
+//实例化编辑器
+//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+UE.getEditor('editor', {
+
+    toolbars: [
+        ['anchor','|','undo', 'redo','|','bold','indent','|', 'underline', 'strikethrough',
+        'subscript', 'fontborder', 'superscript', 'formatmatch', '|','source', 'blockquote', 'pasteplain', 'selectall',
+        'preview', '|','horizontal', 'removeformat','|', 'time', 'date', '|','insertrow', 'insertcol',
+        'mergeright', 'mergedown', 'deleterow','deletecol', 'splittorows', 'splittocols', 'splittocells','|',
+        'deletecaption', 'inserttitle', 'mergecells', 'deletetable', 'cleardoc', 'insertparagraphbeforetable',
+        '|', 'fontfamily', 'fontsize', 'paragraph', 'simpleupload', 'edittable', 'edittd',
+        'spechars', 'searchreplace', 'help','|', 'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', '|','forecolor', 'backcolor','|', 'insertorderedlist', 'insertunorderedlist',
+        'fullscreen', 'directionalityltr', 'directionalityrtl', 'rowspacingtop', 'rowspacingbottom', 'pagebreak', 'insertframe',
+        'imageleft', 'imageright',  'lineheight','edittip ', 'customstyle',
+        'autotypeset', '|','touppercase', 'tolowercase', 'background', 'inserttable', 'drafts']],
+    autoHeightEnabled: true,
+    autoFloatEnabled: true
+});
+UE.getEditor('editor').ready(function() {
+    //this是当前创建的编辑器实例
+    this.setContent($("#TemplateInstruction").html())
+});
+//获取浏览器参数
+function GetQueryString(name)
+{
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return  unescape(r[2]); return null;
+}
+//保存内容
+function getContent(id) {
+    // var arr = [];
+    // arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+    // arr.push("内容为：");
+    // arr.push(UE.getEditor('editor').getContent());
+    // alert(arr.join("\n"))
+    if(id != null){
+        $.ajax({
+            url: basePath + "/template/updateTemplateEditor.do",
+            type: 'POST',
+            data:{
+                // "templateId":$("#templateID").val(),
+                "templateId":GetQueryString("id"),
+                "templateInstruction":UE.getEditor('editor').getContent(),
+                "templateDraft":id
+            },
+            success: function (data) {
+                var returndata = JSON.parse(data);
+                if(returndata.code == '417'){
+                    toastr.error(returndata.msg);
+                }else if(returndata.code == "200") {
+                    toastr.success("上传成功");
+                }
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            },
+            complete:function(data){
+                if(data == "AjaxSessionTimeout"){
+                    window.location.href=basePath;
+                    return;
+                }
+            },
+        });
+    }else{
+        $.ajax({
+            url: basePath + "/template/updateTemplateEditor.do",
+            type: 'POST',
+            data:{
+                // "templateId":$("#templateID").val(),
+                "templateId":GetQueryString("id"),
+                "templateInstruction":UE.getEditor('editor').getContent(),
+                "templateDraft":0
+            },
+            success: function (data) {
+                var returndata = JSON.parse(data);
+                if(returndata.code == '417'){
+                    toastr.error(returndata.msg);
+                }else if(returndata.code == "200") {
+                    toastr.success("保存成功");
+                }
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            },
+            complete:function(data){
+                if(data == "AjaxSessionTimeout"){
+                    window.location.href=basePath;
+                    return;
+                }
+            },
+        });
+    }
+
+};
+function lookExample() {
+    window.location.href=basePath+"/drag/dispatcher/lookExample.do"
+}

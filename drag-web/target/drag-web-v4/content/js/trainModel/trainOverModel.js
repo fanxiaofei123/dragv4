@@ -1,0 +1,232 @@
+/**
+ * Created by luojun on 2017/10/20.
+ */
+function paginator(curPage,totalPage) {
+    //    分页
+    var total=parseInt(totalPage);
+    $('.pagination-panel-total').text(total);
+    $('.pagination').jqPaginator({
+        totalPages: total,
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (num) {
+            $('#new_num').html(num);
+            if(num!=curPage){
+                getModelTrainedList(num);
+            }
+
+        }
+    });
+
+}
+
+$(function () {
+    //选择删除的模型批量删除，可选择的状态
+    $(".table").on("click","input[name='checkbox']",function(){
+        var check=$(this);
+        var deleteModel=$("#deleteDiv");
+        if(check.prop("checked")){
+            deleteModel.addClass("haveCheckIcon");
+        }else {
+            if($("input[name='checkbox']:checked").length==0){
+                deleteModel.removeClass("haveCheckIcon");
+            }else if($(".table-checkbox input[name='checkbox']:checked").length==0 ){
+                deleteModel.removeClass("haveCheckIcon");
+            }else if($(".table-checkbox input[name='checkbox']:checked").length==1 && $(".model_tr input[name='checkbox']:checked").length==0){
+                deleteModel.removeClass("haveCheckIcon");
+            }
+        }
+
+    });
+
+})
+//显示弹框批量删除
+function deleteModelTitle() {
+    if($("#modelTrainedBody input[name='checkbox']:checked").length>0){
+        $("#deleteAllModel").modal('show');
+    }
+}
+function sureDeleteModel() {
+    $("#deleteAllModel").modal('hide');
+    var ids="";
+    $("input:checked:not(.group-checkable)").each(function () {
+        var id=$(this).attr('id');
+        ids+=id+","
+    });
+    $.post(basePath+"/drag/modeltrained/batchdelete.do",{modelTrainedIds:ids},function (data) {
+        console.log(data);
+        if (data.code==417) {
+            toastr.error("删除失败");
+        }else {
+            toastr.success("删除成功");
+        }
+        var pageNum=$("#new_num").html();
+        getModelTrainedList(pageNum);
+    })
+
+}
+var modelTrainedId
+//单个删除的弹框
+function deleteModel(obj){
+    modelTrainedId = $(obj).siblings("input").val();
+    $("#deleteSingleModel").modal('show')
+}
+function sureSingleDeleteModel() {
+    $("#deleteSingleModel").modal('hide')
+    $.post(basePath+"/drag/modeltrained/delete.do",{modelTrainedId:modelTrainedId},function (data) {
+        console.log(data);
+        if (data.code==417) {
+            toastr.error("删除失败");
+        }else {
+            toastr.success("删除成功");
+        }
+        var pageNum=$("#new_num").html();
+        getModelTrainedList(pageNum);
+    })
+}
+
+//重命名的弹框
+function renameModel(obj) {
+    var newName=$("#fileName").val("");
+    modelTrainedId = $(obj).siblings("input").val();
+    $("#renameModel").modal('show');
+}
+$("#fileName").keydown(function(event){
+    event=document.all?window.event:event;
+    if((event.keyCode || event.which)==13){
+        sureRename();
+    }
+});
+//确认重命名
+function sureRename() {
+    var newName=removeAllSpace($("#fileName").val());
+    if (newName.length == 0 || newName.trim().length == 0) {
+        toastr.warning("文件名不能为空");
+    } else {
+        $("#renameModel").modal('hide');//隐藏弹框
+        $.ajax({
+            url:basePath+"/drag/modeltrained/rename.do",
+            type:"POST",
+            dataType: "json",
+            data:{"modelTrainedId":modelTrainedId,"newName":newName},
+            success: function (data) {
+                if(data.code==200){
+                    toastr.success(data.msg);
+                }else {
+                    toastr.error(data.msg);
+                }
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            }
+        })
+        getModelTrainedList(1);
+    }
+
+}
+//搜索
+function searchModelTrained() {
+    var inputName=$("#searchName").val();
+    if(inputName==""||inputName==null){
+        toastr.warning("搜索内容不能为空")
+    }else {
+        getModelTrainedList(1);
+    }
+}
+$("#searchName").keydown(function(event){
+    event=document.all?window.event:event;
+    if((event.keyCode || event.which)==13){
+        getModelTrainedList(1);
+    }
+});
+//修改状态
+function changeStatus(obj) {
+    modelTrainedId = $(obj).siblings("input").val();
+    var switchStatus=$(obj).attr("title");
+    $.post(basePath+"/drag/modeltrained/disableorenable.do",{modelTrainedId:modelTrainedId,switchStatus:switchStatus})
+    var pageNum=$("#new_num").html();
+    getModelTrainedList(pageNum);
+}
+//加载列表
+function getModelTrainedList(page){
+    var inputName=$("#searchName").val();
+    $.ajax({
+        url:basePath+"/drag/modeltrained/trainedmodellist.do",
+        type: 'GET',
+        dataType: "json",
+        data:{"page":page,"inputName":inputName},
+        success:function (json) {
+            $("#modelTrainedBody").empty();
+            curPage = json.curPage; //当前页
+            totalPage = json.totalPage; //总页数
+            if(totalPage==0){
+                totalPage=1;
+            }
+            var recordlist = "";
+            var list = json.rows;
+            $.each(list,function(index,array) { //遍历json数据列
+                console.log(list[index]);
+                var iconStr="";
+                if(list[index].switchStatus=="启用"){
+                    iconStr="<i class='icon iconfont icon-chakan icon-qiyong'></i>"
+                }else {
+                    iconStr="<i class='icon iconfont icon-chakan icon-tingzhi1'></i>"
+                }
+                recordlist+=" <tr class='odd gradeX'>"
+                    +"<td>"
+                    +"<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                    +"<input type='checkbox' name = 'checkbox' class='checkboxes' id='"+list[index].modelTrainedId+"'/>"
+                    +"<span></span>"
+                    +"</label>"
+                    +"</td>"
+                    +"<td>"+list[index].modelTrainedName+"</td>"
+                    +"<td>"+list[index].userName+"</td>"
+                    +"<td>"
+                    +"<div class='actions'>"
+                    +"<input id='modelTrainedId' value='"+list[index].modelTrainedId+"' type='hidden'>"
+                    +"<a href='javascript:;' data-toggle='modal' id='switchStatus' title='"+list[index].switchStatus+"'onclick='changeStatus(this)'>"
+                    +iconStr
+                    +"</a>"
+                    +"<a href='javascript:;' data-toggle='modal' onclick='renameModel(this)' title='重命名'>"
+                    +"<i class='icon iconfont icon-chakan icon-bianji1'></i>"
+                    +"</a>"
+                    +"<a href='javascript:;' data-toggle='modal' onclick='deleteModel(this)' title='删除'>"
+                    +"<i class='icon iconfont icon-chakan icon-cuo2' ></i>"
+                    +"</a>"
+                    +"</div>"
+                    +"</td>"
+                    +"<td>"+list[index].workflowName+"</td>"
+                    +"<td>"+list[index].showStatus+"</td>"
+                    +"<td>"+list[index].modificationTime+"</td>"
+                +"</tr>"
+            })
+            $("#modelTrainedBody").append(recordlist);
+        },
+        complete:function() {
+            paginator(curPage,totalPage);//分页
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        }
+
+    });
+}
+
+
+
+// 空格过滤
+    function removeAllSpace(str) {
+        return str.replace(/\s+/g, "");
+    }

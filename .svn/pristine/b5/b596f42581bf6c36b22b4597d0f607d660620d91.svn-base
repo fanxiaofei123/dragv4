@@ -1,0 +1,95 @@
+package org.com.drag.model;
+
+import java.io.Serializable;
+
+/**
+ * Created by cdyoue on 2016/12/3.
+ */
+public class Connect  implements Serializable{
+    /**
+	
+	 * @fieldName: serialVersionUID
+	
+	 * @fieldType: long
+	
+	 * @Description: TODO
+	
+	 */
+	private static final long serialVersionUID = -9186539434400332460L;
+	private String sourceId;
+    private String targetId;
+    private String sourceModel;
+    private String targetModel;
+    private String connectType;
+
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
+    public String getSourceModel() {
+        return sourceModel;
+    }
+
+    public void setSourceModel(String sourceModel) {
+        this.sourceModel = sourceModel;
+    }
+
+    public String getTargetModel() {
+        return targetModel;
+    }
+
+    public void setTargetModel(String targetModel) {
+        this.targetModel = targetModel;
+    }
+
+
+
+    //页面接受参数处理
+
+
+    public void setPageSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public void setPageTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
+    public void setSourceText(String sourceModel) {
+        this.sourceModel = sourceModel;
+    }
+    public void setTargetText(String targetModel) {
+        this.targetModel = targetModel;
+    }
+
+    public String getConnectType() {
+        return connectType;
+    }
+
+    public void setConnectType(String connectType) {
+        this.connectType = connectType;
+    }
+
+    @Override
+    public String toString() {
+        return "Connect{" +
+                "sourceId='" + sourceId + '\'' +
+                ", targetId='" + targetId + '\'' +
+                ", sourceModel='" + sourceModel + '\'' +
+                ", connectType='" + connectType + '\'' +
+                '}';
+    }
+}

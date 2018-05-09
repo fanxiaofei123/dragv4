@@ -1,0 +1,13 @@
+package org.com.drag.dao;
+import org.com.drag.model.ModelTrained;
+
+public interface ModelTrainedMapper extends BaseDao<ModelTrained> {
+
+    int deleteById(Integer modelTrainedId);
+
+    int batchDelete(String[] modelTrainedIds);
+
+    String getInputPathById(Integer modelTrainedId);
+
+    String getDataModelNameById(Integer modelTrainedId);
+}

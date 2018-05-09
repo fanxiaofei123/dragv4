@@ -1,0 +1,130 @@
+/*搜索框*/
+.search-common{
+  width: 242px;
+}
+#addWorkDetails .form-group textarea{
+  height: 100px;
+}
+.treeDeomBox{
+  position: relative;
+  /*width: 100%;*/
+  height: 200px;
+  border: 1px solid #dfe3e9;
+  border-radius: 5px;
+}
+.dataList .table-hover > #flowWorkTbody2 .gradeX .actions{
+  position: absolute;
+  width: 90px;
+  left: -100px;
+  color: #fff;
+  display: none;
+
+}
+.line{
+  color: #dfe3e9;
+  padding: 0 18px;
+  font-size: 18px;
+}
+.page-bar div span:first-child{
+  font-size: 16px;
+  /*color: #64848e;*/
+  letter-spacing: 1px;
+}
+
+.page-bar div i{
+  font-size: 20px;
+  margin: 0 5px;
+}
+.page-bar div .creat_model{
+  position: relative;
+  bottom: -6px;
+  text-align: left;
+}
+.page-bar div .creat_model>span span{
+  position: absolute;
+  color: #fff;
+}
+.page-bar div .creat_model>span{
+  position: absolute;
+  font-size: 12px;
+  color: #fff;
+  left: 20px;
+}
+.haveCheckBox{
+  background-color: #abbcc4!important;
+  pointer-events: none;
+}
+.haveCheckIcon{
+  color: #abbcc4!important;
+  pointer-events: none;
+}
+/*工作流的分页选择*/
+.chooseNum{
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  margin-left: 20px;
+}
+.chooseNum .chooseNum-des{
+  cursor: pointer;
+}
+.chooseNum ul{
+  position: absolute;
+  top: 50px;
+  z-index: 1;
+  padding: 4px 5px;
+  width: 78px;
+  background: #fff;
+  display: none;
+}
+.chooseNum ul li{
+  list-style: none;
+  line-height: 34px;
+  cursor: default;
+  color: #333!important;
+}
+.page-bar .chooseNum ul li i{
+  width: 38px;
+}
+li [class=" glyphicon-ok"]{
+  top: 0;
+}
+.chooseNum ul li:hover{
+  background-color: #1abc9c;
+}
+/*图标*/
+.page-container .icon_up_down{
+  color: #ffffff;
+  font-size: 12px;
+}
+.page-bar div .creat_model_work, .page-bar div .creat_model_work_color{
+  display: inline-block;
+  padding: 2px 15px 2px 10px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  color: white;
+  border-radius: 20px!important;
+  margin-left: 10px;
+  background: #1bbc9b;
+}
+/*.page-container .haveCheckBack{*/
+  /*background: #1bbc9b;*/
+  /*pointer-events: auto;*/
+/*}*/
+.page-bar div .creat_model_work i,.page-bar div .creat_model_work_color i{
+  color: #ffffff;
+  display: inline-block;
+  height: 16px;
+  text-align: center;
+  vertical-align: middle;
+  padding-right: 5px;
+  margin: 0px;
+
+}
+.relative_span{
+  position: relative;   top: -3px;
+}
+.font_size_span{
+  font-size: 14px;
+}

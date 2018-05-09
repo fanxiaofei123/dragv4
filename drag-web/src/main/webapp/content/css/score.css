@@ -1,0 +1,102 @@
+h3{
+    text-align: center;
+}
+.timeAndread{
+    text-align: center;
+}
+.timeAndread p{
+    color: #666;
+    display: inline-block;
+    margin-right: 10px;
+}
+.patentTable table{
+    margin: 20px auto;
+    border: 1px solid #dcdcdc;
+    text-align: center;
+    width: 760px;
+}
+.patentTable table td{
+    border: 1px solid #dcdcdc;
+    line-height: 35px;
+}
+.patentAbstractHead {
+    border-bottom: 1px solid #dcdcdc;
+    margin-bottom: 30px;
+}
+.patentAbstractHead p {
+    margin: 0;
+    border-bottom: 2px solid #0767b1;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    width: 92px;
+}
+/*全种类*/
+.portlet h4{
+    width: 100%;
+    background-color: #000000;
+    color: white;
+    padding: 10px;
+    line-height: 1.8;
+    font-size: 14px;
+}
+.veg-btn{
+    position: relative;
+}
+.allVeg{
+    width: 115px;
+    height: 38px;
+    line-height: 38px;
+    background: #32c5d2;
+    color: white;
+}
+.allVeg span:first-child{
+    padding: 0 5px;
+}
+.allVeg span:last-child{
+    float: right;
+    margin-right: 8px;
+    line-height: 38px;
+}
+.allveget{
+    background-color: rgba(0, 0, 0, 0.92);
+    width: 450px;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.75);
+    /*opacity: 0.7;*/
+    position: absolute;
+    top: 38px;;
+    left: 0;
+    z-index: 1000;
+    display: none;
+}
+.allveg{
+    float: left;
+    padding: 5px 10px;
+}
+.veget{
+    float: left;
+    width: 350px;
+}
+.veget li{
+    float: left;
+    padding: 5px 10px;
+    list-style: none;
+    width: 62px;
+    line-height: 24px;
+}
+.veget li:hover{
+    color: white;
+    cursor: pointer;
+}
+#lineChart{
+    margin-top: 20px;
+}
+
+.abstract p{
+    margin: 0;
+}
+.page-container-bg-solid .profile{
+    padding: 10px 20px;
+}

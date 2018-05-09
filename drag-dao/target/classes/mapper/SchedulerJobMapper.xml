@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.SchedulerJobDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.SchedulerJob" >
+    <id column="sch_job_id" property="schJobId" jdbcType="INTEGER" />
+    <result column="sch_job_wf_id" property="schJobWfId" jdbcType="INTEGER" />
+    <result column="sch_job_name" property="schJobName" jdbcType="VARCHAR" />
+    <result column="sch_job_enable" property="schJobEnable" jdbcType="BIT" />
+    <result column="sch_job_start_time" property="schJobStartTime" jdbcType="TIMESTAMP" />
+    <result column="sch_job_end_time" property="schJobEndTime" jdbcType="TIMESTAMP" />
+    <result column="sch_job_mode" property="schJobMode" jdbcType="TINYINT" />
+    <result column="sch_job_interval" property="schJobInterval" jdbcType="INTEGER" />
+    <result column="sch_job_interval_unit" property="schJobIntervalUnit" jdbcType="TINYINT" />
+    <result column="sch_job_create_time" property="schJobCreateTime" jdbcType="TIMESTAMP" />
+    <result column="sch_job_last_modify" property="schJobLastModify" jdbcType="TIMESTAMP" />
+    <result column="workFlowName" property="workFlowName" jdbcType="VARCHAR"/>
+      <result column="startTime" property="startTime" jdbcType="VARCHAR"/>
+      <result column="endTime" property="endTime" jdbcType="VARCHAR"/>
+      <result column="sch_job_desc" property="schJobDesc" jdbcType="VARCHAR"/>
+      <result column="sch_job_edit" property="editSchedulerJob" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="schJobWfId != null" >
+         and sch_job_wf_id = #{schJobWfId}
+      </if>
+      <if test="schJobName != null" >
+         and sch_job_name = #{schJobName}
+      </if>
+      <if test="schJobEnable != null" >
+         and sch_job_enable = #{schJobEnable}
+      </if>
+      <if test="schJobStartTime != null" >
+         and sch_job_start_time = #{schJobStartTime}
+      </if>
+      <if test="schJobEndTime != null" >
+         and sch_job_end_time = #{schJobEndTime}
+      </if>
+      <if test="schJobMode != null" >
+         and sch_job_mode = #{schJobMode}
+      </if>
+      <if test="schJobInterval != null" >
+         and sch_job_interval = #{schJobInterval}
+      </if>
+      <if test="schJobIntervalUnit != null" >
+         and sch_job_interval_unit = #{schJobIntervalUnit}
+      </if>
+      <if test="schJobCreateTime != null" >
+         and sch_job_create_time = #{schJobCreateTime}
+      </if>
+      <if test="schJobLastModify != null" >
+         and sch_job_last_modify = #{schJobLastModify}
+      </if>
+      <if test="schJobDesc != null" >
+         and sch_job_desc = #{schJobDesc}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    sch_job_id AS schJobId, sch_job_wf_id AS schJobWfId, sch_job_name AS schJobName,
+    sch_job_enable AS schJobEnable, sch_job_start_time AS schJobStartTime, sch_job_end_time AS schJobEndTime,
+    sch_job_mode AS schJobMode, sch_job_interval AS schJobInterval, sch_job_interval_unit AS schJobIntervalUnit,
+    sch_job_create_time AS schJobCreateTime, sch_job_last_modify AS schJobLastModify
+  </sql>
+  <sql id="Blob_Column_List" >
+    sch_job_desc AS schJobDesc
+  </sql>
+  <resultMap  id="ResultMapWithBLOBs" type="org.com.drag.model.SchedulerJob" extends="BaseResultMap" >
+    <result column="sch_job_desc"  property="schJobDesc" jdbcType="LONGVARCHAR" />
+  </resultMap >
+    <select id="getSchedulerDefaultDate" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+       SELECT sj.sch_job_start_time FROM user us RIGHT JOIN work_space ws on us.id=ws.userid RIGHT JOIN work_flow wf on ws.id=wf.workspid
+RIGHT JOIN scheduler_job sj ON wf.id=sj.sch_job_wf_id WHERE us.id=#{userId} ORDER BY sj.sch_job_start_time ASC
+    </select>
+  <select id="selectAllSchedulerJob" resultMap="BaseResultMap"  parameterType="java.util.Map">
+SELECT sj.*,wf.`name` as workFlowName FROM user us RIGHT JOIN work_space ws on us.id=ws.userid RIGHT JOIN work_flow wf on ws.id=wf.workspid
+RIGHT JOIN scheduler_job sj ON wf.id=sj.sch_job_wf_id
+WHERE  us.id=#{userId}
+  <!--<if test="startTime !=null and startTime!=''">-->
+      <!--and <![CDATA[sj.sch_job_end_time >= #{startTime}]]>-->
+  <!--</if>-->
+  <!--<if test="endTime !=null and endTime!=''">-->
+       <!--and <![CDATA[sj.sch_job_end_time <= #{endTime}]]>-->
+  <!--</if>-->
+
+   <if test="startTime !=null and startTime!=''">
+          and <![CDATA[sj.sch_job_start_time >= #{startTime}]]>
+    </if>
+    <if test="endTime !=null and endTime!=''">
+          and <![CDATA[sj.sch_job_start_time <= #{endTime}]]>
+    </if>
+
+ <if test="schJobName != null">
+   and sj.sch_job_name like CONCAT(CONCAT('%',#{schJobName}),'%')
+ </if>
+    order BY sj.sch_job_create_time DESC
+  </select>
+    <!--查询出不包含调度的工作流-->
+    <select id="selectWorkFlowList" parameterType="java.util.Map" resultType="org.com.drag.model.WorkFlow">
+        SELECT
+        wf.id, wf.workspid,wf.name
+        FROM user us RIGHT JOIN work_space ws on us.id=ws.userid RIGHT JOIN work_flow wf on ws.id=wf.workspid WHERE
+        us.id=#{userId}
+        <if test="workFlowName !=null and workFlowName !=''">
+            and    wf.`name` LIKE CONCAT(CONCAT('%',#{workFlowName}),'%')
+        </if>
+        and wf.id not in ( SELECT wf.id  FROM work_flow wf ,scheduler_job sj where wf.id=sj.sch_job_wf_id)
+    </select>
+    <insert id="insertSchedulerJob" parameterType="org.com.drag.model.SchedulerJob" useGeneratedKeys="true" keyProperty="schJobId">
+        insert INTO scheduler_job(sch_job_wf_id,sch_job_name,sch_job_desc,sch_job_enable,sch_job_start_time,sch_job_end_time,sch_job_mode,sch_job_interval,sch_job_interval_unit,sch_job_create_time,sch_job_last_modify) VALUES(#{schJobWfId},#{schJobName},#{schJobDesc},#{schJobEnable},#{startTime},
+#{endTime},#{schJobMode},#{schJobInterval},#{schJobIntervalUnit},#{createTime},#{jobModify})
+    </insert>
+  <select id="selectSchedulerJob" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+      SELECT sj.* FROM scheduler_job sj WHERE sj.sch_job_id=#{schJobId}
+  </select>
+    <update id="editSchedulerJob" parameterType="org.com.drag.model.SchedulerJob">
+        UPDATE scheduler_job SET sch_job_name=#{schJobName},sch_job_desc=#{schJobDesc},sch_job_enable=#{schJobEnable},sch_job_start_time=#{startTime},sch_job_end_time=#{endTime},sch_job_mode=#{schJobMode},
+         sch_job_interval=#{schJobInterval},sch_job_interval_unit=#{schJobIntervalUnit},sch_job_last_modify=#{jobModify},sch_job_edit=#{editSchedulerJob}
+         WHERE sch_job_id=#{schJobId}
+    </update>
+    <update id="editSchedulerJobStatus" parameterType="java.util.HashMap">
+         UPDATE scheduler_job SET sch_job_edit=#{editSchedulerJob}
+         WHERE sch_job_id=#{schJobId}
+    </update>
+    <delete id="deleteSchedulerJob" parameterType="java.lang.Integer">
+        DELETE FROM scheduler_job  WHERE sch_job_id=#{schJobId}
+    </delete>
+    <delete id="batchDeleteSchedulerJob" parameterType="java.util.List">
+        DELETE FROM  scheduler_job WHERE  sch_job_id IN
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+<select id="selectTodoSchedulerJobs" resultMap="BaseResultMap">
+    SELECT sj.* FROM scheduler_job sj WHERE
+    sch_job_end_time in (SELECT  sch_job_end_time FROM scheduler_job  WHERE sch_job_end_time > now() and  now() > sch_job_start_time and sch_job_mode=1 and sch_job_enable=1 )
+    or sj.sch_job_end_time in (SELECT  sch_job_end_time FROM scheduler_job  WHERE sch_job_start_time > now() and sch_job_end_time > sch_job_start_time  and sch_job_mode=1 and sch_job_enable=1 )
+    or sch_job_start_time in (SELECT  sch_job_start_time FROM scheduler_job  WHERE   now() > sch_job_start_time and sch_job_end_time is NULL  and sch_job_mode=1 and sch_job_enable=1 )
+    or sch_job_start_time in (SELECT  sch_job_start_time FROM scheduler_job  WHERE sch_job_start_time > now() and sch_job_end_time is NULL  and sch_job_mode=1 and sch_job_enable=1 )
+    or sch_job_end_time in (SELECT  s.sch_job_end_time FROM scheduler_job s WHERE s.sch_job_start_time > now() and s.sch_job_end_time > s.sch_job_start_time and s.sch_job_mode=0 and s.sch_job_enable=1 )
+    GROUP BY sch_job_id
+  </select>
+    <select id="selectUserNameByJobId" parameterType="java.lang.Integer" resultType="java.lang.String">
+        SELECT us.loginname  FROM user us RIGHT JOIN work_space ws on us.id=ws.userid RIGHT JOIN work_flow wf on ws.id=wf.workspid
+RIGHT JOIN scheduler_job sj ON wf.id=sj.sch_job_wf_id   where sj.sch_job_id=#{schJobId}
+    </select>
+    <select id="getUserBySchJobId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+           SELECT us.id  FROM user us RIGHT JOIN work_space ws on us.id=ws.userid RIGHT JOIN work_flow wf on ws.id=wf.workspid
+RIGHT JOIN scheduler_job sj ON wf.id=sj.sch_job_wf_id   where sj.sch_job_id=#{schJobId}
+    </select>
+    <select id="findFlowIdBySchJobId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT sch_job_wf_id FROM  scheduler_job  WHERE sch_job_id=#{schJobId}
+    </select>
+    <select id="findSchJobIdBySchJobWfId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT sch_job_id FROM  scheduler_job  WHERE sch_job_wf_id=#{schJobWfId} GROUP BY sch_job_wf_id
+    </select>
+    <select id="findJobNameById" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT sch_job_name FROM  scheduler_job   WHERE sch_job_wf_id = #{id}
+    </select>
+
+    <select id="findByWorkSpaceId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT sjob.sch_job_id,sjob.sch_job_name FROM  scheduler_job sjob LEFT JOIN work_flow on
+        sch_job_wf_id = work_flow.id LEFT JOIN work_space ON work_flow.workspid = work_space.id WHERE work_space.id = #{wpid}
+    </select>
+
+</mapper>

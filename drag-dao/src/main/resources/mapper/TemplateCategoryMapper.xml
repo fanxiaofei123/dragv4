@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.TemplateCategoryDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.TemplateCategory" >
+    <id column="template_category_id" property="templateCategoryId" jdbcType="INTEGER" />
+    <id column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="template_category_name" property="templateCategoryName" jdbcType="VARCHAR" />
+    <result column="template_category_pid" property="templateCategoryPid" jdbcType="INTEGER" />
+    <result column="template_category_is_parent" property="templateCategoryIsParent" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="templateCategoryName != null" >
+         and template_category_name = #{templateCategoryName}
+      </if>
+      <if test="templateCategoryPid != null" >
+         and template_category_pid = #{templateCategoryPid}
+      </if>
+      <if test="templateCategoryIsParent != null" >
+         and template_category_is_parent = #{templateCategoryIsParent}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+      userid,
+    template_category_id AS templateCategoryId, template_category_name AS templateCategoryName, 
+    template_category_pid AS templateCategoryPid, template_category_is_parent AS templateCategoryIsParent
+  </sql>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from template_category
+    where template_category_id = #{templateCategoryId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    DELETE FROM template_category where template_category_id = #{tempateid}
+  </delete>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM template_category
+    where template_category_id in
+    <foreach collection="array" item="templateCategoryId" open="(" separator="," close=")">
+      #{templateCategoryId}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="org.com.drag.model.TemplateCategory" >
+    insert into template_category (template_category_id,userid,template_category_name, template_category_pid, template_category_is_parent
+      )
+    values (#{templateCategoryId},#{userid}, #{templateCategoryName}, #{templateCategoryPid}, #{templateCategoryIsParent}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.TemplateCategory" >
+    update template_category
+    <set >
+      <if test="templateCategoryName != null" >
+        template_category_name = #{templateCategoryName},
+      </if>
+      <if test="templateCategoryPid != null" >
+        template_category_pid = #{templateCategoryPid},
+      </if>
+      <if test="templateCategoryIsParent != null" >
+        template_category_is_parent = #{templateCategoryIsParent},
+      </if>
+    </set>
+    where template_category_id = #{templateCategoryId}
+  </update>
+  
+  <select id="selectCount" resultType="java.lang.Long" parameterType="org.com.drag.model.TemplateCategory" >
+    select count(id) from template_category
+	<include refid="Example_Where_Clause" />
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from template_category where 1=1
+    <if test="userid != null" >
+      and userid = #{userid}
+    </if>
+    <if test="templateCategoryPid != null" >
+      and template_category_pid = #{templateCategoryPid}
+    </if>
+    <if test="templateCategoryName != null" >
+      and template_category_name = #{templateCategoryName}
+    </if>
+  </select>
+
+  <select id="selectAllCount" resultType="java.lang.Long" >
+    select count(id) from template_category
+  </select>
+
+  <!-- 查询tree所需要的数据-->
+  <select id="selectZtree" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" /> from template_category where
+    userid = #{userid,jdbcType=INTEGER}
+    <!--<if test="pid != null" >-->
+      <!--and template_category_pid = #{pid,jdbcType=INTEGER}-->
+    <!--</if>-->
+    and template_category_pid = #{pid,jdbcType=INTEGER}
+  </select>
+  <!--根据用户id查询所有数据-->
+  <select id="selectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" /> from template_category where
+    userid = #{userid,jdbcType=INTEGER}
+    <if test="pid != null and pid != '' " >
+    and template_category_pid = #{pid,jdbcType=INTEGER}
+    </if>
+    <if test="pid == null || pid == ''" >
+    and template_category_pid is NULL
+    </if>
+  </select>
+</mapper>

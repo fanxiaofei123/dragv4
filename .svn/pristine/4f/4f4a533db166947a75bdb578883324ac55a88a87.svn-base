@@ -1,0 +1,531 @@
+@charset "UTF-8";
+/*table*/
+/*重置边框线*/
+.table-bordered, .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th{
+    border: 1px solid #cddde3;
+}
+/*div边框圆角及阴影*/
+.shadowRadius,.table-scrollable{
+    box-shadow: 0 0 5px #dfe3e5;
+    border-radius: 5px!important;
+    border: 1px solid #d0e0e4;
+}
+.Radius{
+    border-radius: 5px!important;
+}
+/*目录树阴影*/
+.ztreeShadow{
+    box-shadow: 0 0 5px rgb(9, 84, 109);
+}
+.rMenuShadow{
+    box-shadow: 5px 4px 10px rgba(9, 84, 109, 0.2);
+    border: 1px solid #e7e7e7;
+}
+
+/*table文字居中*/
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
+    vertical-align: middle;
+}
+table{
+    border-radius: 5px!important;
+}
+thead{
+    text-align: center;
+    /*height: 80px;*/
+    background: #dfe4e6;
+}
+.table > thead > tr > th{
+    /*text-align: center;*/
+    color: #64848e;
+    vertical-align: middle;
+}
+.table > thead > tr > th span{
+    font-weight: normal;
+}
+tbody{
+    background: #fff;
+    color: #333;
+}
+tbody tr{
+    height: 70px;
+}
+tbody tr td{
+    font-weight: 600;
+}
+#dataExcel tbody tr td{
+    font-weight: 100;
+}
+tbody tr td:nth-child(2),
+tbody tr td:nth-child(3){
+    font-weight: normal;
+}
+/*page*/
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover{
+    background: #1bbc9b;
+    border-color: #1bbc9b;
+}
+.pagination > li > a, .pagination > li > span{
+    color: #1bbc9b;
+}
+/*模态框*/
+.modal-header{
+    background: #1bbc9b;
+    color: #fff;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions{
+    text-align: center;
+}
+.modal .modal-header .close{
+    margin-top: 4px!important;
+    color: #fff;
+}
+.btn-default{
+    margin: 0 30px;
+    width: 100px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 5px!important;
+}
+.font-color{
+    color: #1bbc9b;
+}
+.border-color{
+    border-color: #1bbc9b;
+}
+.btn-default.active,
+.btn-default:active,
+.btn-default:hover,
+.open>.btn-default.dropdown-toggle{
+    background: #1bbc9b;
+    border-color: #1bbc9b;
+    color: #fff;
+}
+.btn-de.btn-default:hover{
+    color: #fff;
+    background: #f98937;
+    border-color: #f98937;
+}
+.font-orange{
+    color: #f98937;
+}
+.border-orange{
+    border-color: #f98937;
+}
+.font-gray{
+    color: #64858f;
+}
+
+/*模态框input*/
+.modal .modal-body .form-group{
+    /*margin: 10px 0;*/
+    color: #333;
+}
+.modal .modal-body .form-group .form-control{
+    height: 40px;
+    border-radius: 5px!important;
+}
+.modal .modal-body .portlet-form .form-actions{
+    padding: 10px 20px;
+}
+/*显示数据模态框*/
+#dataExcel .modal-header{
+    padding: 0;
+    background: none;
+    border-bottom: none;
+}
+#dataExcel .excel_title div{
+    float: left;
+    width: 80px;
+}
+#dataExcel .excel_title div p{
+    margin: 5px;
+}
+#dataExcel .excel_title div p:first-child{
+    color: #6fffe1;
+}
+#dataExcel .excel_title div p:first-child span{
+    color: #fff;
+    padding: 0 10px 0 0;
+}
+#dataExcel .modal-dialog{
+    width: 900px;
+    max-height: 700px;
+}
+#dataExcel .excel_content{
+    width: 900px;
+    max-height: 700px;
+    overflow: auto;
+}
+#dataExcel .excel_content table{
+    min-width: 900px;
+}
+#dataExcel table td,#dataExcel table th{
+    /*min-width: 100%;*/
+    padding: 0 20px;
+    white-space:nowrap;
+    text-align: center;
+}
+/*end*/
+/*重置模态框阴影*/
+.modal-content {
+    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,.1);
+}
+/*end*/
+
+/*search2*/
+.search-common,
+.search-common .search-input,
+.search-common .search-icon{
+    padding: 0!important;
+}
+.search-common{
+    float: right;
+    width: 510px;
+}
+.search-common .search-input{
+    margin-top: 15px;
+    float: right;
+    height: 30px;
+    line-height: 22px;
+}
+.search-common .search-input input{
+    width: 200px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #1bbc9b;
+    outline: none;
+}
+.search-common .search-icon{
+    display: inline-block;
+    float: right
+}
+.search-common .search-icon i{
+    color: #1bbc9b
+}
+/*工作流及文件管理等table样式初始化*/
+table.dataTable td.sorting_1,
+table.dataTable td.sorting_2,
+table.dataTable td.sorting_3,
+table.dataTable th.sorting_1,
+table.dataTable th.sorting_2,
+table.dataTable th.sorting_3 {
+    background: transparent !important;
+}
+.dataList {
+    min-width: 1000px;
+}
+.dataList .portlet .caption span a {
+    color: #666666;
+    font-size: 14px;
+}
+.dataList .portlet > .actions {
+    float: right;
+    display: inline-block;
+}
+.dataList .portlet-body table tbody tr td {
+    height: 50px;
+    vertical-align: middle;
+}
+.dataList .portlet-body table tbody tr td .fileType {
+    float: left;
+    font-size: 32px;
+    padding-right: 16px;
+    color: #1bbc9b;
+}
+.dataList .portlet-body table tbody tr td .fileSize{
+    font-size: 12px;
+    color: #95aab1;
+}
+.dataList .portlet-body table tbody tr td .fileContent {
+    float: left;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle{
+    line-height: 1.6;
+    color: #333;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a {
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+}
+.dataList .portlet-body table tbody tr td .fileContent .fileTitle a:hover {
+    /*color: #32c5d2;*/
+}
+.dataList .portlet-body table tbody tr td .actions a {
+    color: #666;
+    font-size: 16px;
+}
+.dataList .portlet-body table tbody tr td .actions a:hover {
+    color: #1bbc9b;
+}
+.modal .modal-dialog .modal-content .modal-body {
+    padding-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet {
+    margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group label {
+    /*text-align: center;*/
+    text-align: right;
+    padding-left: 0;
+    padding-right: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group .col-md-10 .workFlowInfo {
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #dfe3e9;
+    border-radius: 5px;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions {
+    padding: 0 0 30px;
+    text-align: center;
+}
+.bootbox .modal-dialog .modal-content .modal-body {
+    text-align: center;
+    padding: 30px;
+    font-size: 16px;
+}
+.bootbox .modal-dialog .modal-content .modal-body .iconQuestion {
+    font-size: 36px;
+}
+/*new add*/
+.page-bar div{
+    line-height: 54px;
+    /*padding: 0 30px;*/
+}
+.page-bar div a{
+    display: inline-block;
+}
+.page-bar div i{
+    color: #1bbc9b;
+    display: inline-block;
+    /*font-size: 16px;*/
+    height: 16px;
+    text-align: center;
+    width: 25px;
+    text-align: center;
+    vertical-align: middle;
+}
+.page-bar div .creat_model{
+    display: inline-block;
+    width: 114px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    background: #1bbc9b;
+    color: white;
+    border-radius: 20px!important;
+}
+.dataList .portlet-body table{
+    border-radius: 5px!important;
+}
+.dataList .portlet-body table thead{
+    background: #dfe4e6;
+}
+.dataList .portlet-body table thead th,
+.dataList .portlet-body table tbody tr td:last-child
+{
+    color: #64848e;
+}
+.dataList .table-hover>#flowWorkTbody>tr:hover{
+    background: #1bbc9b;
+    color: #fff!important;
+}
+.dataList .table-hover>#flowWorkTbody>tr:hover .hasAction{
+    position: relative;
+}
+.dataList .table-hover>#flowWorkTbody>tr:hover .actions{
+    display: block;
+}
+.dataList .table-hover>#flowWorkTbody>tr:hover td,
+.dataList .portlet-body table tbody tr:hover td .fileSize,
+.dataList .portlet-body table tbody tr:hover td .fileType,
+.dataList .portlet-body table tbody tr:hover td .fileContent .fileTitle a
+{
+    color: #fff!important;
+    border-right: none;
+}
+.dataList .table-hover>#flowWorkTbody .gradeX td:last-child{
+    position: relative;
+}
+.dataList .table-hover>#flowWorkTbody .gradeX .actions{
+    position: absolute;
+    width: 112px;
+    left: -116px;
+    color: #fff;
+    display: none;
+}
+.dataList .table-hover>#flowWorkTbody .gradeX .actions a{
+    color: #fff;
+}
+.dataList .table-hover>#flowWorkTbody .gradeX .actions a{
+    padding: 0 5px;
+}
+table.dataTable.no-footer{
+    border-bottom: none;
+}
+table.dataTable thead th{
+    padding: 15px 10px;
+    border-bottom: none;
+}
+/*选中状态*/
+.table-hover > tbody > tr:hover, .table > tbody > tr.active > td, .table > tbody > tr.active > th, .table > tbody > tr > td.active, .table > tbody > tr > th.active, .table > tfoot > tr.active > td, .table > tfoot > tr.active > th, .table > tfoot > tr > td.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > thead > tr.active > th, .table > thead > tr > td.active, .table > thead > tr > th.active
+{
+    background: rgba(16, 254, 251, 0.05);
+    color: #1bbc9b!important;
+}
+.dataList .portlet-body .table tbody tr.active td .fileSize,
+.dataList .portlet-body .table tbody tr.active td .fileContent .fileTitle a
+{
+    color: #1bbc9b;
+}
+/*hover状态*/
+.table-hover > tbody > tr:hover
+{
+    background: #1bbc9b;
+    color: #fff!important;
+}
+/*选中之后hover效果*/
+.table-hover>tbody>tr.active:hover>td{
+    background: #1bbc9b;
+}
+/*new add 弹框*/
+.modal-header{
+    /*text-align: center;*/
+    background: #1bbc9b;
+    color: #fff;
+}
+.form-control{
+    border: 1px solid #dfe3e9;
+}
+.form-actions .btn{
+    margin: 0 30px;
+    width: 127px;
+    height: 36px;
+}
+.form-control:focus{
+    border-color: #1bbc9b;
+}
+/*结束*/
+/*添加数据等绿色圆角样式*/
+.add-iconbg{
+    display: inline-block;
+    margin-right: 15px;
+    padding: 0 16px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    background: #1bbc9b;
+    color: white;
+    border-radius: 20px !important;
+}
+/*中间分隔线*/
+.line{
+    color: #dfe3e9;
+    padding: 0 18px;
+    font-size: 18px;
+}
+/*分页*/
+.page{
+    padding: 0;
+}
+.pagination{
+    box-shadow: 0 0 5px #dfe3e5;
+}
+/*目录树搜索框*/
+.has-feedback input{
+    width: 100%;
+    height: 40px;
+}
+.has-feedback .icon-search{
+    position: absolute;
+    top: 13px;
+    right: 22px;
+}
+/*目录树右键不可点击状态*/
+.noEvent{
+    pointer-events: none;
+    color: #a3a3a3;
+}
+.iconfont{
+    font-size: 20px;
+}
+/*弹框关闭按钮*/
+.modal .modal-header .close{
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+/*鼠标右键图标问题*/
+div#rMenu ul li i {
+    margin-right: 10px;
+    color: #a3a3a3;
+}
+div#rMenu ul li:hover i {
+    color: #fff;
+}
+/*右键新建文件夹*/
+.modal-custom{
+    width: 480px;
+}
+.modal-custom .form-actions .btn{
+    margin: 0 34px;
+    padding: 0;
+}
+.modal-custom-delete{
+    width: 420px;
+}
+.modal-custom-delete .form-actions .btn{
+    margin: 0 32px;
+    padding: 0;
+}
+.addNewFile .form-control{
+    margin: 0 auto;
+    width: 326px;
+}
+.linkError{
+    margin: 5px 0 0 0!important;
+}
+
+/*end*/
+
+/*滚动条样式问题*/
+.mCSB_container_wrapper{
+    margin-right: 0;
+}
+.mCS-dark-thin.mCSB_scrollTools .mCSB_draggerRail{
+    width: 7px;
+    background: rgba(27, 188, 155, 0.2);
+}
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+    width: 7px;
+    background: #1bbc9b;
+}
+.mCS-dark-thin.mCSB_scrollTools_horizontal .mCSB_dragger .mCSB_dragger_bar,.mCS-dark-thin.mCSB_scrollTools_horizontal .mCSB_draggerRail{
+    width: 100%;
+    height: 7px;
+}
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar,.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger:active .mCSB_dragger_bar,
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar{
+    background: #0c9e80;
+}
+/*外部滚动条距离*/
+.mCSB_outside+.mCSB_scrollTools{
+    right: -6px;
+}
+
+/*end*/
+/*重写弹框距离浏览器高度问题*/
+@media (min-width: 768px){
+    .modal-dialog {
+        width: 600px;
+        margin: 60px auto;
+    }
+}
+.modal .modal-header{
+    margin: 0 0 8px;
+}
+/*end*/

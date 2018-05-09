@@ -1,0 +1,181 @@
+package org.com.drag.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ *
+ * @author Guzhendong
+ *
+ */
+public class DataMining implements Serializable {
+    private static final long serialVersionUID = 893279500532674416L;
+
+    private Integer dataMiningId;
+    private String flowName;
+    private String dataMiningCategoryName;
+    private String loginname;
+    private String email;
+
+    private Integer userid;
+    private Integer dataMiningCategoryPid;
+
+    public Integer getDataMiningCategoryPid() {
+        return dataMiningCategoryPid;
+    }
+
+    public void setDataMiningCategoryPid(Integer dataMiningCategoryPid) {
+        this.dataMiningCategoryPid = dataMiningCategoryPid;
+    }
+
+    public Integer getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Integer userid) {
+        this.userid = userid;
+    }
+
+    public String getLoginname() {
+        return loginname;
+    }
+
+    public void setLoginname(String loginname) {
+        this.loginname = loginname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDataMiningCategoryName() {
+        return dataMiningCategoryName;
+    }
+
+    public void setDataMiningCategoryName(String dataMiningCategoryName) {
+        this.dataMiningCategoryName = dataMiningCategoryName;
+    }
+
+    public String getFlowName() {
+        return flowName;
+    }
+
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+    }
+
+    /**
+     * 关联工作流id
+     */
+    private Integer workFlowId;
+
+    /**
+     * 所属挖掘目录父id
+     */
+    private Integer dataMiningCategoryId;
+
+    /**
+     * 数据挖掘名(数据挖掘分析项)
+     */
+    private String dataMiningName;
+
+    /**
+     * 数据挖掘说明
+     */
+    private String dataMiningDescription;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    public Integer getDataMiningId() {
+        return dataMiningId;
+    }
+
+    public void setDataMiningId(Integer dataMiningId) {
+        this.dataMiningId = dataMiningId;
+    }
+
+    /**
+     * @return 关联工作流id
+     */
+    public Integer getWorkFlowId() {
+        return workFlowId;
+    }
+
+    /**
+     * @param workFlowId
+     *            关联工作流id
+     */
+    public void setWorkFlowId(Integer workFlowId) {
+        this.workFlowId = workFlowId;
+    }
+
+    /**
+     * @return 所属挖掘目录父id
+     */
+    public Integer getDataMiningCategoryId() {
+        return dataMiningCategoryId;
+    }
+
+    /**
+     * @param dataMiningCategoryId
+     *            所属挖掘目录父id
+     */
+    public void setDataMiningCategoryId(Integer dataMiningCategoryId) {
+        this.dataMiningCategoryId = dataMiningCategoryId;
+    }
+
+    /**
+     * @return 数据挖掘名(数据挖掘分析项)
+     */
+    public String getDataMiningName() {
+        return dataMiningName;
+    }
+
+    /**
+     * @param dataMiningName
+     *            数据挖掘名(数据挖掘分析项)
+     */
+    public void setDataMiningName(String dataMiningName) {
+        this.dataMiningName = dataMiningName;
+    }
+
+    /**
+     * @return 数据挖掘说明
+     */
+    public String getDataMiningDescription() {
+        return dataMiningDescription;
+    }
+
+    /**
+     * @param dataMiningDescription
+     *            数据挖掘说明
+     */
+    public void setDataMiningDescription(String dataMiningDescription) {
+        this.dataMiningDescription = dataMiningDescription;
+    }
+
+    /**
+     * @return 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * @param createTime
+     *            创建时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+}

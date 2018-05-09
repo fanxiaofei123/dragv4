@@ -1,0 +1,541 @@
+/**
+ * Created by luojun on 2017/8/21.
+ */
+$(function () {
+    getDefaultDate();
+    taskStatusCount();
+    clickAdd("type");// 复选框功能新
+    searchTask();
+    lookLog();
+    initCondition("#type");
+
+});
+//页面上按时间筛选展示的默认时间段
+function getDefaultDate(){
+    $.ajax({
+        type : "post",
+        url : basePath+"/drag/scheduler/getSchedulerHisJobDefaultDate.do",
+        async : false,
+        success : function(data){
+            var obj=JSON.parse(data);
+            var str=obj.msg;
+            dateTime=str.replace('/', ' / ');
+            $('#chooseDate').val(dateTime);
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        },
+        complete:function(data){
+            if(data == "AjaxSessionTimeout"){
+                window.location.href=basePath;
+                return;
+            }
+        },
+    });
+
+}
+//获取任务的成功和失败的情况个数
+function taskStatusCount() {
+    $.ajax({
+        type:'post',
+        url:basePath+'/drag/ops/taskStatusCount.do',
+        dataType:"json",
+        success:function (result) {
+            if(result!=null){
+                $('#state0').html(result.obj.statusCount.state0);
+                $('#state1').html(result.obj.statusCount.state1);
+                $('#state2').text(result.obj.statusCount.state2);
+                $('#state3').text(result.obj.statusCount.state3);
+            }
+
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        }
+    })
+}
+//查看日志
+function lookLog() {
+    $("#taskBody").on('click','.lookLog',function (event) {
+        event.stopPropagation();
+        $('#seeLogs').modal('show')
+        var schJobHisId=$(this).attr("schJobHisId");
+        $.ajax({
+            type:'post',
+            url:basePath +"/drag/scheduler/lookSchedulerHisJobLog.do",
+            dataType: "json",
+            data:{"schJobHisId":schJobHisId},
+            success:function (obj) {
+                 $("#innerDiv").empty();
+                 if(obj.code==200){
+                     $("#innerDiv").append(obj.obj)
+                 }else {
+                     $("#innerDiv").append(obj.msg);
+                 }
+
+            },
+            error:function(data) {
+                if (data.responseText == "AjaxSessionTimeout") {
+                    window.location.href = basePath;
+                    return;
+                }
+            }
+
+        })
+    });
+}
+// 点击添加按钮执行事件
+function clickAdd(id) {
+    var type="#"+id;
+    var stateTxt = [];
+    $.each($(type+' .option'),function(){
+        stateTxt.push($(this).html())
+    });
+    stateTxt.join(',');
+    $(type).on('click','.add',function (e) {
+        // console.log(m);
+        e.stopPropagation();
+        $(type+' .add').addClass("pointNone");
+        showChoose(type);
+        addAndDele(type,stateTxt);
+    });
+    removeChild(type)
+
+}
+var stateArray=[];//运行状态参数0,1,2,3
+// 显示选择的状态等添加到页面上
+var state=[];//存状态的仓库
+var order=0;//排序
+function showChoose(id) {
+    // var type="#"+id;
+    $(id+" .choose").removeClass('dn');
+    $(id+" .choose .selectChoose").on('click','.option',function (e) {
+        e.stopPropagation();
+        //添加状态到数组
+
+        stateArray.splice(0,stateArray.length);
+
+        state.push($(this).attr("value"))
+        Array.prototype.push.apply(stateArray, state);
+        taskStatusCount();
+        getDispatchJobList(1,stateArray,order)
+
+        $(id+" .allTypeNum").append('<div class="typeChild" value='+$(this).attr("value")+'><span>'+$(this).text()+'</span><span class="dn"><i class="icon iconfont icon-wrong1"></i></span></div>');
+        $(this).remove();
+        var m= $(id+" .option").length;
+        if(m<=1){
+            $(id+" .add").addClass('dn');
+        }
+        $(id+" .choose").addClass('dn');
+        $(id+" .choose .selectChoose").off('click');
+        $(id+' .add').removeClass("pointNone");
+    })
+}
+function initShow(id,val,valText) {
+    $(id+" .allType:first").addClass("noClick");
+    $(id+" .choose").removeClass('dn');
+    stateArray.splice(0,stateArray.length);
+
+    state.push(val)
+    Array.prototype.push.apply(stateArray, state);
+    taskStatusCount();
+    getDispatchJobList(1,stateArray,order)
+
+    $(id+" .allTypeNum").append('<div class="typeChild" value='+val+'><span>'+valText+'</span><span class="dn"><i class="icon iconfont icon-wrong1"></i></span></div>');
+   // $(this).remove();
+     $(".selectChoose div[value="+val+"]").remove();
+    var m= $(id+" .option").length;
+    if(m<=1){
+        $(id+" .add").addClass('dn');
+    }
+    $(id+" .choose").addClass('dn');
+    $(id+" .choose .selectChoose").off('click');
+    $(id+' .add').removeClass("pointNone");
+}
+function addAndDele(id,stateTxt) {
+    // var type="#"+id;
+    // 获取下拉文本
+    var m=$(id+" .allType").length;
+    if(m>=1){
+        $(id+" .allType:first").addClass("noClick");
+        $(id+" .noClick").on('click',function (e) {
+            state.splice(0,state.length);
+            e.stopPropagation();
+            $(this).removeClass('noClick');
+            $(id+" .typeChild").remove();
+            $(id+" .add").removeClass('dn');
+            // 添加选择
+            var str="";
+            var states=0;
+            for(var i=0;i<stateTxt.length;i++){
+                if(stateTxt[i]=="成功"){
+                    states=1;
+                }else if(stateTxt[i]=="失败"){
+                    states=0
+                }else if(stateTxt[i]=="运行中"){
+                    states=2;
+                }else {
+                    states=3;
+                }
+                str+="<div class=\"option\" value="+states+">"+stateTxt[i]+"</div>"
+            }
+            $(id+" .selectChoose").html(str);
+            taskStatusCount();
+            getDispatchJobList(1,state,order);
+        })
+    }
+}
+//
+function removeChild(id) {
+    $(id).on('click',".typeChild",function (e) {
+        e.stopPropagation();
+        var m=$(this).text();
+        //删除数组中的状态
+        state.splice($.inArray($(this).attr("value"),state),1);
+        $(this).remove();
+        $(id+" .selectChoose").append('<div class="option" value='+$(this).attr("value")+'>'+m+'</div>');
+        var n= $(id+" .typeChild").length;
+        if(n<1){
+            $(id+" .allType").removeClass('noClick');
+        }
+        $(id+" .add").removeClass('dn');
+        taskStatusCount();
+        getDispatchJobList(1,state,order);
+    })
+}
+//任务运维的taskStatus在隐藏域取历史记录的状态值
+function initCondition(id) {
+    var stateTxt = [];
+
+
+    var taskStatus=$("#taskStatus").attr("value");
+
+    if(taskStatus=="fail"){
+         initShow(id,0,"失败")
+    }else if(taskStatus=="success"){
+        initShow(id,1,"成功")
+    }else {
+        getSchdulerJobHistoryList(1);
+    }
+
+}
+/**
+ * 搜索功能
+ */
+function searchTask() {
+    var strs1=$('#chooseDate').val().split('至');
+    var startTime=$.trim(strs1[0]);
+   var  endTime=$.trim(strs1[1]);
+
+    var schJobName="";
+
+    $(".searchTask").on('click',function () {
+         schJobName=$('#schedulerName').val()
+        var strs=$('#chooseDate').val().split('至');
+        startTime=$.trim(strs[0]);
+        endTime=$.trim(strs[1]);
+
+        getDispatchJobList(1,state,order,startTime,endTime,schJobName);
+    });
+    //回车键搜索
+    $("#schedulerName").keydown(function(event){
+        event=document.all?window.event:event;
+        schJobName=$('#schedulerName').val()
+        var strs=$('#chooseDate').val().split('至');
+        startTime=$.trim(strs[0]);
+        endTime=$.trim(strs[1]);
+        if((event.keyCode || event.which)==13){
+            getDispatchJobList(1,state,order,startTime,endTime,schJobName);
+        }
+    });
+    $('#runTimeSort').on("click",function () {
+        schJobName=$('#schedulerName').val()
+        var strs2=$('#chooseDate').val().split('至');
+        startTime=$.trim(strs2[0]);
+        endTime=$.trim(strs2[1]);
+        if(order==0){
+            order=1;
+        }else  if(order==1){
+            order=0;
+        }
+        getDispatchJobList(1,state,order,startTime,endTime,schJobName)
+    })
+
+}
+//时间日期的确认时间的触发
+laydate.render({
+    elem: '#chooseDate',
+    type: 'date',
+    range: '至',
+    // value: dateTime,
+    done:function(value){
+        var strs=value.split('至');
+        setTimeout(function () {
+            if(strs[0]!=""||strs[1]!=""){
+                getDispatchJobList(1,state,order,strs[0],strs[1]);
+            }
+        },10)
+    }
+});
+
+/**
+ * 分页显示
+ * @param page
+ */
+function getSchdulerJobHistoryList(page) {
+
+    $.ajax({
+        type:'post',
+        url:basePath +"/drag/scheduler/selectSchJobHisListByPage.do",
+        dataType: "json",
+        data:{"page":page},
+        success:function (json) {
+            if(json!=null){
+                $("#taskBody").empty();
+                curPage=json.obj.pageBean.curPage; //当前页
+                totalPage=json.obj.pageBean.totalPage;//总页数
+                $("#totalpage").val(totalPage);
+                $('#nowTaskCount').text(json.obj.pageBean.total);
+                $('#state0').text(json.obj.statusCount.state0);
+                $('#state1').text(json.obj.statusCount.state1);
+                $('#state2').text(json.obj.statusCount.state2);
+                $('#state3').text(json.obj.statusCount.state3);
+
+                var rightPage = "";
+                var list = json.obj.pageBean.rows;
+                if(list==""){
+                    $("#totalpage").val(1);
+                    rightPage= "<tr><td>- -</td>"+
+                        "<td>- -</td>"+
+                        "<td> </td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td></tr>"
+                }else {
+                    $.each(list, function (index, array) { //遍历json数据列
+                        var sTime=""
+                        if(array['firstTime']==null){
+                            sTime="";
+                        }else {
+                            sTime=array['firstTime'];
+                        }
+                        var eTime=""
+                        if(array['lastTime']==null){
+                            eTime=""
+                        }else {
+                            eTime= array['lastTime'];
+                        }
+                        var jobHisStatus="";//0 fail 1 success 2 run 3 notRun
+                        if(array['schJobHisStatus']==0){
+                            jobHisStatus="失败"
+                        }else if(array['schJobHisStatus']==1){
+                            jobHisStatus="成功"
+                        }else if(array['schJobHisStatus']==2){
+                            jobHisStatus="运行中"
+                            eTime=""
+                        }else {
+                            jobHisStatus="待运行"
+                            eTime=""
+                        }
+                        rightPage +="<tr><td class='k_table_td' title='"+array['sjName']+"'>"+subStringLength(array['sjName'])+"</td>"+
+                            "<td>"+array['createTime']+"</td>"+
+                            "<td title=\"查看日志\"> <i class='icon iconfont icon-chakan  lookLog' schJobHisId="+array['schJobHisId']+"></i></td><td>"+jobHisStatus+"</td>"+
+                            "<td>"+formatSeconds(array['schJobHisRunTime'])+"</td>"+
+                            "<td>"+sTime+"</td>"+
+                            "<td>"+eTime+"</td>"  +"</tr>"
+
+                    });
+                }
+
+                $("#taskBody").html(rightPage);
+            }
+        },
+        complete: function () { //生成分页条
+            paginatorByPage(curPage);
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        }
+    })
+}
+//判断如果字符串的长度大于20后面的就用省略号代替
+function subStringLength(str) {
+    var s=str;
+    if(str.length>20){
+        s=str.substring(0,20)+"...";
+    }
+    return s;
+}
+/**
+ * 根据时间名称来搜索分页显示
+ * @param page
+ * @param status
+ * @param startTime
+ * @param endTime
+ * @param schJobName
+ */
+function getDispatchJobList(page,status,order,startTime,endTime,schJobName) {
+
+    if(status==""){
+        status=[0,1,2,3]
+    }
+
+    $.ajax({
+        type:'post',
+        url:basePath +"/drag/scheduler/selectSchHisJobListBySearch.do",
+        dataType: "json",
+        data:{"page":page,"sort":order,"statusArray":status,"schJobName":schJobName,"firstTime":startTime,"lastTime":endTime},
+        success:function (json) {
+            if(json!=null){
+                $("#taskBody").empty();
+                curPage=json.curPage; //当前页
+                totalPage=json.totalPage;//总页数
+                $("#totalpage").val(totalPage);
+                $('#nowTaskCount').text(json.total);
+                var rightPage = "";
+                var list = json.rows;
+                if(list==""){
+                    $("#totalpage").val(1);
+                    rightPage= "<tr><td  >- -</td>"+
+                        "<td>- -</td>"+
+                        "<td> </td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td>"+
+                        "<td>- -</td></tr>"
+                }else {
+                    $.each(list, function (index, array) { //遍历json数据列
+                        var sTime=""
+                        if(array['firstTime']==null){
+                            sTime="";
+                        }else {
+                            sTime=array['firstTime'];
+                        }
+                        var eTime=""
+                        if(array['lastTime']==null){
+                            eTime=""
+                        }else {
+                            eTime= array['lastTime'];
+                        }
+                        var jobHisStatus="";//0 fail 1 success 2 run 3 notRun
+                        if(array['schJobHisStatus']==0){
+                            jobHisStatus="失败"
+                        }else if(array['schJobHisStatus']==1){
+                            jobHisStatus="成功"
+                        }else if(array['schJobHisStatus']==2){
+                            jobHisStatus="运行中"
+                            eTime=""
+                        }else {
+                            jobHisStatus="待运行"
+                            eTime=""
+                        }
+                        rightPage +="<tr><td class='k_table_td' title="+array['sjName']+">"+subStringLength(array['sjName'])+"</td>"+
+                            "<td>"+array['createTime']+"</td>"+
+                            "<td title=\"查看日志\"> <i class=\"icon iconfont icon-chakan lookLog\" schJobHisId="+array['schJobHisId']+"></i></td><td>"+jobHisStatus+"</td>"+
+                            "<td>"+formatSeconds(array['schJobHisRunTime'])+"</td>"+
+                            "<td>"+sTime+"</td>"+
+                            "<td>"+eTime+"</td>"  +"</tr>"
+
+                    });
+                }
+                $("#taskBody").html(rightPage);
+            }
+
+        },
+        complete: function () { //生成分页条
+            paginatorBySearchParam(curPage,status,order,startTime,endTime,schJobName);
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        }
+
+    })
+}
+//分页显示
+function paginatorByPage(curPage) {
+    var fileTotal=$("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (page) {
+            $('#new_num').html(page);
+            if(page!=curPage){
+                taskStatusCount();
+                getSchdulerJobHistoryList(page);
+            }
+
+
+        }
+    });
+}
+//根据参数搜索分页显示
+function paginatorBySearchParam(curPage,status,order,startTime,endTime,schJobName) {
+    var fileTotal=$("#totalpage").val();
+    $('.pagination-panel-total').text(fileTotal);
+    $('.pagination').jqPaginator({
+        totalPages: parseInt(fileTotal),
+        visiblePages: 4,
+        currentPage: parseInt(curPage),
+
+        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+        last: '<li class="last"><a href="javascript:void(0);">尾页</a></li>',
+        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+        onPageChange: function (page) {
+            $('#new_num').html(page);
+            if(page!=curPage){
+                taskStatusCount();
+                getDispatchJobList(page,status,order,startTime,endTime,schJobName)
+            }
+
+
+        }
+    });
+}
+//把秒转化成时分秒
+function formatSeconds(value) {
+    var theTime = parseInt(value);// 秒
+    var theTime1 = 0;// 分
+    var theTime2 = 0;// 小时
+
+    if(theTime > 60) {
+        theTime1 = parseInt(theTime/60);
+        theTime = parseInt(theTime%60);
+
+        if(theTime1 > 60) {
+            theTime2 = parseInt(theTime1/60);
+            theTime1 = parseInt(theTime1%60);
+        }
+    }
+    var result = ""+parseInt(theTime)+"秒";
+    if(theTime1 > 0) {
+        result = ""+parseInt(theTime1)+"分"+result;
+    }
+    if(theTime2 > 0) {
+        result = ""+parseInt(theTime2)+"小时"+result;
+    }
+    return result;
+}
+

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.ModelTrainedMapper" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.ModelTrained" >
+    <id column="model_trained_id" property="modelTrainedId" jdbcType="INTEGER" />
+    <result column="model_trained_name" property="modelTrainedName" jdbcType="VARCHAR" />
+    <result column="model_id" property="modelId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="workflow_id" property="workflowId" jdbcType="INTEGER" />
+    <result column="data_model_name" property="dataModelName" jdbcType="VARCHAR" />
+    <result column="model_trained_update_time" property="modelTrainedUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="model_trained_status" property="modelTrainedStatus" jdbcType="INTEGER" />
+    <result column="model_trained_path" property="modelTrainedPath" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="modelId != null" >
+         and model_id = #{modelId}
+      </if>
+      <if test="modelTrainedName != null" >
+         and model_trained_name like "%"#{modelTrainedName}"%"
+      </if>
+      <if test="userId != null" >
+         and user_id = #{userId}
+      </if>
+      <if test="workflowId != null" >
+         and workflow_id = #{workflowId}
+      </if>
+      <if test="dataModelName != null" >
+        and data_model_name = #{dataModelName}
+      </if>
+      <if test="modelTrainedUpdateTime != null" >
+         and model_trained_update_time = #{modelTrainedUpdateTime}
+      </if>
+      <if test="modelTrainedStatus != null" >
+         and model_trained_status = #{modelTrainedStatus}
+      </if>
+      <if test="modelTrainedPath != null" >
+        and model_trained_path = #{modelTrainedPath}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    model_trained_id AS modelTrainedId, model_id AS modelId, model_trained_name AS modelTrainedName, user_id AS userId, workflow_id AS workflowId,data_model_name AS dataModelName,model_trained_update_time AS modelTrainedUpdateTime, model_trained_status AS modelTrainedStatus,model_trained_path AS modelTrainedPath
+  </sql>
+  <resultMap  id="ResultMapWithBLOBs" type="org.com.drag.model.ModelTrained" extends="BaseResultMap" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from model_trained
+    where model_trained_id = #{modelTrainedId}
+  </select>
+  <insert id="insert" parameterType="org.com.drag.model.ModelTrained" >
+    insert into model_trained (model_id, model_trained_name, user_id, workflow_id, data_model_name, model_trained_update_time, model_trained_status, model_trained_path)
+    values (#{modelId}, #{modelTrainedName}, #{userId}, #{workflowId},#{dataModelName}, #{modelTrainedUpdateTime}, #{modelTrainedStatus},#{modelTrainedPath})
+  </insert>
+  <insert id="insertSelective" parameterType="org.com.drag.model.ModelTrained" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" >
+       <![CDATA[SELECT LAST_INSERT_ID() AS ID ]]>
+    </selectKey>
+    insert into model_trained
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      model_trained_id,
+      <if test="modelId != null" >
+        model_id,
+      </if>
+      <if test="modelTrainedName != null" >
+        model_trained_name,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="workflowId != null" >
+        workflow_id,
+      </if>
+      <if test="dataModelName != null" >
+       data_model_name,
+      </if>
+      <if test="modelTrainedUpdateTime != null" >
+        model_trained_update_time,
+      </if>
+      <if test="modelTrainedStatus != null" >
+        model_trained_status,
+      </if>
+      <if test="modelTrainedPath != null" >
+        and model_trained_path = #{modelTrainedPath}
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{modelTrainedId},
+      <if test="modelId != null" >
+        #{modelId},
+      </if>
+      <if test="modelTrainedName != null" >
+        #{modelTrainedName},
+      </if>
+      <if test="userId != null" >
+        #{userId},
+      </if>
+      <if test="workflowId != null" >
+        #{workflowId},
+      </if>
+      <if test="dataModelName != null" >
+        #{dataModelName},
+      </if>
+      <if test="modelTrainedUpdateTime != null" >
+        #{modelTrainedUpdateTime},
+      </if>
+      <if test="modelTrainedStatus != null" >
+        #{modelTrainedStatus},
+      </if>
+      <if test="modelTrainedPath != null" >
+        and model_trained_path = #{modelTrainedPath}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.com.drag.model.ModelTrained" >
+    update model_trained
+    <set >
+      <if test="modelId != null" >
+        model_id = #{modelId},
+      </if>
+      <if test="modelTrainedName != null" >
+        model_trained_name = #{modelTrainedName},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId},
+      </if>
+      <if test="workflowId != null" >
+        workflow_id = #{workflowId},
+      </if>
+      <if test="dataModelName != null" >
+        data_model_name = #{dataModelName}
+      </if>
+      <if test="modelTrainedUpdateTime != null" >
+        model_trained_update_time = #{modelTrainedUpdateTime},
+      </if>
+      <if test="modelTrainedStatus != null" >
+        model_trained_status = #{modelTrainedStatus},
+      </if>
+      <if test="modelTrainedPath != null" >
+        and model_trained_path = #{modelTrainedPath}
+      </if>
+    </set>
+    where model_trained_id = #{modelTrainedId}
+  </update>
+
+  <select id="selectCount" resultType="java.lang.Long" parameterType="org.com.drag.model.ModelTrained" >
+    select count(model_trained_id) from model_trained
+	<include refid="Example_Where_Clause" />
+  </select>
+
+  <select id="selectByMapCount" resultType="java.lang.Long" parameterType="java.util.Map" >
+    select count(model_trained_id) from model_trained
+	<include refid="Example_Where_Clause" />
+  </select>
+  <insert id="batchInsert" parameterType="java.util.List" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" >
+       <![CDATA[SELECT LAST_INSERT_ID() AS ID ]]>
+    </selectKey>
+    insert into model_trained (model_id,
+    model_trained_name, user_id, workflow_id,data_model_name,model_trained_update_time, model_trained_status,model_trained_path
+      )
+    values 
+ <foreach collection="list" item="item" index="index" separator="," >   
+(#{item.modelId}, 
+      #{item.modelTrainedName}, #{item.userId}, #{item.workflowId}, #{item.dataModelName}, #{item.modelTrainedUpdateTime}, #{item.modelTrainedStatus},#{item.modelTrainedPath}
+      )
+ </foreach> 
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="org.com.drag.model.ModelTrained">
+    select 
+    <include refid="Base_Column_List" />
+    from model_trained
+    <include refid="Example_Where_Clause" />
+    ORDER BY model_trained_update_time DESC
+  </select>
+  <select id="selectAllCount" resultType="java.lang.Long" >
+    select count(model_trained_id) from model_trained
+	 where is_deleted=0
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    DELETE FROM model_trained
+    where model_trained_id = #{modelTrainedId}
+  </delete>
+
+  <delete id="batchDelete" parameterType="java.util.Arrays" >
+    DELETE  FROM model_trained WHERE model_trained_id IN
+    <foreach collection="array" item="ids"  open="(" separator="," close=")">
+      #{ids}
+    </foreach>
+  </delete>
+
+  <select id="getInputPathById" resultType="java.lang.String">
+    SELECT model_trained_path FROM model_trained WHERE model_trained_id = #{modelTrainedId}
+</select>
+  <select id="getDataModelNameById" resultType="java.lang.String">
+    SELECT data_model_name FROM model_trained WHERE model_trained_id = #{modelTrainedId}
+  </select>
+
+  <select id="selectByIdAndName" resultType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM model_trained WHERE user_id = #{userId} AND model_trained_name=#{modelTrainedName}
+  </select>
+</mapper>

@@ -1,0 +1,9 @@
+.portlet {
+  border: none!important;
+}
+.portlet .portlet-body h3 {
+  text-align: center;
+}
+.portlet .portlet-body .navSection p {
+  padding-top: 10px;
+}

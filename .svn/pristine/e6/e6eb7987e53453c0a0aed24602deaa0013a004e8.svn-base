@@ -1,0 +1,138 @@
+package org.com.drag.service.oozie.api;
+
+import java.util.List;
+
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.com.drag.service.oozie.bean.FileInfo;
+
+public interface IHdfsApi {
+	
+	/**
+     * 创建文件夹:创建用户目录
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserDir(String username);
+
+    /**
+     * 创建文件夹:创建用户工作空间
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    @Deprecated
+    public boolean createUserWorkspace(String path,String username);
+
+    /**
+     * 创建文件夹:创建用户工作空间
+     *
+     *
+     *
+     *
+     *
+     *
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @param isPublic 该工作空间是否公有
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserWorkspace(String path,String username,boolean isPublic);
+
+    /**
+     * 创建文件夹:创建用户数据目录
+     * @param path 目录路径
+     * @param username 创建的用户
+     * @return 创建成功返回true，否则返回false
+     */
+    public boolean createUserDataDir(String path,String username);
+
+    /**
+     * 遍历指定目录下的文件
+     * @param path 需要遍历的目录
+     * @return 返回List<FileStatus>,FileStatus中包含了文件的相关信息
+     */
+    public List<FileInfo> list(String path, String username);
+    /**
+     * 过滤查询文件或目录
+     * @param path 查询目录
+     * @param filter 过滤添加
+     * @param username 操作用户
+     * @return List<FileInfo>
+     */
+    public List<FileInfo> listFileAndDir(String path,String filter ,String username);
+    /**
+     * 上传文件到hdfs
+     * @param sourcePath 本地文件路径
+     * @param targetPath hdfs上路径
+     * @param username 用户名
+     * @return
+     */
+    public boolean uploadFile(String sourcePath, String targetPath,String username);
+
+    /**
+     * 上传workflow.xml文件到hdfs,会对以前的workflow.xml文件进行覆盖
+     * @param sourcePath 本地文件路径
+     * @param targetPath hdfs上路径
+     * @param username 用户名
+     * @return
+     */
+    public boolean uploadWorkFlowFile(String sourcePath, String targetPath,String username);
+    /**
+     * 将本地文件复制到hdfs上
+     * @param localPath 本地文件路径
+     * @param hdfsPath hdfs文件
+     * @param username 用户名
+     * @return
+     */
+    public boolean copyFromLocalFile(String localPath,String hdfsPath,String username);
+    /**
+     * 删除指定用户的文件或目录
+     * @param path 路径
+     * @param username 用户名
+     * @param isDirectory 该路径是否是一个目录
+     * @return 成功返回true
+     */
+    public boolean deleteFileOrDir(String path,String username,boolean isDirectory);
+    /**
+     * 读取hdfs指定长度的文件内容
+     * @param path 文件路径
+     * @param username 用户名
+     * @return Return a byte Array
+     */
+    public byte[] readFileFromHdfs(String path,int readLength,String username);
+    /**
+     * 下载hdfs上的文件
+     * @param path 文件路径
+     * @param username 用户名
+     * @return Return a byte Array
+     */
+    public FSDataInputStream downloadFileFromHdfs(String path, String username);
+    /**
+     * 将hdfs上的文件下载到本地
+     * @param path hdfs文件
+     * @param localDir 本地文件路径
+     * @param username 用户名
+     * @return 下载成功返回true
+     */
+    public boolean downloadHdfsFile(String path,String localDir,String username);
+    /**
+     * 重命名文件夹或文件名
+     * @param srcPath 旧文件夹或文件路径
+     * @param newName 新的文件夹或文件名称
+     * @param username 用户名
+     * @return 是否重命名成功
+     */
+    public boolean renameDirectoryOrFile(String srcPath,String newName,String username);
+
+    public FileSystem getFileSystem(String user);
+
+    /**
+     * 判断文件是否存在
+     * @param srcPath 文件或者文件夹
+     * @param username 用户名
+     * @return
+     */
+    public boolean judgmentFile(String srcPath,String username);
+
+}

@@ -1,0 +1,521 @@
+/**
+ * Created by cdyoue on 2016/11/8.
+ */
+var processingFlag;
+var flag;
+$(document).ready(function () {
+    initData();
+
+})
+
+function  initData(dir) {
+	/*if(dir == null || dir == undefined){
+		dir = "/";
+	}*/
+    var data = {};
+    data.currentDir = dir;
+    $('#loading').loader('show','<i class="fa fa-2x fa-spinner fa-pulse"></i>');
+    $.post(basePath+'/drag/upload/share.do',data,function (result) {
+        var table = $('#sample_2');
+        table.dataTable().fnClearTable();
+        table.fnDestroy();
+        var result =  JSON.parse(result);
+        var datas = result.datasResults;
+        var dir = result.dir;
+
+        $("input[name='currentDir']").val(dir);
+        $("#div_demo").html('');
+        $("#demo").tmpl(datas).appendTo('#div_demo');
+
+        folderInit();
+        download();
+        initTable2();
+        $("#loading").loader('hide');
+    })
+
+
+}
+
+
+
+
+function showIndex(that) {
+    $(that).nextAll().remove();
+    initData();
+}
+
+
+function download(){
+	$("div[class='user-download']").on('click',function () {
+		var hdfs = $(this).find('input').val();
+		window.location.href=basePath + "/drag/hdfs/down.do?hdfsUrl="+hdfs;
+	    });
+}
+
+
+function folderInit() {
+    $("div[class='user-defind']").on('click',function () {
+       var isdir =  $(this).closest('tr').find("input[type='checkbox']").attr('isdir');
+        var name = $(this).find('a').html();
+        var navi = new Navi(name,name);
+        $("#folder-navi").append(navi.create());
+        if('true' == isdir){
+            reload(name);
+        }else{
+            showContent(name);
+        }
+    });
+}
+
+
+// function showContent(hdfs) {
+//
+// 	window.location.href=basePath + "/drag/hdfs/down.do?hdfsUrl="+hdfs;
+function showContent(name) {
+    //alert("暂不支持此类文件打开");
+    var currentDir = (name == undefined || name ==null) ?  $("input[name='currentDir']").val() :$("input[name='currentDir']").val() + "/" + name;
+    window.location.href=basePath+"/drag/hdfs/readCsv.do?path="+currentDir;
+}
+
+
+function reload(name) {
+    var currentDir = (name == undefined || name ==null) ?  $("input[name='currentDir']").val() :$("input[name='currentDir']").val() + "/" + name;
+    initData(currentDir);
+}
+
+function showProcessing() {
+    $.ajax({
+        url: basePath + "/drag/progress.do",
+        type: 'get',
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        success: function (data) {
+            var data = JSON.parse(data);
+            console.log(data.progress);
+            $("#progress-value").html(data.progress)
+            $("#progress-bar").css('width', data.progress);
+            if (processingFlag) {
+                if (flag == 1) {
+                    $("#progress").show();
+                    $.bootstrapLoading.start({loadingTips: "正在处理数据，请稍候..."});
+                }
+                flag = 5;
+                setTimeout(showProcessing, 1000);
+            } else {
+                $("#progress").hide();
+                $.bootstrapLoading.end();
+                toastr.success("文件已经,缓存到服务器.正在上传到hdfs.....");
+            }
+        },
+        error:function(data) {
+            if (data.responseText == "AjaxSessionTimeout") {
+                window.location.href = basePath;
+                return;
+            }
+        },
+        complete:function(data){
+            if(data == "AjaxSessionTimeout"){
+                window.location.href=basePath;
+                return;
+            }
+        },});
+
+
+}
+
+var initTable2 = function () {
+
+    var table = $('#sample_2');
+
+    var dataTable = table.dataTable({
+        "ordering": false,
+        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+        "language": {
+            "aria": {
+                "sortAscending": ": activate to sort column ascending",
+                "sortDescending": ": activate to sort column descending"
+            },
+            "processing" : "正在加载中......",
+            "emptyTable": "无可展示数据",
+            "info": "共有_TOTAL_条数据",
+            "infoEmpty": "未发现数据",
+            "infoFiltered": "",
+            "lengthMenu": "展示条数 _MENU_",
+            "search": "搜索：",
+            "zeroRecords": "无匹配数据",
+            "paginate": {
+                "previous": "Prev",
+                "next": "Next",
+                "last": "Last",
+                "first": "First"
+            }
+        },
+
+        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
+        // So when dropdowns used the scrollable div should be removed.
+        //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+        "bDestory" : true,
+        "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+        "pagingType": "bootstrap_extended",
+        "lengthMenu": [
+            [5, 15, 20, -1],
+            [5, 15, 20, "All"] // change per page values here
+        ],
+        // set the initial value
+        "pageLength": 5,
+        "columnDefs": [{  // set default column settings
+            'orderable': false,
+            'targets': [1],
+        }, {
+            "searchable": false,
+            "targets": [0],
+            'targets': [2]
+        }],
+        "order": [
+            [1, "asc"]
+        ] // set first column as a default sort by asc
+    });
+
+
+
+    table.find('.group-checkable').change(function () {
+        var set = jQuery(this).attr("data-set");
+        var checked = jQuery(this).is(":checked");
+        jQuery(set).each(function () {
+            if (checked) {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+        });
+    });
+
+
+}
+
+
+
+
+
+
+function Navi(content,dir) {
+   //this._data=Object
+    this._content = content;
+    this._dir = dir;
+}
+Navi.prototype = {};
+Navi.prototype.create = function () {
+    var that = this;
+    var li = $("<li></li>");
+    var ci = $("<i class='fa fa-angle-right'></i>");
+    var cSpan = $("<span></span> ");
+
+
+
+    cSpan.html(that._content);
+    cSpan.css('cursor','pointer');
+    li.append(ci);
+    li.append(cSpan);
+    li.on('click', function () {
+        $(this).nextAll().remove();
+        initData("/user/analy/govdata/"+that._dir);
+
+    });
+    return li;
+};
+
+
+
+
+
+
+
+var FormValidation = function () {
+
+    // basic validation
+    var handleValidation1 = function() {
+        // for more info visit the official plugin documentation: 
+        // http://docs.jquery.com/Plugins/Validation
+
+        var form1 = $('#form_sample_1');
+        var error1 = $('.alert-danger', form1);
+        var success1 = $('.alert-success', form1);
+
+        form1.validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",  // validate all fields including form hidden input
+            messages: {
+                select_multi: {
+                    maxlength: jQuery.validator.format("Max {0} items allowed for selection"),
+                    minlength: jQuery.validator.format("At least {0} items must be selected")
+                },
+                file: {
+                    required: "请上传文件"
+                },
+                name: {
+                    required: "请填写名字"
+                }
+            },
+            rules: {
+                name: {
+                    minlength: 1,
+                    required: true
+                },
+                file: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                url: {
+                    required: true,
+                    url: true
+                }
+            },
+
+            invalidHandler: function (event, validator) { //display error alert on form submit              
+                success1.hide();
+                error1.show();
+                App.scrollTo(error1, -200);
+            },
+
+            highlight: function (element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group').addClass('has-error'); // set error class to the control group
+            },
+
+            unhighlight: function (element) { // revert the change done by hightlight
+                $(element)
+                    .closest('.form-group').removeClass('has-error'); // set error class to the control group
+            },
+
+            success: function (label) {
+                label
+                    .closest('.form-group').removeClass('has-error'); // set success class to the control group
+            },
+
+            submitHandler: function (form) {
+                $("#basic").modal("hide")
+                flag = 1;
+                processingFlag = true;
+                showProcessing();
+
+                var formData = new FormData($(".upload-form ")[0]);
+                $.ajax({
+                    url:basePath+"/drag/upload/data.do",
+                    type: 'POST',
+                    data: formData,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend :function () {
+
+                    },
+                    success: function (data) {
+                        var returndata = JSON.parse(data)
+                        console.log(data);
+                        switch (returndata.code){
+                            case 417:toastr.error(returndata.msg) ;
+                                close();
+                                break;
+                            case 200:
+                                close();
+
+                                break;
+                        }
+
+
+                    },
+                    complete :function (data) {
+                            if(data == "AjaxSessionTimeout"){
+                                window.location.href=basePath;
+                                return;
+                            }
+                        processingFlag = false;
+                    },
+                    error:function(data) {
+                        if (data.responseText == "AjaxSessionTimeout") {
+                            window.location.href = basePath;
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
+
+
+    function close() {
+        $("#upload-close").click();
+        $("input[name='file']").val("");
+    }
+
+    var handleValidation2 = function() {
+        // for more info visit the official plugin documentation:
+        // http://docs.jquery.com/Plugins/Validation
+
+        var form4 = $('#form_sample_4');
+        var error1 = $('.alert-danger', form4);
+        var success1 = $('.alert-success', form4);
+
+        form4.validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",  // validate all fields including form hidden input
+            messages: {
+                select_multi: {
+                    maxlength: jQuery.validator.format("Max {0} items allowed for selection"),
+                    minlength: jQuery.validator.format("At least {0} items must be selected")
+                },
+                name: {
+                    required: "请填写文件夹的名称"
+                },
+                text: {
+                    required: "请填写名称"
+                }
+            },
+            rules: {
+                name: {
+                    minlength: 1,
+                    required: true
+                },
+                text: {
+                    minlength: 1,
+                    required: true
+                },
+                file: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                url: {
+                    required: true,
+                    url: true
+                },
+                number: {
+                    required: true,
+                    number: true
+                },
+                digits: {
+                    required: true,
+                    digits: true
+                },
+                creditcard: {
+                    required: true,
+                    creditcard: true
+                },
+                occupation: {
+                    minlength: 5,
+                },
+                select: {
+                    required: true
+                },
+                select_multi: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 3
+                }
+            },
+
+            invalidHandler: function (event, validator) { //display error alert on form submit
+                success1.hide();
+                error1.show();
+                App.scrollTo(error1, -200);
+            },
+
+            highlight: function (element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group').addClass('has-error'); // set error class to the control group
+            },
+
+            unhighlight: function (element) { // revert the change done by hightlight
+                $(element)
+                    .closest('.form-group').removeClass('has-error'); // set error class to the control group
+            },
+
+            success: function (label) {
+                label
+                    .closest('.form-group').removeClass('has-error'); // set success class to the control group
+            },
+
+            submitHandler: function (form) {
+                var formData = new FormData($(".creatDir-form ")[0]);
+                $("#basicFile").modal("hide")
+                $.ajax({
+                    url:basePath+"/drag/upload/creDir.do",
+                    type: 'POST',
+                    data: formData,
+                    async: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        var returndata = JSON.parse(data)
+                        console.log(data);
+                        switch (returndata.code){
+                            case 417:toastr.error(returndata.msg) ;
+                                close();
+                                break;
+                            case 200:toastr.success(returndata.msg);
+                                reload();
+                                break;
+                        }
+
+
+                    },
+                    error:function(data) {
+                        if (data.responseText == "AjaxSessionTimeout") {
+                            window.location.href = basePath;
+                            return;
+                        }
+                    },
+                    complete:function(data){
+                        if(data == "AjaxSessionTimeout"){
+                            window.location.href=basePath;
+                            return;
+                        }
+                    },
+                });
+            }
+        });
+
+
+    }
+
+    return {
+        //main function to initiate the module
+        init: function () {
+
+            handleValidation1();
+            handleValidation2();
+
+        }
+
+    };
+
+}();
+
+$(function () {
+    //$("#uploadData").addClass("active open");
+    //dataInit();
+    FormValidation.init();
+
+    batchDelInit();
+
+
+});
+
+

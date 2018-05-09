@@ -1,0 +1,1818 @@
+
+.page-sidebar-closed .page-content-wrapper .page-content .page-console {
+  margin-left: 54px !important;
+}
+.page-content-wrapper .page-content .page-title {
+  font-size: 18px;
+  margin-bottom: 0;
+}
+.page-content-wrapper .page-content .page-bar {
+  margin-bottom: -10px;
+}
+.page-content-wrapper .page-content .page-bar ul li {
+  font-size: 13px;
+  color: #888;
+  text-shadow: none;
+}
+.page-content-wrapper .page-content .page-bar ul li a:hover {
+  color: #337ab7;
+}
+.box.ui-draggable-dragging {
+  width: 180px;
+  position: absolute;
+  margin-bottom: 0;
+  box-shadow: 2px 2px 19px #aaa;
+  border: 1px solid;
+  z-index: 1;
+  opacity: .5;
+  border-radius: 24px!important;
+}
+.box.ui-draggable-dragging .portlet-title {
+  min-height: 33px;
+}
+.box.ui-draggable-dragging .portlet-title .tools {
+  /*padding: 8px 0 5px 0;*/
+}
+.box.ui-draggable-dragging .boxBody {
+  height: 34px;
+  border-radius: 24px!important;
+  /*padding-top: 8px!important;*/
+}
+.box.ui-draggable-dragging .boxBody h5 {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.box.ui-draggable-dragging .boxBody .font-green-jungle {
+  padding-top: 5px;
+}
+.rotateModel {
+  transform: rotateZ(45deg);
+  -ms-transform: rotateZ(45deg);
+  /* IE 9 */
+  -webkit-transform: rotateZ(45deg);
+  /* Safari and Chrome */
+  -o-transform: rotateZ(45deg);
+  /* Opera */
+  -moz-transform: rotateZ(45deg);
+  /* Firefox */
+}
+.canvasMain {
+  display: inline;
+}
+.canvasMain .operatorBlock {
+  /*border-right: 10px solid #eef1f5;*/
+  position: relative;
+  z-index: 3;
+  width: 15%;
+  float: left;
+  box-shadow: 0 5px 15px #ccc;
+}
+.canvasMain .operatorBlock .portlet.light {
+  margin-bottom: 0;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body {
+  padding-top: 0;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .actions {
+  margin-bottom: 10px;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .actions .formInput .input-small {
+  width: 100%!important;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .slimScrollDiv {
+  overflow: visible!important;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .list-toggle-container .list-toggle {
+  font-weight: normal;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .list-toggle-container .list-toggle i {
+  padding-right: 10px;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .panel-collapse .dragList .mt-list-item {
+  /*border-right: 3px solid;*/
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .panel-collapse .dragList .mt-list-item .list-item-content {
+  padding: 0;
+  /*margin-left: 24px;*/
+  width: 100%;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .panel-collapse .dragList .mt-list-item .list-item-content h3 {
+  /*position: absolute;*/
+  border: 1px solid #fff;
+  border-radius: 18px;
+  cursor: move;
+  height: 32px;
+  line-height: 32px;
+  margin-left: 7%;
+  padding-left: 15%;
+  width: 86%;
+}
+.canvasMain .canvasBlock {
+  float: left;
+  width: 80%;
+}
+.canvasMain .canvasBlock .portlet.light {
+  margin-bottom: 0;
+}
+.canvasMain .canvasBlock .portlet.light .portlet-title .actions {
+  float: right;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody {
+  padding-top: 0;
+  position: relative;
+  /*overflow: scroll!important;*/
+  cursor: move;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  overflow: visible!important;
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  -webkit-transform-origin: 50% 50% 0px;
+  -moz-transform-origin: 50% 50% 0px;
+  -ms-transform-origin: 50% 50% 0px;
+  transform-origin: 50% 50% 0px;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box {
+  width: 180px;
+  position: absolute;
+  margin-bottom: 0;
+  box-shadow: 2px 2px 19px #aaa;
+  border: 1px solid;
+  border-radius: 24px!important;
+  z-index: 1;
+  opacity: 1;
+  /*overflow: hidden;*/
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .portlet-title {
+  min-height: 33px;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .portlet-title .tools {
+  padding: 6px 0 5px 0;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .portlet-title .tools a {
+  color: #f94646;
+  font-size: 18px;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .boxBody {
+  height: 34px;
+  border-radius: 24px!important;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .boxBody h5 {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box .boxBody .font-green-jungle {
+  padding-top: 5px;
+}
+.canvasMain .canvasBlock .portlet.light #canvasBody #canvasBlock .box p.blockInfo {
+  position: absolute;
+  width: 94px;
+  word-wrap: break-word;
+  font-size: 12px;
+  padding-top: 5px;
+  text-align: center;
+}
+.page-console .row .portlet {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.page-console .row .portlet .portlet-title {
+  margin-bottom: 0;
+  min-height: 30px;
+}
+.page-console .row .portlet .portlet-title .caption {
+  padding: 0;
+}
+.page-console .row .portlet .portlet-title .actions {
+  padding: 0;
+}
+.page-console .row .portlet .portlet-title .actions a i {
+  font-size: 20px;
+}
+.page-console .row .portlet .portlet-body {
+  padding-top: 10px;
+}
+.page-console .row .portlet .portlet-body .progress {
+  height: 15px;
+  margin-bottom: 10px;
+}
+.page-console .row .portlet .portlet-body .progress .progress-bar .sr-only {
+  position: relative;
+}
+.page-console .row .portlet .portlet-body .row .col-md-8 {
+  padding-right: 0;
+}
+.page-console .row .portlet .portlet-body .row .col-md-4 {
+  padding-left: 10px;
+}
+.page-console .row .portlet .portlet-body .well {
+  height: 180px;
+}
+.page-console .row .portlet .portlet-body .well p {
+  margin: 5px 0;
+  font-size: 14px!important;
+}
+.page-console .row .portlet .portlet-body .table-scrollable {
+  margin: 0!important;
+}
+.page-console-open {
+  bottom: 0;
+  -webkit-transition: bottom 0.3s;
+  -moz-transition: bottom 0.3s;
+  transition: bottom 0.3s;
+}
+#configForm #formBody .form-group {
+  margin-bottom: 0;
+}
+#configForm #formBody .form-group .config-label {
+  margin-bottom: 5px;
+  text-align: left;
+}
+#configForm #formBody .form-group .col-md-12 .mt-radio-list .mt-radio {
+  float: left;
+  margin-right: 15px;
+}
+#configForm #formBody .formBoxHidden {
+  display: none;
+}
+.modal .modal-dialog .modal-content .modal-body {
+  padding-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet {
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group label {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group .col-md-10 .workFlowInfo {
+  width: 100%;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-head {
+  padding: 10px;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-container ul .mt-list-item .list-item-content {
+  padding: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-container ul .mt-list-item .list-item-content h5 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions {
+  padding: 20px 0;
+  text-align: right;
+}
+.uiTree {
+  display: block!important;
+  width: auto!important;
+  text-align: left!important;
+}
+.page-quick-sidebar-wrapper {
+  /*margin-top: 70px;*/
+}
+.page-quick-sidebar-toggler {
+  margin-top: 80px;
+  display: none;
+}
+.ui-draggable {
+  font-size: 14px!important;
+}
+.tooltipInfo {
+  width: 100px;
+  text-align: center;
+}
+/*new add*/
+.portlet.box > .portlet-title {
+  position: absolute;
+  right: -36px;
+  top: 4px;
+  opacity: 0;
+}
+.portlet.box > .portlet-body{
+  padding: 0;
+}
+.boxBody h5{
+  margin: 0;
+  float: left;
+  line-height: 34px;
+}
+.boxBody h5 span{
+  text-align: left;
+  padding-left: 8px;
+  display: inline-block;
+  width: 114px;
+}
+.boxBody .myicon{
+  margin: 2px 3px;
+  float: left;
+  width: 30px;
+  height: 30px;
+  line-height: 30px!important;
+  text-align: center;
+  border-radius: 16px!important;
+  font-size: 12px;
+  background: #1bbc9b;
+  color: #fff;
+}
+.boxBody .fa-2x{
+  font-size: 1.5em;
+}
+/*new add*/
+.canvasMain .operatorMessage{
+  float: right;
+  width: 20%;
+  background: #dfe4e6;
+}
+.canvasMain .operatorMessage .operator-group{
+  margin-bottom: 25px;
+}
+.canvasMain .operatorMessage .operator-group label{
+  color: #95aab1;
+}
+.canvasMain .operatorMessage .operator-group label i{
+  margin: 0 8px 0 0;
+  vertical-align: middle;
+}
+.canvasMain .operatorMessage .operator-group p{
+  margin: 6px 0 0;
+  padding: 3px 5px;
+  word-wrap: break-word;
+  word-break: normal;
+  background: #fff;
+  border: 1px solid #c8d1d5;
+  border-radius: 5px!important;
+  line-height: 2;
+  color: #666;
+}
+
+.page-console {
+  -webkit-transition: bottom 0.3s;
+  -moz-transition: bottom 0.3s;
+  transition: bottom 0.3s;
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -350px;
+  overflow: hidden;
+  color: #99a8b5;
+  background: #ffffff;
+  /*box-shadow: 5px 0 15px #ccc;*/
+  /*margin-left: 195px;*/
+  height: 280px;
+}
+.page-console .row .portlet {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.page-console .row .portlet .portlet-title {
+  margin-bottom: 0;
+  min-height: 30px;
+}
+.page-console .row .portlet .portlet-title .caption {
+  padding: 0;
+}
+.page-console .row .portlet .portlet-title .actions {
+  padding: 0;
+}
+.page-console .row .portlet .portlet-title .actions a i {
+  font-size: 20px;
+}
+.page-console .row .portlet .portlet-body {
+  padding-top: 56px;
+}
+.page-console .row .portlet .portlet-body .progress {
+  height: 15px;
+  margin-bottom: 10px;
+}
+.page-console .row .portlet .portlet-body .progress .progress-bar .sr-only {
+  position: relative;
+}
+.page-console .row .portlet .portlet-body .row .col-md-8 {
+  padding-right: 0;
+}
+.page-console .row .portlet .portlet-body .row .col-md-4 {
+  padding-left: 10px;
+}
+.page-console .row .portlet .portlet-body .well {
+  height: 180px;
+}
+.page-console .row .portlet .portlet-body .well p {
+  margin: 5px 0;
+  font-size: 14px!important;
+}
+.page-console .row .portlet .portlet-body .table-scrollable {
+  margin: 0!important;
+}
+.page-console-open {
+  bottom: 0;
+  -webkit-transition: bottom 0.3s;
+  -moz-transition: bottom 0.3s;
+  transition: bottom 0.3s;
+}
+#configForm #formBody .form-group {
+  margin-bottom: 0;
+}
+#configForm #formBody .form-group .config-label {
+  margin-bottom: 5px;
+  text-align: left;
+}
+#configForm #formBody .form-group .col-md-12 .mt-radio-list .mt-radio {
+  float: left;
+  margin-right: 15px;
+}
+#configForm #formBody .formBoxHidden {
+  display: none;
+}
+.modal .modal-dialog .modal-content .modal-body {
+  padding-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet {
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group label {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group .col-md-10 .workFlowInfo {
+  width: 100%;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-head {
+  padding: 10px;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-container ul .mt-list-item .list-item-content {
+  padding: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .mt-element-list .mt-list-container ul .mt-list-item .list-item-content h5 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-actions {
+  padding: 20px 0;
+  text-align: right;
+}
+.uiTree {
+  display: block!important;
+  width: auto!important;
+  text-align: left!important;
+}
+.page-quick-sidebar-wrapper {
+  /*margin-top: 70px;*/
+}
+.page-quick-sidebar-toggler {
+  margin-top: 56px;
+}
+.ui-draggable {
+  font-size: 14px!important;
+}
+.tooltipInfo {
+  width: 100px;
+  text-align: center;
+}
+/*add new css*/
+.page-content-wrapper .page-content{
+  padding: 0;
+}
+.page-content-wrapper{
+  position: fixed;
+  height: 100%;
+}
+.row{
+  margin-left: 0;
+  margin-right: 0;
+}
+.operatorBlock .nav-tabs{
+  background: #e5e4e2;
+  border-bottom: 1px solid #c9c8c6;
+}
+.operatorBlock .nav > li > a{
+  padding: 11px 15px;
+}
+/*.operatorBlock .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover,*/
+/*.operatorBlock,.operatorBlock .portlet.light{*/
+/*background: #e5e5e7;*/
+/*}*/
+.operatorTitle{
+  float: left;
+  width: 85%;
+}
+.oper-title{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 96%;
+  margin: 18px 2% 0;
+  height: 44px;
+  background: #fff;
+  border-left: 1px solid #e2e2e2;
+  border-bottom: 1px solid #c9c8c4;
+}
+/*.oper-action{*/
+  /*position: relative;*/
+  /*width: 80%;*/
+/*}*/
+.oper-title p{
+  width: 100%;
+  float: left;
+  margin: 0;
+  padding: 0 26px;
+  line-height: 44px;
+  /*text-align: center;*/
+}
+.oper-title-actions{
+  position: absolute;
+  top: 9px;
+  right: 20px;
+}
+.oper-title-actions a{
+  color: #1bbc9b;
+}
+.oper-title-actions a i{
+  padding: 5px;
+}
+.canvasBlock{
+  position: relative;
+}
+.canvasBlock .portlet.light{
+  /*background: linear-gradient(to bottom right, #fcfcfc, #f5f5f5);*/
+}
+.canvasBlock .portlet.light > .portlet-title{
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 40px;
+  height: 150px;
+  z-index: 1000;
+}
+.actions a i{
+  font-size: 20px;
+  padding: 10px;
+  color: #1bbc9b;
+
+}
+/*替换算子导航样式*/
+.portlet.light{
+  padding: 0;
+}
+.portlet > .portlet-title > .caption{
+  /*float: right;*/
+}
+.operatorBlock .actions .formInput {
+  padding: 0 15px;
+}
+.operatorBlock .actions .formInput .form-control-feedback{
+  right: 14px;
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item{
+  /*position: relative;!*影响*!*/
+  border: none;
+  /*margin: 2px 0;*/
+}
+.mt-element-list .list-simple.group .list-toggle-container .list-toggle{
+  color: #333;
+  font-weight: bold;
+  background: #fff!important;
+  border-top: 1px solid #eaeaea;
+}
+.mt-element-list .list-simple.group .list-toggle-container:hover .list-toggle{
+  background: #1bbc9b!important;
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item .list-icon-container-box{
+  position: relative;
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item .list-icon-container{
+  position: absolute;
+  margin: 4px 5px;
+  top: -1px;
+  left: 15px;
+  width: 26px;
+  text-align: center;
+  height: 26px;
+  line-height: 26px;
+  background: #1bbc9b none repeat scroll 0 0;
+  border-radius: 16px!important;
+  color: #fff;
+  font-size: 12px;
+  opacity: 0;
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item :last-child{
+  /*margin-bottom: 12px;*/
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item .list-icon-container,
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .panel-collapse .dragList .mt-list-item .list-item-content h3,
+.portlet.box > .portlet-title {
+  transition: all .3s linear;
+  -moz-transition: all .3s linear; /* Firefox 4 */
+  -webkit-transition: all .3s linear; /* Safari 和 Chrome */
+  -o-transition: all .3s linear; /* Opera */
+}
+.mt-element-list .list-simple.ext-1.mt-list-container ul > .mt-list-item:hover .list-icon-container{
+  opacity: 1;
+}
+.canvasMain .operatorBlock .portlet.light .portlet-body .mt-element-list .mt-list-container .panel-collapse .dragList .mt-list-item:hover .list-item-content h3{
+  border: 1px solid #1bbc9b;
+}
+.portlet.light #canvasBody {
+  background: #ecf0f1 url("../../images/global/bg_grid.png") repeat;
+}
+.portlet.box:hover:hover .portlet-title{
+  opacity: 1;
+}
+/*模型属性新加*/
+.page-quick-sidebar-wrapper{
+  width: 14.2%;
+}
+/*控制台*/
+.canvasBlock .page-console .portlet.light > .portlet-title{
+  top: 10px;
+  width: 96%;
+  height: 34px;
+}
+.page-console  .portlet > .portlet-title > .actions{
+  float: right;
+}
+.page-console  .portlet > .portlet-title > .actions > .btn{
+  padding: 0;
+}
+.page-console .actions a i {
+  padding: 3px;
+}
+/*算子描述样式重定义*/
+.operatorMessage .portlet.light,
+.page-quick-sidebar .portlet.light
+{
+  background: #dfe4e6;
+}
+.page-quick-sidebar-open .well{
+  background: #e9eeef;
+}
+.page-quick-sidebar-open .portlet-form .form-body, .form .form-body{
+  padding: 0;
+}
+.operatorMessage .portlet.light.portlet-fit > .portlet-title,
+.page-quick-sidebar-wrapper .portlet.light.portlet-fit > .portlet-title
+{
+  padding: 0;
+  height: 76px;
+  line-height: 76px;
+}
+.operatorMessage .portlet.light.portlet-fit > .portlet-title .caption,
+.page-quick-sidebar-wrapper .portlet.light.portlet-fit > .portlet-title .caption,
+.page-quick-sidebar .portlet > .portlet-title > .caption
+{
+  height: 76px;
+  line-height: 56px;
+  color: #1bbc9b;
+}
+.operatorMessage .portlet.light > .portlet-title > .caption > i,
+.page-quick-sidebar-wrapper .portlet.light > .portlet-title > .caption > i{
+  margin-top: 23px;
+}
+.form-control{
+  border-radius: 5px;
+}
+/*新增本地存储工作流*/
+.detailsName{
+  position: relative;
+}
+.detailsName p i{
+    position: relative;
+    top: 2px;
+    width: 38px;
+    left: 12px;
+}
+.detailsName .sessionStorage{
+  position: absolute;
+  top: 50px;
+  left: 0;
+  padding: 4px 5px;
+  background: #fff;
+  box-shadow: 0 0 5px #dfe3e5;
+  border-radius: 5px!important;
+  border: 1px solid #d0e0e4;
+}
+.detailsName p i,
+.detailsName .sessionStorage .sessionCheck,
+.detailsName .sessionStorage .sessionCheck a,
+.detailsName .sessionStorage .sessionCheck i,
+.detailsName .sessionStorage .sessionCheck a span
+{
+    color: #1abc9c;
+}
+
+.detailsName .sessionStorage li{
+  list-style: none;
+    height: 36px;
+    line-height: 36px;
+}
+.detailsName .sessionStorage li i{
+    width: 38px;
+    color: #fff;
+}
+.detailsName .sessionStorage li [class=" glyphicon-ok"]{
+  top: 0;
+}
+.detailsName .sessionStorage li span{
+    display: inline-block;
+    min-width: 160px;
+    text-align: center;
+    color: #333;
+}
+.detailsName .sessionStorage li:hover,
+.detailsName .sessionStorage .sessionCheck:hover a span{
+    background: #1abc9c;
+    color: #333!important;
+
+}
+.detailsName .sessionStorage .sessionCheck:hover>i{
+    color: #fff;
+}
+
+.success-type:before,.run-type:before,.fail-type:before{
+  position: absolute;
+  top: 7px;
+  right: -2px;
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background-size: 19px 19px;
+}
+.success-type:before{
+  background: url(../../images/details/success.png) no-repeat;
+  background-size: 19px 19px;
+}
+
+.run-type:before{
+  background: url(../../images/details/run.gif) no-repeat;
+  background-size: 19px 19px;
+}
+.fail-type:before{
+  background: url(../../images/details/fail.png) no-repeat;
+  background-size: 19px 19px;
+}
+/*阴影*/
+.shadowRadius{
+  box-shadow: 0 0 5px #dfe3e5;
+  border-radius: 5px!important;
+  border: 1px solid #d0e0e4;
+}
+.modal-header2{
+  background-color: #1bbc9b;
+  color: #fbfbff;
+}
+.modal-header-close{
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+}
+.common-bg-color2{
+  background: #e5ebed!important;
+}
+.font-color{
+  color:#1bbc9b ;
+}
+.mt-list-item-color{
+  color: #8f9eb1;
+}
+.h5-content-color{
+  color: #4d4d4d;
+}
+/*数据库读取写入连接btn*/
+.data-link-btn a,.data-link-btn a:hover,.data-link-btn a:active{
+  background: #1bbc9b;
+}
+.data-link-btn span.iconfont{
+  color: #fff;
+  font-size: 18px;
+}
+.btn-sql, btn-sql:hover,btn-sql:active{
+  background-color: #1bbc9b!important;
+  color: #ffffff!important;
+  border-radius: 5px!important;
+}
+.textarea-sql{
+  /*resize:none;*/
+  height: 120px;
+  overflow: auto;
+  margin-top: 12px;
+}
+.btn-connect1{
+  margin: 0 12px!important;
+  width: 127px!important;
+  height: 36px!important;
+  color: #1bbc9b!important;
+}
+.fa{
+  width: 20px;
+}
+.portlet-form .form-actions p {
+  margin: 0;
+  padding: 50px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: #7e8fa5;
+}
+.linkError{
+  margin: 5px 0 0 0!important;
+}
+.font-orange{
+  color: #f98937;
+}
+/*预加载动画*/
+.loader { position: relative; width: 60px; height: 60px; border-radius: 50%; margin: 0 50% ; display: inline-block; vertical-align: middle; }
+.loader-3 .dot { width: 10px; height: 10px; background: #00e676; border-radius: 50%; position: absolute; top: calc(50% - 5px); }
+.loader-3 .dot1 { left: 0px; -webkit-animation: dot-jump 0.5s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+.loader-3 .dot2 { left: 20px; -webkit-animation: dot-jump 0.5s 0.2s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s 0.2s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+.loader-3 .dot3 { left: 40px; -webkit-animation: dot-jump 0.5s 0.4s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s 0.4s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+
+@-webkit-keyframes dot-jump {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+@keyframes dot-jump {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+#right_menu{
+  position: absolute;
+  padding: 2px 0;
+  z-index: 2;
+  display: none;
+  width: 220px;
+  background: #ededed;
+  border-radius: 5px!important;
+  box-shadow: 0px 0 10px #d5dadc;
+}
+#right_menu li{
+  list-style: none;
+  padding: 10px;
+  cursor: default;
+}
+#right_menu li:hover,#right_menu li:hover i{
+  background: #1abc9c;
+  color: #fff;
+}
+#right_menu li i{
+  margin-right: 10px;
+  color: #a3a3a3;
+}
+/*动态描述字段名*/
+.dn{
+    display: none;
+}
+#changeType .modal-body,
+#changeType .mCSB_container{
+  min-height: 770px;
+}
+#changeType.R-modal table th:nth-child(1){
+  width: 15%;
+}
+#changeType.R-modal table th:nth-child(2){
+  width: 18%;
+}
+#changeType.R-modal table th:nth-child(3){
+  width: 55%;
+}
+#changeType.R-modal table th:nth-child(4){
+  width: 12%;
+}
+/*.R-modal table tr{*/
+    /*height: 50px;*/
+/*}*/
+.R-modal table th{
+    text-align: center;
+    line-height: 30px!important;
+    background: #dfe4e6;
+    color: #64848e;
+    font-weight: normal;
+}
+.R-modal table td{
+    position: relative;
+    /*height: 50px;*/
+    text-align: center;
+    /*line-height: 50px!important;*/
+}
+.R-modal table td p{
+    margin: 0;
+}
+.R-modal table td:nth-child(3){
+    text-align: left;
+}
+.R-modal table td ul{
+    position: absolute;
+    z-index: 2;
+    left: 10%;
+    top: 30px;
+    padding: 0;
+    min-width: 80px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px #ccc;
+}
+.R-modal table td ul li{
+    list-style: none;
+    padding: 2px 10px;
+    line-height: 36px;
+    text-align: right;
+}
+.R-modal table td ul li:hover{
+    background: #1abc9c;
+    color: #fff;
+}
+.R-modal table td:nth-child(3) span{
+  display: inline-block;
+  /*width: 95%;*/
+  width: 400px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+}
+.R-modal table td:nth-child(3) span input{
+  width: 100%;
+  height: 18px;
+  line-height: 18px;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #1abc9c;
+}
+.R-modal table td:nth-child(3) #changeDes{
+  position: relative;
+  vertical-align: top;
+  top: 4px;
+}
+.R-modal .modal-footer{
+  border-top: none;
+}
+.R-modal .btn-default{
+  width: 120px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+}
+.R-modal .bg-color{
+  background: #1abc9c;
+  color: #fff;
+}
+.R-modal .modal-footer .button-position{
+  margin: 0 auto;
+  width: 406px;
+
+}
+.R-modal .modal-footer .btn{
+  margin: 0 32px;
+  border: none;
+}
+/*end*/
+/*end*/
+/*查看数据的弹框*/
+ .enlarge_model_btn{
+  float: right; padding-right: 15px;cursor: pointer;color: #96a3b4;
+}
+ .enlarge_model_btn i{
+  /*padding-top: 6px;*/
+   font-size: 15px;
+}
+#lookDataResultFrame .table_look_data thead th,#lookDataResultFrame .table_look_data tbody tr td,#lookTwoDataResultFrame .table_look_data thead th,#lookTwoDataResultFrame .table_look_data tbody tr td{
+  color: #64848e;
+  text-align:center;
+  font-weight: 100;
+}
+.table_look_data thead th{
+  background-color: #dee3e5;
+}
+#lookDataResultFrame .excel_content,#lookTwoDataResultFrame .excel_content{
+  width: 899px;
+  height: 800px;
+}
+#lookDataResultFrame #excel_content1{
+  width: 899px;
+  height: 800px;
+}
+#lookTwoDataResultFrame #excel_content_dataList{
+  width: 899px;
+  height: 800px;
+}
+#lookDataResultFrame .table,#lookTwoDataResultFrame .table {
+   margin-bottom: 0px;
+}
+#saveModelTrainFrame .portlet-form .form-body {
+   padding: 5px 0;
+}
+/*查看日志的高度*/
+#lookLogResultFrame .excel_content{
+  height: 800px;
+}
+#lookLogResultFrame .mCSB_draggerRail{
+  margin-left: 25px;
+}
+#lookLogResultFrame .mCSB_dragger_bar{
+  margin-left: 25px;
+}
+/*.model_body{*/
+  /*width: 900px;*/
+  /*height: 800px;*/
+/*}*/
+.model_content{
+  margin: 0px 20px 20px;
+  background: #ecf0f1;
+  height: 760px;
+  border-radius: 5px;
+  border: 1px solid  #cfd5d7;
+}
+
+/*滚动条样式问题*/
+
+.mCS-dark-thin.mCSB_scrollTools .mCSB_draggerRail{
+  width: 7px;
+  background: rgba(27, 188, 155, 0.2);
+}
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+  width: 7px;
+  background: #1bbc9b;
+}
+.mCS-dark-thin.mCSB_scrollTools_horizontal .mCSB_dragger .mCSB_dragger_bar,.mCS-dark-thin.mCSB_scrollTools_horizontal .mCSB_draggerRail{
+  width: 100%;
+  height: 7px;
+}
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar,.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger:active .mCSB_dragger_bar,
+.mCS-dark-thin.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar{
+  background: #0c9e80;
+}
+#lookDataResultFrame .mCustomScrollBox+.mCSB_scrollTools+.mCSB_scrollTools.mCSB_scrollTools_horizontal,
+#lookDataResultFrame .mCustomScrollBox+.mCSB_scrollTools.mCSB_scrollTools_horizontal,
+#lookTwoDataResultFrame .mCustomScrollBox+.mCSB_scrollTools+.mCSB_scrollTools.mCSB_scrollTools_horizontal,
+#lookTwoDataResultFrame .mCustomScrollBox+.mCSB_scrollTools.mCSB_scrollTools_horizontal,
+#lookDataAndModelResultFrame .mCustomScrollBox+.mCSB_scrollTools+.mCSB_scrollTools.mCSB_scrollTools_horizontal,
+lookDataAndModelResultFrame .mCustomScrollBox+.mCSB_scrollTools.mCSB_scrollTools_horizontal
+{
+  bottom: 0px;
+  margin: 0 20px;
+}
+
+/*#lookDataResultFrame .img-responsive, .img-thumbnail, .table {*/
+  /*man-width: 898px;*/
+/*}*/
+ .fangdaDiv{
+  width: 98%;
+}
+
+/*.titleDiv{*/
+  /*margin-left: -479px;*/
+  /*margin-right: -463px;*/
+/*}*/
+/*#lookDataResultFrame .excel_content_scrollbar{*/
+  /*height: 820px;*/
+  /*width: 1844px;*/
+/*}*/
+.font-color{
+  color: #1abc9c;
+}
+
+/*切换表格和模型*/
+#lookDataAndModelResultFrame  thead th,#lookDataAndModelResultFrame  tbody tr td{
+  color: #64848e;
+  text-align:center;
+  font-weight: 100;
+
+}
+.lookDataAndModelResultFrame thead th{
+  background-color: #dee3e5;
+}
+#lookDataAndModelResultFrame .excel_content{
+  height: 800px;
+
+}
+#lookDataAndModelResultFrame .table {
+  margin-bottom: 0px;
+}
+/*隐藏*/
+#lookModelDiv {
+  display: none;
+}
+
+/*切换按钮*/
+.dn{
+  display: none;
+}
+.filter{
+  position: relative;
+  float: left;
+  padding: 0 28px;
+  border-left: 1px solid #cbcfd2;
+}
+.filter ul{
+  position: absolute;
+  z-index: 2;
+  top: 3px;
+  left: -0px;
+  padding: 4px 5px;
+  background: #fff;
+  box-shadow: 0 0 5px #dfe3e5;
+  border-radius: 5px!important;
+  border: 1px solid #d0e0e4;
+  width: 120px;
+  height: 84px;
+}
+.filter ul li{
+  list-style: none;
+  height: 36px;
+  line-height: 36px;
+  cursor: default;
+}
+.filter ul li i{
+  color: #fff;
+}
+.filter ul li span{
+  display: inline-block;
+  min-width: 88px;
+  text-align: center;
+}
+.filter ul li span{
+  color: #000000;
+}
+.filter ul li.filter-active i{
+  color: #1abc9c;
+}
+.filter ul li:hover,
+.filter ul li:hover i{
+  background: #1abc9c;
+  color: #fff;
+}
+.filter ul li span:hover{
+  color: #ffffff;
+}
+/*添加注释css*/
+.noteDiv{
+  position: absolute;
+  z-index: 999;
+  min-width: 200px;
+  height: 160px;
+}
+.noteTextarea{
+  margin-top:2px ;
+  width: 100%;
+  height: 100%;
+  /*min-width: 180px;*/
+  /*min-height: 160px;*/
+  /*max-width: 600px;*/
+  /*max-height: 600px;*/
+  font-size: 12px;
+  background-color: #fafacd;
+  border: none;
+  border-radius: 3px;
+  padding: 0;
+  box-shadow: -5px -5px 4px #d5dadc;
+}
+.noteTextarea:focus{
+  outline: none;
+}
+.noteMenu{
+  position: absolute;
+  height: 28px;
+  /*min-height: 28px;*/
+  width: 100%;
+  min-width: 182px;
+  background-color: #eeefef;
+  border-radius: 3px;
+  box-shadow: -5px -5px 4px #d5dadc;
+  display: none;
+  top: -28px;
+}
+
+.noteMenuAlign{
+  position: relative;
+  width: 120px;
+  height: 30px;
+}
+.noteMenuAlign .align1{
+  position: absolute;
+  color: #1bbc9b;
+  left: 10px;
+  top: 5px;
+  cursor: pointer;
+}
+.noteMenuAlign .align2{
+  position: absolute;
+  left: 35px;
+  top: 5px;
+  cursor: pointer;
+}
+.noteMenuAlign .align3{
+  position: absolute;
+  left: 60px;
+  top: 5px;
+  cursor: pointer;
+}
+.menuColorSelect{
+  width: 42px;
+  height: 20px;
+  background: #d3dad6;
+  position: absolute;
+  top: 4px;
+  left: 96px;
+  border-radius:2px;
+}
+.menuDelete{
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  color: #64848e;
+  cursor: pointer;
+}
+.menuColorDiv{
+  padding: 3px 6px 4px 6px;
+  cursor: pointer;
+}
+.menuColorfather{
+  float: left;
+  height: 14px;
+  width: 14px;
+  background-color: #fafacd;
+  border: 1px solid #7f7b72;
+}
+.selectColor{
+  position: absolute;
+  left: 23px;
+  top: 0px;
+}
+.menuColorSelect .selectColor i{
+  position: absolute;
+  top: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #7f7b72;
+}
+.menuColorList{
+  width: 166px;
+  height: 22px;
+  background-color: #d3dad6;
+  border-radius:2px ;
+  position: absolute;
+  top: 22px;
+  display: none;
+  z-index: 2;
+}
+.colorNum1,.colorNum2,.colorNum3,.colorNum4,.colorNum5,.colorNum6,.colorNum7,.colorNum8{
+  float: left;
+  height: 14px;
+  width: 14px;
+  margin: 4px 3px 4px 3px;
+  border: 1px solid #7f7b72;
+  background-color: #d1f0ea;
+  cursor: pointer;
+}
+.colorNum1:hover,.colorNum2:hover,.colorNum3:hover,.colorNum4:hover,.colorNum5:hover,.colorNum6:hover,.colorNum7:hover,.colorNum8:hover{
+  outline: 1px solid #FFFFFF;
+}
+.colorNum1{
+  margin-left: 7px;
+  background-color: #f6dada;
+}
+.colorNum2{
+  background-color: #f6dfc7;
+}
+.colorNum3{
+  background-color: #fafacd;
+}
+.colorNum4{
+  background-color: #dcf1c8;
+}
+.colorNum5{
+  background-color: #d5f5e5;
+}
+.colorNum6{
+  background-color: #c7eded;
+}
+.colorNum7{
+  background-color: #c5daee;
+}
+.colorNum8{
+  background-color: #e7daf3;
+}
+.noteInput{
+  width: 100%;
+  height: 100%;
+  /*min-width: 180px;*/
+  /*min-height: 160px;*/
+  position: absolute;
+  top: 30px;
+  margin-top:2px ;
+  /*max-width: 600px;*/
+  /*max-height: 600px;*/
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+}
+.noteContent{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.noteInput:hover{
+    border: 1px solid #f89415;
+    top: 0px;
+}
+.noteDiv .menuDelete i{
+  font-size: 15px;
+}
+/*添加注释css end*/
+/*新增控制台样式*/
+.run-history{
+  position: relative;
+  height: 50px;
+  line-height: 50px;
+  background: #fff;
+}
+.run-history .history-title{
+  padding-left: 15px;
+}
+.run-history .history-title span{
+  padding: 0 10px;
+  font-size: 16px;
+}
+.run-history .history-title .iconfont{
+  font-size: 16px;
+}
+.run-history a{
+  position: absolute;
+  left: 48%;
+}
+/*新增控制台样式end*/
+/*算子py r 样式start*/
+.editPyStyle, .editRStyle{
+  display: inline-block;
+  text-align: center;
+  background: #1bbc9b;
+  color: white;
+  border-radius: 3px!important;
+  padding: 4px 15px 4px ;
+}
+.editPyStyle:hover,editRStyle:hover{
+  color: white;
+
+}
+/*算子py r 样式end*/
+
+/*新增提取列算子*/
+/*1、算子参数样式*/
+.bg-color {
+  background: #1abc9c;
+  color: #fff;
+}
+.choice-column{
+  width: 100%;
+  height: 130px;
+  background: #ebeff0;
+}
+.choice-column p{
+  margin: 4px 0;
+  padding: 0 15px;
+}
+.choice-column p:hover{
+  background: #1bbc9b;
+  color: #fff;
+}
+.choice-column p span{
+  float: right;
+}
+.pass_list_select{
+  margin: -20px;
+}
+
+/*.pass_list_select p:hover{*/
+  /*background: #1bbc9b;*/
+  /*color: #fff;*/
+  /*width: 84%;*/
+/*}*/
+.pass_list_select .pass_list_select_hover{
+  background: #1bbc9b;
+  color: #fff;
+  width: 84%;
+}
+.pass_list_select p{
+  padding: 7px 15px;
+  cursor: pointer;
+  color: #85989e;
+}
+.lineBar{
+  position: absolute;
+  height: 128%;
+  /* width: 3px; */
+  border-left: 1px #ebeff0 solid;
+  left: 135px;
+  top: 0px;
+}
+/*滚动条*/
+.choice-column-rule{
+  height: 235px;
+}
+/*start通过规则选择样式*/
+#tag-modal .modal-body .form-group .form-control{
+  padding: 0px 3px;
+}
+#tag-modal  .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9{
+  padding-left: 15px;
+  padding-right: 0px;
+}
+#tag-modal .col-sm-1{
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 25px;
+}
+#tag-modal .col-sm-1 .icon-jia{
+ font-size: 24px;
+  color: #cee3e1;
+  margin-top: 9px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+#tag-modal .col-sm-1 .icon-jian2{
+  font-size: 22px;
+  color: #cee3e1;
+  margin-top: 9px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+#tag-modal .col-sm-1 i:hover{
+  color: #1bbc9b;
+}
+#tag-modal .choice-column-rule .select2-selection{
+  border: 1px solid #c2cad8;
+  border-radius: 5px;
+  width: 209px;
+
+}
+.choice-column-rule .select2-container ul  .select2-selection__choice{
+  float: left;
+  list-style: none;
+  background: #1bbc9b;
+  color: #fff;
+  border-radius: 3px;
+  margin-left: 2px;
+}
+body .select2-results__options .select2-results__option:hover{
+  background: #1bbc9b;
+  color: #ffffff;
+}
+body #tag-modal .modal-body .form-group .form-control {
+  height: 33px;
+}
+/*.select2-container .select2-dropdown . select2-results ul li:hover{*/
+  /*background: #1bbc9b;*/
+  /*color: #ffffff;*/
+/*}*/
+/*end通过规则选择样式*/
+
+.form-body .col-md-12 button.btn{
+  margin-top: 10px;
+}
+/*.choice-column p.tadActive{*/
+  /*background: #1bbc9b;*/
+  /*color: #fff;*/
+/*}*/
+/*1end*/
+/*提取列算子end*/
+/*运行时不可点击*/
+.stopRun,.unWrite{
+  pointer-events: none;
+  color: gray!important;
+}
+/*滚动条样式*/
+#lookLogResultFrame .mCSB_outside+.mCSB_scrollTools,
+#lookDataResultFrame .mCSB_outside+.mCSB_scrollTools,
+#lookDataAndModelResultFrame #lookDataDiv .mCSB_outside+.mCSB_scrollTools,
+#lookTwoDataResultFrame  .mCSB_outside+.mCSB_scrollTools
+{
+  right: 1px;
+}
+#lookDataAndModelResultFrame #lookModelDiv .mCSB_outside+.mCSB_scrollTools{
+  right: -19px;
+}
+.model_back_of{
+  background: #ecf0f1;overflow: hidden;
+}
+/*checkbox的间隔距离*/
+.checkbox_margin{
+  margin: 0 20px 0 0;
+}
+/*查看数据可视化*/
+.dataVisua .modal-lg{
+    width: 58%;
+}
+.dataVisua .model_content{
+    border: none;
+}
+.modal-bar{
+    margin: 10px 20px;
+    height: 40px;
+    background: #fff;
+}
+.modal-bar div{
+    float: left;
+    margin: 9px 0 0 10px;
+}
+.visual-box{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: flex-start;
+}
+.visual-box .visual-img{
+    margin-top: 10px;
+    width: 49%;
+    height: 510px;
+    background: #fff;
+}
+.visual-box .visual-img .visual-img-title{
+    background: #dfe4e6;
+}
+.visual-box .visual-img .visual-img-title input{
+    margin: 5px 10px;
+}
+.pageCenter{
+  max-width: 380px;margin: 0 auto;
+}
+.dataVisualizationHeight{
+  height: 700px;
+}
+/*查看数据可视化end*/
+.error{
+  padding-top: 5px;
+  color: #f98937;
+}
+.displayDiv{
+  display: none;
+}
+/*列名修改、列名选择*/
+.typeChange p span{
+  float: none;
+  display: inline-block;
+  padding-top: 5px;
+}
+.typeChange p span:nth-child(1){
+  width: 160px;
+}
+.typeChange p span:nth-child(2){
+  width: 50px;
+}
+.column-modify .modal-body .form-group .choice-column .form-control{
+  padding: 4px 12px;
+  height: 30px;
+}
+.column-modify .icon-position{
+  padding: 8px;
+}
+.column-modify .icon-position i.iconfont{
+  color: #d1dbde;
+}
+.column-modify .icon-position i.iconfont:hover{
+  color: #1bbc9b;
+}
+.column-modify .form-group .choice-column .field-line{
+  margin-top: 10px;
+}
+.choice-column .field-line.listError .icon-position i.iconfont,
+.choice-column .field-line.listErrorDis .icon-position i.iconfont
+{
+  color: #f98937;
+}
+.choice-column .field-line.listError .icon-position i.iconfont:hover,
+.choice-column .field-line.listErrorDis .icon-position i.iconfont:hover{
+  color: #f98937;
+}
+
+.listErrorEvents #reviseData,
+.listErrorEvents #addLine,
+.listErrorEvents #saveLine,
+.listErrorEvents #modifyData,
+.listErrorEvents #addTFline,
+.listErrorEvents #saveTFline,
+.choice-column .field-line.listErrorDis input,
+.choice-column .field-line.listErrorDis select
+{
+  pointer-events: none;
+  background: #f5f9fa;
+}
+
+.errorMesCss p{
+  margin: 0;
+  text-align: center;
+  color: #85989e;
+}
+.errorMesCss p span{
+  color: #f98937;
+}
+
+/*end*/
+
+/*数据可视化按钮导出样式*/
+.dataVisBtn{
+  display: inline-block;
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  background: #1bbc9b;
+  color: white;
+  border-radius: 20px!important;
+  cursor: pointer;
+}
+.dataVisBtn i{
+  font-size: 14px;
+  padding: 0 2px;
+}
+#formBody .labelMargin{
+  margin: 0 10px;
+}
+.imgWidthHeight{
+  width: 490px;
+  height: 470px;
+}
+/*算子参数滚动条的样式*/
+.page-quick-sidebar-wrapper #configForm .slimScrollDiv,.page-quick-sidebar-wrapper .explainDiv .slimScrollDiv{
+  overflow:visible!important;
+}
+.page-quick-sidebar-wrapper #modelInfo{
+  margin: 0;
+}
+/*算子参数的提示*/
+#formBody .icon-wenti2{
+  margin-right: 7px;
+}
+div.questionCommonDiv{
+  position: absolute;
+  z-index: 100;
+  display: none;
+  top: 35px;
+  right: 17px;
+  width: 84%;
+}
+div.questionCommonDiv s{
+  position  :absolute;
+  top: -20px;
+  right: 0;
+  display  :block;
+  height  :0;
+  width  :0;
+  font-size : 0;
+  line-height : 0;
+  border-color :transparent transparent #dee5e6 transparent;
+  border-style :dashed dashed solid dashed;
+  border-width :10px;
+
+}
+div.questionCommonDiv i{
+  position  :absolute;
+  top   :-8px;
+  left   :-15px;
+  display  :block;
+  height  :0;
+  width  :0;
+  font-size : 0;
+  line-height : 0;
+  border-color :transparent transparent #fff transparent;
+  border-style :dashed dashed solid dashed;
+  border-width :10px;
+}
+div.questionCommon{
+  border-radius: 5px;
+  -moz-border-radius :5px;
+  -webkit-border-radius :5px;
+  background-color  :#fff;
+  width   :100%;
+  padding    :5px;
+  overflow: hidden;
+  font-size: 14px;
+  color: #aab2bd;
+  box-shadow   : 0px 1px 10px rgba(9, 84, 109, 0.1);
+  -moz-box-shadow  : 0px 1px 10px rgba(9, 84, 109, 0.1);
+  -webkit-box-shadow : 0px 1px 10px rgba(9, 84, 109, 0.1);
+
+}
+.questionIcon:hover + div.questionCommonDiv{
+  display: block;
+}
+.questionIcon{
+  float: right;
+}
+.questionIcon:hover{
+  color: #1bbc9b;
+  cursor: pointer;
+}
+div.questionCommonDiv:hover{
+  display: block;
+  cursor: default;
+}
+/*算子参数的提示end*/
+/*算子流程示例图样式start*/
+#workSpaceExImg{
+  width: 44%;
+  margin: 80px 200px;
+  display: none;
+}
+/*算子流程示例图样式end*/
+
+@keyframes marchingants {
+  /*to { stroke-dashoffset: 19;}*/
+  0% {fill: rgba(27, 187, 155, 0.8);}
+  25%  {fill: rgba(27, 187, 155, 0.57);}
+  50%  {fill: rgb(255, 255, 255);}
+  75%  {fill: rgba(27, 187, 155, 0.59);}
+  100% {fill: rgba(27, 187, 155, 0.8);}
+  /*0% {stroke-width: 2;stroke: hsl(168, 75%, 42%);}*/
+  /*25%  {stroke-width: 4;stroke: hsla(168, 75%, 42%, 0.51);}*/
+  /*50%  {stroke-width: 3;stroke: hsl(168, 75%, 42%);}*/
+  /*75%  {stroke-width: 4;stroke: hsla(168, 75%, 42%, 0.51);}*/
+  /*100% {stroke-width: 2;stroke: hsl(168, 75%, 42%);}*/
+}
+.activeInputData circle,
+.activeInputModel rect{
+  stroke: hsl(168, 75%, 42%);
+  fill: white;
+  stroke-width: 1;
+  /*stroke-dasharray: 10;*/
+  animation: marchingants 1.5s forwards infinite linear;
+}
+.inputData:after,
+.outputData:after,
+.inputModel:after,
+.outputModel:after
+{
+  position: absolute;
+  display: inline-block;
+  width: 75px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  background: #ffffff;
+  color: #7f8fa4;
+}
+.inputData:after,
+.inputModel:after{
+  content: "输入数据";
+  top: -27px;
+  left: -30px;
+}
+.outputData:after,
+.outputModel:after{
+  content: "输出数据";
+  top: 18px;
+  left: -30px;
+}
+.inputModel:after{
+  content: "输入模型";
+}
+.outputModel:after{
+  content: "输出模型";
+}
+/*拖拽优化end*/
+/*算子导航样式更改*/
+.mt-element-list .list-simple.mt-list-container ul > .mt-list-item:first-child{
+  padding-top: 0;
+}
+.mt-element-list .list-simple.mt-list-container ul > .mt-list-item{
+  padding: 0;
+}
+#notesDes{
+  cursor: pointer;
+}
+/*配置总览样式覆盖重写*/
+.basicConfigInfo .mt-element-list .list-simple.mt-list-container{
+  padding: 0;
+}
+.basicConfigInfo .mt-element-list .list-simple.mt-list-container ul > .mt-list-item{
+  padding: 0 10px;
+  min-height: 40px;
+  height: auto;
+}
+.basicConfigInfo .mt-element-list .list-simple.mt-list-container a{
+  line-height: 30px;
+  /*word-wrap:break-word*/
+}
+.basicConfigInfo .mt-element-list .list-simple.mt-list-container span{
+  line-height: 30px;
+  word-wrap:break-word;
+  white-space:pre-wrap
+}

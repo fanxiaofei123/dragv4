@@ -1,0 +1,16 @@
+$(function () {
+    // var liLength = $("#pageSidebarMenu li").length;
+    // console.log(liLength);
+    // for(var b = 0; b < liLength; b++){
+    //     if(window.nav == $("#pageSidebarMenu li").eq(b).data("li")){
+    //         $("#pageSidebarMenu li").eq(b).addClass("active open");
+    //     }
+    // }
+    var liLength = $("#tree_root li").length;
+    console.log(liLength);
+    for(var b = 0; b < liLength; b++){
+        if(window.nav == $("#tree_root li").eq(b).data("li")){
+            $("#tree_root li>a").eq(b).addClass("tree_active");
+        }
+    }
+});

@@ -1,0 +1,106 @@
+@charset "UTF-8";
+.page-content h4.title{
+    color: #1bbc9b;
+    font-size: 16px;
+    /*d0e0e4*/
+}
+.dataList table tr th,.dataList table tr td{
+    color: #64848e;
+    font-size: 14px;
+    font-weight: normal;
+}
+.page-content-wrapper .page-content .page-bar{
+    border: 1px solid #d0e0e4;
+}
+/*任务名称*/
+.task{
+    position: relative;
+}
+.task_name{
+    width: 100%;
+    min-height: 38px;
+    padding: 6px 12px;
+    border: 1px solid #dfe3e9;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.task .task-name-ul{
+    position: absolute;
+    top: 38px;
+    z-index: 2;
+    padding: 10px 0 10px 10px;
+    width: 91%;
+    height: 160px;
+    background: #fff;
+    border: 1px solid #dfe3e9;
+    display: none;
+}
+.task ul{
+    /*position: absolute;*/
+    /*top: 38px;*/
+    /*z-index: 3;*/
+    padding: 0 15px 0 0;
+    width: 100%;
+    /*height: 160px;*/
+    background: #fff;
+    /*border: 1px solid #dfe3e9;*/
+    /*display: none;*/
+}
+.task ul li{
+    list-style: none;
+    padding: 5px;
+}
+.task ul li:hover{
+    background: #1bbc9b;
+    color: white;
+    cursor: default;
+}
+.task_name span{
+    padding: 2px 3px;
+    background: #f2f6f7;
+    font-size: 12px;
+    border: 1px solid #cad7db;
+    border-radius: 5px;
+    float: left;
+}
+.disno{
+    display: none;
+}
+.disbl{
+    display: block!important;
+}
+.task-name-ul .mCSB_inside>.mCSB_container{
+    margin-right: 0;
+}
+.task-name-ul .mCSB_scrollTools .mCSB_draggerRail{
+    background: rgba(27, 188, 155, 0.3);
+    width: 4px;
+}
+/*提醒设置图标*/
+.page-bar div .creat_model{
+    margin-right: 10px;
+    cursor: default;
+}
+.page-bar div .creat_model span{
+    font-size: 12px;
+}
+.page-bar div i.remindIcon{
+    position: relative;
+    top: 5px;
+    display: inline-block;
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    vertical-align: top;
+    background: url("../../../content/images/global/remind.png") no-repeat;
+}
+.page-bar div i.remindAdd{
+    background-position: 0 0;
+}
+.page-bar div i.deleteTipConfig{
+    background-position: -22px 0;
+}
+/*提示设置弹框radio*/
+.modal .modal-dialog .modal-content .modal-body .portlet .portlet-body form .form-body .form-group label.radio-inline{
+    padding-left: 22px;
+}

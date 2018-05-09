@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.TemplateDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.Template" >
+    <id column="template_id" property="templateId" jdbcType="INTEGER" />
+    <result column="template_name" property="templateName" jdbcType="VARCHAR" />
+    <result column="tcid" property="tcid" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="flow_id" property="flowId" jdbcType="INTEGER" />
+    <result column="template_description" property="templateDescription" jdbcType="VARCHAR" />
+    <result column="template_keyword" property="templateKeyword" jdbcType="VARCHAR" />
+    <result column="template_picture_directory" property="templatePictureDirectory" jdbcType="VARCHAR" />
+    <result column="template_picture_name" property="templatePictureName" jdbcType="VARCHAR" />
+    <result column="template_update_time" property="templateUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="template_draft" property="templateDraft" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="templateName != null" >
+        and template_name = #{templateName}
+      </if>
+      <if test="tcid != null" >
+        and tcid = #{tcid}
+      </if>
+      <if test="flowId != null" >
+        and flow_id = #{flowId}
+      </if>
+      <if test="templateDescription != null" >
+        and template_description = #{templateDescription}
+      </if>
+      <if test="templateKeyword != null" >
+        and template_keyword = #{templateKeyword}
+      </if>
+      <if test="templatePictureDirectory != null" >
+        and template_picture_directory = #{templatePictureDirectory}
+      </if>
+      <if test="templatePictureName != null" >
+        and template_picture_name = #{templatePictureName}
+      </if>
+      <if test="templateUpdateTime != null" >
+        and template_update_time = #{templateUpdateTime}
+      </if>
+      <if test="templateDraft != null" >
+        and template_draft = #{templateDraft}
+      </if>
+      <if test="templateInstruction != null" >
+        and template_instruction = #{templateInstruction}
+      </if>
+    </trim>
+  </sql>
+
+  <sql id="Base_Column_List" >
+    template_id AS templateId, template_name AS templateName, tcid, flow_id AS flowId,
+    template_description AS templateDescription, template_keyword AS templateKeyword,
+    template_picture_directory AS templatePictureDirectory, template_picture_name AS templatePictureName,
+    template_update_time AS templateUpdateTime, template_draft AS templateDraft,
+    template_instruction AS templateInstruction
+  </sql>
+
+  <select id="selectAllByUserId" resultMap="BaseResultMap" >
+    select
+    template_id AS templateId, template_name AS templateName, tcid, tc.userid as userid,flow_id AS flowId,
+    template_description AS templateDescription, template_keyword AS templateKeyword,
+    template_picture_directory AS templatePictureDirectory, template_picture_name AS templatePictureName,
+    template_update_time AS templateUpdateTime, template_draft AS templateDraft,
+    template_instruction AS templateInstruction,tc.template_category_name as templateCategoryName,u.loginname as userName,wf.`name` workFlowName
+    from template t LEFT JOIN work_flow wf on t.flow_id = wf.id
+    LEFT JOIN template_category tc on tc.template_category_id = t.tcid
+    LEFT JOIN user u  ON tc.userid = u.id
+    where 1=1
+    <if test="userid != null" >
+    and tc.userid = #{userid}
+    </if>
+    <if test="templateName != null" >
+      and t.template_name like "%"#{templateName}"%"
+    </if>
+    <if test="templateCategoryName != null" >
+      and tc.template_category_name like "%"#{templateCategoryName}"%"
+    </if>
+    <if test="tcid != null" >
+      and t.tcid = #{tcid}
+    </if>
+    <if test="templateId != null" >
+      and t.template_id = #{templateId}
+    </if>
+    order by template_update_time DESC
+  </select>
+  <select id="selectAllByUserIdVim" resultMap="BaseResultMap" >
+    select
+    template_id AS templateId, template_name AS templateName, tcid, tc.userid as userid, flow_id AS flowId,
+    template_description AS templateDescription, template_keyword AS templateKeyword,
+    template_picture_directory AS templatePictureDirectory, template_picture_name AS templatePictureName,
+    template_update_time AS templateUpdateTime, template_draft AS templateDraft,
+    template_instruction AS templateInstruction,tc.template_category_name as templateCategoryName,u.loginname as userName,wf.`name` workFlowName
+    from template t LEFT JOIN work_flow wf on t.flow_id = wf.id
+    LEFT JOIN template_category tc on tc.template_category_id = t.tcid
+    LEFT JOIN user u  ON tc.userid = u.id
+    where 1=1
+    <if test="templateName != null and templateName != '' " >
+      and t.template_name like "%"#{templateName}"%"
+    </if>
+    <if test="templateCategoryName != null" >
+      and tc.template_category_name like "%"#{templateCategoryName}"%"
+    </if>
+    <if test="tcid != null" >
+      and t.tcid = #{tcid}
+    </if>
+    <if test="templateId != null" >
+      and t.template_id = #{templateId}
+    </if>
+    <if test="adminId == null and Vuserid == null" >
+      and tc.userid in (#{userid},1)
+    </if>
+    <if test="adminId != null and Vuserid == null" >
+      and tc.userid in (#{adminId})
+    </if>
+    <if test="adminId == null and Vuserid != null" >
+      and tc.userid in (#{Vuserid})
+    </if>
+      and t.template_draft = 1
+    order by template_update_time DESC
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    template_id AS templateId, template_name AS templateName, tcid, tc.userid as userid, flow_id AS flowId,
+    template_description AS templateDescription, template_keyword AS templateKeyword,
+    template_picture_directory AS templatePictureDirectory, template_picture_name AS templatePictureName,
+    template_update_time AS templateUpdateTime, template_draft AS templateDraft,
+    template_instruction AS templateInstruction,tc.template_category_name as templateCategoryName,u.loginname as userName,wf.`name` workFlowName
+    from template t LEFT JOIN work_flow wf on t.flow_id = wf.id
+    LEFT JOIN template_category tc on tc.template_category_id = t.tcid
+    LEFT JOIN user u  ON tc.userid = u.id
+    where 1=1
+    <if test="userid != null" >
+    and tc.userid = #{userid}
+    </if>
+    <if test="tcid != null" >
+      and tcid = #{tcid}
+    </if>
+    <if test="templateCategoryName != null" >
+      and tc.template_category_name = #{templateCategoryName}
+    </if>
+    order by template_update_time DESC
+  </select>
+
+
+
+  <insert id="insert" parameterType="org.com.drag.model.Template">
+    insert into template (template_id, template_name, tcid, flow_id, template_description,
+    template_keyword, template_picture_directory, template_picture_name, template_update_time,
+    template_draft, template_instruction)
+    values (#{templateId}, #{templateName}, #{tcid}, #{flowId}, #{templateDescription},
+    #{templateKeyword}, #{templatePictureDirectory}, #{templatePictureName}, #{templateUpdateTime},
+    #{templateDraft}, #{templateInstruction})
+  </insert>
+
+  <insert id="insertTemplate" parameterType="org.com.drag.model.Template" >
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="templateId">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into template (template_id, template_name, tcid,flow_id, template_description,
+    template_keyword, template_picture_directory, template_picture_name, template_update_time,
+    template_draft, template_instruction)
+    values (#{templateId}, #{templateName}, #{tcid}, #{flowId}, #{templateDescription},
+    #{templateKeyword}, #{templatePictureDirectory}, #{templatePictureName}, #{templateUpdateTime},
+    #{templateDraft}, #{templateInstruction})
+  </insert>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM template
+    where template_id in
+    <foreach collection="array" item="templateId" open="(" separator="," close=")">
+      #{templateId}
+    </foreach>
+  </delete>
+
+  <update id="updateByPrimaryKey" parameterType="org.com.drag.model.Template">
+    update template
+    <set >
+      <if test="templateName != null" >
+        template_name = #{templateName},
+      </if>
+      <if test="tcid != null" >
+        tcid = #{tcid},
+      </if>
+      <if test="flowId != null" >
+        flow_id = #{flowId},
+      </if>
+      <if test="templateDescription != null" >
+        template_description = #{templateDescription},
+      </if>
+      <if test="templateKeyword != null" >
+        template_keyword = #{templateKeyword},
+      </if>
+      <if test="templatePictureDirectory != null" >
+        template_picture_directory = #{templatePictureDirectory},
+      </if>
+      <if test="templatePictureName != null" >
+        template_picture_name = #{templatePictureName},
+      </if>
+      <if test="templateUpdateTime != null" >
+        template_update_time = #{templateUpdateTime},
+      </if>
+      <if test="templateDraft != null" >
+        template_draft = #{templateDraft},
+      </if>
+      <if test="templateInstruction != null" >
+        template_instruction = #{templateInstruction},
+      </if>
+    </set>
+    where template_id = #{templateId}
+
+  </update>
+
+</mapper>

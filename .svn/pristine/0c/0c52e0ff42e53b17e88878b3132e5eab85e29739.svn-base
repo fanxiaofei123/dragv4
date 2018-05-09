@@ -1,0 +1,59 @@
+package org.com.drag.service.impl;
+
+import org.com.drag.dao.DataMiningMapper;
+import org.com.drag.model.DataMining;
+import org.com.drag.service.DataMiningService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class DataMiningServiceImpl extends BaseServiceImpl<DataMining> implements DataMiningService{
+
+    @Autowired
+    private DataMiningMapper dataMiningMapper;
+
+    public List<DataMining> selectAll(DataMining dataMining){
+        List<DataMining> dataMiningList = dataMiningMapper.selectAll(dataMining);
+        return dataMiningList;
+    }
+
+    public List<DataMining> getManyOrOneDataMining(String categoryName){
+        List<DataMining> dataMiningList = dataMiningMapper.getManyOrOneDataMining(categoryName);
+        return dataMiningList;
+    }
+
+    public DataMining selectOneDataMiningById(Integer dataMiningId){
+        return dataMiningMapper.selectOneDataMiningById(dataMiningId);
+    }
+
+    public int updateOneDataMining(DataMining dataMining){
+        int updateDataMiningCount = dataMiningMapper.updateDataMining(dataMining);
+        return updateDataMiningCount;
+    }
+
+    public int deleteOneDataMining(Integer dataMiningId){
+        int deleteCount = dataMiningMapper.deleteOneDataMiningById(dataMiningId);
+        return deleteCount;
+    }
+
+    public int deleteManyDataMining(String[] dataMiningIds){
+        /*Map<String, Object> idsMap = new HashMap<>();
+        idsMap.put("ids",dataMiningIds);
+        idsMap.put("idsMap",idsMap);*/
+        return dataMiningMapper.deleteManyDataMinings(dataMiningIds);
+    }
+
+    public List<DataMining> selectDataMining(DataMining dataMining){
+        return dataMiningMapper.selectDataMining(dataMining);
+    }
+
+    public List<DataMining> getManyDataMining(Integer id){
+        return dataMiningMapper.getManyDataMining(id);
+    }
+
+    public int upateDataMiningName(Integer id,String name){
+        return dataMiningMapper.updateDataMiningName(id,name);
+    }
+}

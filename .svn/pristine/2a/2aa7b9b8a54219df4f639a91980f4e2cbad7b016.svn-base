@@ -1,0 +1,119 @@
+@charset "UTF-8";
+/*模态框*/
+.modal .modal-body .portlet-form .form-actions p{
+    margin: 0;
+    padding: 50px 0 0;
+    font-size: 12px;
+    color: #7e8fa5;
+}
+/*end*/
+/*查看信息模态框*/
+.message-group{
+    margin: 15px 0 15px 28%;
+    color: #777777;
+}
+.message-group span:first-child{
+    display: inline-block;
+    width: 140px;
+}
+/*end*/
+/*数据表*/
+#data-message{
+    width: 100%;
+    max-height: 800px;
+    overflow: auto;
+    /*box-shadow: 0px 0px 4px 2px rgba(9, 84, 109, 0.03);*/
+}
+.page{
+    margin-top: 30px;
+}
+
+/*end*/
+/*无数据展示样式*/
+.dataBg{
+    margin: 200px auto;
+    width: 377px;
+    height: 387px;
+}
+.dn{
+    display: none;
+}
+/*end*/
+/*数据库连接新样式*/
+.form-actions .btn{
+    margin: 0 12px;
+}
+.test-type{
+    padding-right: 0;
+    /*text-align: right;*/
+    background-color: #f6f8f9;
+    margin-bottom: 20px;
+}
+/*end*/
+.table-head-tr{
+    text-align: center;
+}
+.t_inline-nowrap{
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 150px;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+}
+/*数据库连接目录树图标变化*/
+.ztree li span.button.ico_open:after{
+    content: "\e6ab"!important;
+    color: #1bbc9b;
+    font-size: 20px;
+}
+.ztree li span.button.ico_close:after{
+    content: "\e6ab"!important;
+    color: #1bbc9b;
+    font-size: 20px;
+}
+.ztree li a.curSelectedNode span.button.ico_close:after,
+.ztree li a.curSelectedNode span.button.ico_open:after,
+.ztree li a:hover span.button:after
+{
+    color: #fff;
+}
+.t_link-disable{
+    pointer-events: none;
+    color: #a3a3a3;
+}
+/*end*/
+.ztree li a.close_icon span.button.ico_close:after,
+.ztree li a.close_icon span.button.ico_open:after{
+    color: gray;
+}
+
+/*预加载动画*/
+.loader { position: relative; width: 60px; height: 60px; border-radius: 50%; margin: 0 50% ; display: inline-block; vertical-align: middle; }
+.loader-3 .dot { width: 10px; height: 10px; background: #00e676; border-radius: 50%; position: absolute; top: calc(50% - 5px); }
+.loader-3 .dot1 { left: 0px; -webkit-animation: dot-jump 0.5s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+.loader-3 .dot2 { left: 20px; -webkit-animation: dot-jump 0.5s 0.2s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s 0.2s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+.loader-3 .dot3 { left: 40px; -webkit-animation: dot-jump 0.5s 0.4s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; animation: dot-jump 0.5s 0.4s cubic-bezier(0.77, 0.47, 0.64, 0.28) alternate infinite; }
+
+@-webkit-keyframes dot-jump {
+    0% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    100% {
+        -webkit-transform: translateY(-15px);
+        transform: translateY(-15px);
+    }
+}
+@keyframes dot-jump {
+    0% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    100% {
+        -webkit-transform: translateY(-15px);
+        transform: translateY(-15px);
+    }
+}

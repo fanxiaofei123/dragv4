@@ -1,0 +1,14 @@
+package org.com.drag.service;
+
+import org.com.drag.model.ModelTrained;
+
+public interface ModelTrainedService extends BaseService<ModelTrained> {
+
+
+    int deleteById(Integer modelTrainedId);
+
+    int batchDelete(String[] modelTrainedIds);
+
+    String getInputPathById(Integer modelTrainedId);
+    String getDataModelNameById(Integer modelTrainedId);
+}

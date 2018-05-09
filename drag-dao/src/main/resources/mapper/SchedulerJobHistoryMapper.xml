@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.drag.dao.SchedulerJobHistoryDao" >
+  <resultMap id="BaseResultMap" type="org.com.drag.model.SchedulerJobHistory" >
+    <id column="sch_job_his_id" property="schJobHisId" jdbcType="INTEGER" />
+    <result column="sch_job_id" property="schJobId" jdbcType="INTEGER" />
+    <result column="sch_job_name" property="sjName" jdbcType="VARCHAR" />
+    <result column="sch_job_create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="sch_job_his_start_time" property="schJobHisStartTime" jdbcType="VARCHAR" />
+    <result column="sch_job_his_end_time" property="schJobHisEndTime" jdbcType="VARCHAR" />
+    <result column="sch_job_his_status" property="schJobHisStatus" jdbcType="TINYINT" />
+    <result column="sch_job_his_run_time" property="schJobHisRunTime" jdbcType="INTEGER" />
+    <result column="sch_job_his_log" property="schJobHisLog" jdbcType="VARCHAR" />
+    <result column="sch_job_his_user_id" property="schJobHisUserId" jdbcType="VARCHAR" />
+    <result column="loginName" property="loginName" jdbcType="VARCHAR" />
+    <result column="jobId" property="jobId" jdbcType="VARCHAR"/>
+    <result column="firstTime" property="firstTime" jdbcType="VARCHAR" />
+    <result column="lastTime" property="lastTime" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <trim prefix="where" prefixOverrides="and|or" >
+      <if test="schJobId != null" >
+         and sch_job_id = #{schJobId}
+      </if>
+      <if test="schJobHisStartTime != null" >
+         and sch_job_his_start_time = #{schJobHisStartTime}
+      </if>
+      <if test="schJobHisEndTime != null" >
+         and sch_job_his_end_time = #{schJobHisEndTime}
+      </if>
+      <if test="schJobHisStatus != null" >
+         and sch_job_his_status = #{schJobHisStatus}
+      </if>
+      <if test="schJobHisRunTime != null" >
+         and sch_job_his_run_time = #{schJobHisRunTime}
+      </if>
+      <if test="schJobHisLog != null" >
+         and sch_job_his_log = #{schJobHisLog}
+      </if>
+    </trim>
+  </sql>
+  <sql id="Base_Column_List" >
+    sch_job_his_id AS schJobHisId, sch_job_id AS schJobId, sch_job_his_start_time AS schJobHisStartTime,
+    sch_job_his_end_time AS schJobHisEndTime, sch_job_his_status AS schJobHisStatus,
+    sch_job_his_run_time AS schJobHisRunTime,jobId
+  </sql>
+  <sql id="Blob_Column_List" >
+    sch_job_his_log AS schJobHisLog
+  </sql>
+  <resultMap  id="ResultMapWithBLOBs" type="org.com.drag.model.SchedulerJobHistory" extends="BaseResultMap" >
+    <result column="sch_job_his_log"  property="schJobHisLog" jdbcType="LONGVARCHAR" />
+  </resultMap >
+
+  <select id="getMinTimeDate" parameterType="java.util.Map" resultType="java.util.Date">
+    SELECT MIN(sjh.sch_job_his_end_time)  FROM scheduler_job_history sjh  WHERE   sjh.sch_job_his_user_id=#{id}  and sjh.sch_job_his_status=#{status}
+  </select>
+  <select id="getTodayEachHourCount" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT RIGHT(LEFT(sjh.sch_job_his_end_time,13),2) times,count(*) cut   FROM scheduler_job_history sjh  WHERE   sjh.sch_job_his_user_id=#{id} and sjh.sch_job_his_status=#{status}
+     and  <![CDATA[sjh.sch_job_his_end_time >= #{startTime}]]>  and <![CDATA[sjh.sch_job_his_end_time < #{endTime}]]> GROUP BY RIGHT(LEFT(sjh.sch_job_his_end_time,13),2)
+  </select>
+
+  <select id="getWeekEachDayCount" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT substr(sjh.sch_job_his_end_time,1,10) times,count(*) cut   FROM scheduler_job_history sjh  WHERE   sjh.sch_job_his_user_id=#{id}   and  <![CDATA[sjh.sch_job_his_end_time >= #{startTime}]]>  and <![CDATA[sjh.sch_job_his_end_time < #{endTime}]]> GROUP BY substr(sjh.sch_job_his_end_time,1,10)
+  </select>
+  <select id="getTodayTaskNum" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT count(*) cut   FROM scheduler_job_history sjh  WHERE   sjh.sch_job_his_user_id=#{id}   and  <![CDATA[sjh.sch_job_his_end_time >= #{startTime}]]>  and <![CDATA[sjh.sch_job_his_end_time < #{endTime}]]>
+  </select>
+  <!--错误排序-->
+  <select id="getTaskFailList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT sjh.sch_job_name as sjName,sjh.sch_job_create_time as createTime,MIN(sjh.sch_job_his_start_time) as firstTime,MAX(sjh.sch_job_his_end_time) as lastTime,COUNT(*) as num,
+    sjh.sch_job_his_status as bb  FROM scheduler_job_history sjh   WHERE  sjh.sch_job_his_user_id=#{id}  and sjh.sch_job_his_status=#{status}
+    <if test="startTime != null and startTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time >= #{startTime}]]>
+    </if>
+    <if test="endTime != null and endTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time <= #{endTime}]]>
+    </if>
+    GROUP BY sjh.sch_job_id
+    <if test="createTime !=null and createTime !=''">
+     ORDER BY sjh.sch_job_create_time ${order}
+    </if>
+    <if test="firstTime !=null and firstTime !=''">
+      ORDER BY MIN(sjh.sch_job_his_start_time) ${order}
+    </if>
+    <if test="lastTime !=null and lastTime!=''">
+      ORDER BY MAX(sjh.sch_job_his_end_time) ${order}
+    </if>
+    <if test="num !=null and num !=''">
+      ORDER BY num ${order}
+    </if>
+  </select>
+<!--时长排序-->
+  <select id="getTaskTimeLongList"  parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT  sjh.sch_job_name as sjName,sjh.sch_job_create_time as createTime,
+    sjh.sch_job_his_start_time as firstTime,sjh.sch_job_his_end_time as lastTime,sjh.sch_job_his_run_time
+    as schJobHisRunTime,sjh.sch_job_his_status as schJobHisStatus FROM scheduler_job_history sjh  WHERE sjh.sch_job_his_user_id=#{id}
+    <if test="startTime != null and startTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time >= #{startTime}]]>
+    </if>
+    <if test="endTime != null and endTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time <= #{endTime}]]>
+    </if>
+    <if test="createTime !=null and createTime !=''">
+      ORDER BY sjh.sch_job_create_time ${order}
+    </if>
+    <if test="firstTime !=null and firstTime !=''">
+      ORDER BY sjh.sch_job_his_start_time ${order}
+    </if>
+    <if test="lastTime !=null and lastTime!=''">
+      ORDER BY sjh.sch_job_his_end_time ${order}
+    </if>
+    <if test="schJobHisRunTime !=null and schJobHisRunTime !=''">
+      ORDER BY sjh.sch_job_his_run_time ${order}
+    </if>
+  </select>
+
+  <select id="getTaskStatusCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    SELECT COUNT(sjh.sch_job_his_id) FROM scheduler_job_history sjh  WHERE   sjh.sch_job_his_user_id=#{id} and sjh.sch_job_his_status=#{state}
+  </select>
+
+  <select id="selectSchedulerHistoryJobList" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+SELECT sjh.sch_job_his_id as schJobHisId,sjh.sch_job_name as sjName,sjh.sch_job_create_time as createTime,sjh.sch_job_his_start_time as schJobHisStartTime,
+sjh.sch_job_his_end_time as schJobHisEndTime,sjh.sch_job_his_run_time as schJobHisRunTime,sjh.sch_job_his_status as schJobHisStatus from scheduler_job_history sjh
+WHERE   sjh.sch_job_his_user_id=#{userId}
+  </select>
+  <select id="selectSchHisJobListBySearch" resultMap="BaseResultMap" parameterType="java.util.Map">
+    SELECT sjh.sch_job_his_id as schJobHisId,sjh.sch_job_name as sjName,sjh.sch_job_create_time as createTime,sjh.sch_job_his_start_time as schJobHisStartTime,
+    sjh.sch_job_his_end_time as schJobHisEndTime,sjh.sch_job_his_run_time as schJobHisRunTime,sjh.sch_job_his_status as schJobHisStatus FROM scheduler_job_history sjh
+    <where>
+       (sjh.sch_job_his_user_id=#{userId}
+    <if test="firstTime != null and firstTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time >= #{firstTime}]]>
+    </if>
+    <if test="lastTime != null and lastTime !=''">
+      and <![CDATA[sjh.sch_job_his_end_time <= #{lastTime}]]>
+    </if>
+    <if test="schJobName !=null and schJobName !=''">
+      and    sjh.sch_job_name LIKE CONCAT(CONCAT('%',#{schJobName}),'%')
+    </if>
+    ) and (  find_in_set(#{state0},sjh.sch_job_his_status)  OR find_in_set(#{state1},sjh.sch_job_his_status)   OR find_in_set(#{state2},sjh.sch_job_his_status)   OR find_in_set(#{state3},sjh.sch_job_his_status)   )
+    </where>
+    <if test="sort != null and sort != ''">
+      ORDER  BY  sjh.sch_job_his_run_time ${sort}
+    </if>
+  </select>
+
+  <select id="lookSchedulerHistoryJobLogById" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT sch_job_his_log FROM scheduler_job_history WHERE sch_job_his_id=#{schJobHisId}
+  </select>
+<!--获取时间去取最小时间和最大时间-->
+  <select id="getSchedulerHisJobDefaultDate" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  sjh.sch_job_his_end_time FROM scheduler_job_history sjh WHERE sjh.sch_job_his_user_id=#{userId} and sjh.sch_job_his_end_time is not NULL ORDER BY  sjh.sch_job_his_end_time ASC
+  </select>
+  <select id="selectSchedulerHistoryJobById" parameterType="org.com.drag.model.SchedulerJobHistory" resultMap="BaseResultMap">
+     SELECT
+    <include refid="Base_Column_List" />
+    FROM scheduler_job_history WHERE sch_job_his_id=#{schJobHisId}
+  </select>
+  <select id="getMaxTimeFindSchedulerHistory" parameterType="java.lang.Integer" resultType="org.com.drag.model.SchedulerJobHistory">
+    SELECT
+    <include refid="Base_Column_List" />
+    from scheduler_job_history WHERE sch_job_id=#{schJobId}  and sch_job_his_start_time=(SELECT MAX(sch_job_his_start_time) from scheduler_job_history WHERE sch_job_id=#{schJobId}) GROUP BY sch_job_his_start_time  ORDER BY sch_job_his_start_time
+  </select>
+  <insert id="insertSchedulerJobHistory" parameterType="org.com.drag.model.SchedulerJobHistory" useGeneratedKeys="true" keyProperty="schJobHisId" >
+      insert INTO scheduler_job_history(sch_job_id,sch_job_his_start_time,sch_job_his_end_time,sch_job_his_status,sch_job_his_log,sch_job_his_run_time,sch_job_name,sch_job_create_time,sch_job_his_user_id)
+       VALUES(#{schJobId},#{schJobHisStartTime},#{schJobHisEndTime},#{schJobHisStatus},#{schJobHisLog},#{schJobHisRunTime},#{sjName},#{createTime},#{schJobHisUserId})
+  </insert>
+  <update id="updateSchedulerJobHistory" parameterType="org.com.drag.model.SchedulerJobHistory">
+    UPDATE scheduler_job_history SET  sch_job_id=#{schJobId},sch_job_his_start_time=#{schJobHisStartTime},sch_job_his_end_time=#{schJobHisEndTime},
+    sch_job_his_status=#{schJobHisStatus},sch_job_his_log=#{schJobHisLog},sch_job_his_run_time=#{schJobHisRunTime},jobId=#{jobId} WHERE sch_job_his_id=#{schJobHisId}
+  </update>
+  <delete id="deleteSchJobHisById" parameterType="java.lang.Integer">
+    DELETE FROM scheduler_job_history  WHERE sch_job_his_id=#{schJobHisId}
+  </delete>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd"
+    default-lazy-init="true">
+
+    <description>Shiro安全配置</description>
+
+
+    <!--安全管理器-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--设置自定义Realm-->
+        <property name="realm" ref="shiroDbRealm"/>
+    </bean>
+
+    <!-- 項目自定义的Realm -->
+    <bean id="shiroDbRealm" class="org.com.drag.web.common.shiro.ShiroDbRealm">
+    
+     <!-- <constructor-arg index="1" name="matcher" ref="passwordHash"/> -->
+    </bean>
+
+
+    <!-- Shiro Filter -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 安全管理器 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 默认的登陆访问url -->
+        <property name="loginUrl" value="/drag/dispatcher/workSpaceList"/>
+        <!-- 登陆成功后跳转的url -->
+         <property name="successUrl" value="/drag/dispatcher/workSpaceList"/>
+        <!-- 没有权限跳转的url -->
+        <property name="unauthorizedUrl" value="/"/>
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- 
+                    anon  不需要认证
+                    authc 需要认证
+                    user  验证通过或RememberMe登录的都可以
+                -->
+               <!--  /captcha.jpg = anon
+                /commons/** = anon
+                /static/** = anon
+                /webhooks = anon -->
+                <!-- /drag/user/login = anon
+                -->
+                /** = anon
+            </value>
+        </property>
+    </bean>
+    
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->  
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>  
+    
+    
+    <!-- shiro密码加密配置 -->
+  <!--  <bean id="passwordHash" class="org.com.drag.web.common.shiro.PasswordHash">
+        密码加密 1次md5,增强密码可修改此处
+        <property name="algorithmName" value="md5"/>
+        <property name="hashIterations" value="1"/>
+    </bean>  -->
+</beans>
